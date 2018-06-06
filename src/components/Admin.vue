@@ -11,7 +11,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.name" placeholder="用户名" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model="filters.nickname" placeholder="用户名" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -22,9 +22,7 @@
         </el-form>
       </el-col>
 
-      <!--列表-->
-
-      <!-- 用户列表-->
+      <!-- 管理员列表-->
       <el-table :data="users" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
@@ -45,8 +43,6 @@
           </template>
         </el-table-column>
       </el-table>
-
-
 
       <!--工具条-->
       <el-col :span="24" class="toolbar">
@@ -90,13 +86,13 @@
             <el-input v-model="addForm.user" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="性别" prop="sex">
-            <input type="radio" id="man" name="gender" value="男" v-model="gender">
-            <label for="man">男</label>
-            <input type="radio" id="woman" name="gender" value="女" v-model="gender">
-            <label for="woman">女</label>
+            <template v-model="addForm.sex">
+              <el-radio v-model="radio" label="male">男</el-radio>
+              <el-radio v-model="radio" label="female">女</el-radio>
+            </template>
           </el-form-item>
-          <el-form-item label="身份证号" prop="idcard">
-            <el-input v-model="addForm.idcard" auto-complete="off"></el-input>
+          <el-form-item label="身份证号" prop="idCard">
+            <el-input v-model="addForm.idCard" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -118,9 +114,8 @@
 
     data() {
       return {
-
+        radio: '',//默认性别选择
         users: [],
-
         filters: {
           name: ''
         },
@@ -156,14 +151,17 @@
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
-          name: [
-            {required: true, message: '请输入书名', trigger: 'blur'}
+          nickname: [
+            {required: true, message: '请输入用户名', trigger: 'blur'}
           ],
-          author: [
-            {required: true, message: '请输入作者', trigger: 'blur'}
+          pass: [
+            {required: true, message: '请输入密码', trigger: 'blur'}
           ],
-          description: [
-            {required: true, message: '请输入简介', trigger: 'blur'}
+          user: [
+            {required: true, message: '请输入真实姓名', trigger: 'blur'}
+          ],
+          idCard: [
+            {required: true, message: '请输入身份证号', trigger: 'blur'}
           ]
         },
         addForm: {
@@ -180,9 +178,41 @@
         this.search();
       },
       handleSearch() {
-        this.total = 0;
-        this.page = 1;
-        this.search();
+        axios({//根据昵称查询
+          method: 'post',
+          url: '/api/adminCtrl/queryAdmin',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'page': '1',
+            'size': '15',
+            'nickname':this.filters.nickname
+          }
+        })
+          .then((res) => {
+
+            },
+          ).catch((e) => {
+          if(e && e.response){
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
       },
       dateTimeFormat(value) {
         var time = new Date(+value);
@@ -294,33 +324,57 @@
           description: ''
         };
       },
+
       //新增
       addSubmit: function () {
-        let that = this;
-        this.$refs.addForm.validate((valid) => {
-          if (valid) {
-            that.loading = true;
-            let para = Object.assign({}, this.addForm);
-            para.publishAt = (!para.publishAt || para.publishAt === '') ? '' : util.formatDate.format(new Date(para.publishAt), 'yyyy-MM-dd');
-            API.add(para).then(function (result) {
-              that.loading = false;
-              if (result && parseInt(result.errcode) === 0) {
-                that.$message.success({showClose: true, message: '新增成功', duration: 2000});
-                that.$refs['addForm'].resetFields();
-                that.addFormVisible = false;
-                that.search();
-              } else {
-                that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+        axios({
+          method: 'post',
+          url: '/api/adminCtrl/addAdmin',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'nickname': this.addForm.nickname,
+            'pass': this.addForm.pass,
+            'user': this.addForm.user,
+            'idCard': this.addForm.idCard,
+            'sex':this.radio
+          }
+        })
+          .then((res) => {
+              if (res.data == "fail") {
+                this.$message({
+                  showClose: true,
+                  message: '添加失败',
+                  type: 'warning'
+                });
+              } else if (res.data == "success") {
+                this.$message({
+                  showClose: true,
+                  message: '添加成功',
+                  type: 'success'
+                });
+                this.addFormVisible = false;//关闭弹窗
               }
-            }, function (err) {
-              that.loading = false;
-              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-            }).catch(function (error) {
-              that.loading = false;
-              console.log(error);
-              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
-
+            },
+          ).catch((e) => {
+          if(e && e.response){
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
           }
         });
       },
