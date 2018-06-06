@@ -37,7 +37,7 @@ export default new Router({
       menuShow: true,
       iconCls: 'iconfont icon-books',
       children: [
-        {path: '/newvip', component: NewVip, name: '新会员管理', menuShow: true}
+        {path: '/newvip', component: NewVip, name: '会员查询', menuShow: true}
       ]
     },
     {

@@ -18,6 +18,23 @@
           </el-form-item>
         </el-form>
       </el-col>
+
+      <!-- 会员列表-->
+      <el-table :data="vip" highlight-current-row @selection-change="selsChange"
+                style="width: 100%;">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="index" width="60"></el-table-column>
+        <el-table-column prop="nickname" label="用户名" width="100" sortable></el-table-column>
+        <el-table-column prop="user" label="姓名" width="100" sortable></el-table-column>
+        <el-table-column prop="sex" label="性别" width="100" sortable></el-table-column>
+        <el-table-column prop="idCard" label="身份证号" width="160" sortable></el-table-column>
+        <el-table-column prop="createTime" label="添加时间" width="160" sortable>
+          <template slot-scope="scope">
+            {{ scope.row.createTime | dateTimeFormat }}
+          </template>
+        </el-table-column>
+      </el-table>
+
     </el-col>
   </el-row>
 </template>

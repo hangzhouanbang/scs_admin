@@ -32,7 +32,7 @@
         <el-table-column prop="sex" label="性别" width="100" sortable></el-table-column>
         <el-table-column prop="idCard" label="身份证号" width="160" sortable></el-table-column>
         <el-table-column prop="createTime" label="添加时间" width="160" sortable>
-          <template scope="scope">
+          <template slot-scope="scope">
             {{ scope.row.createTime | dateTimeFormat }}
           </template>
         </el-table-column>
@@ -191,7 +191,9 @@
           }
         })
           .then((res) => {
-
+            this.users = res.data;
+            this.total_rows = res.data.total_rows;
+            this.selected.splice(0, this.selected.length);
             },
           ).catch((e) => {
           if(e && e.response){
@@ -228,33 +230,6 @@
         var minutes = time.getMinutes();
         var seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
-      },
-      search() {
-        let that = this;
-        that.loading = false;
-        // console.log(sessionStorage.getItem('nickname'))
-
-        axios({//查询
-          method: 'post',
-          url: '/api/adminCtrl/queryAdmin',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'nickname':sessionStorage.getItem('nickname'),
-            'page': '1',
-            'size': '15',
-          }
-        })
-          .then((res) => {
-              this.users = res.data;
-              this.total_rows = res.data.total_rows;
-              this.selected.splice(0, this.selected.length);
-            },
-          ).catch((e) => {
-        });
-
-
       },
       selsChange: function (sels) {
         this.sels = sels;

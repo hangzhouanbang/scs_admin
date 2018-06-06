@@ -42,6 +42,20 @@
     },
     methods: {
       handleLogin() {
+
+
+       /* let param = new URLSearchParams();
+        param.append("nickname", this.account.nickname);
+        param.append("pass", this.account.pass);
+
+        axios.post('http://192.168.0.114:99/loginCtrl/login',param)
+          .then(function(res){
+            self.userList=res.data;
+          })
+          .catch(function(res){
+            console.log(res);
+          });*/
+
         axios({//登录
           method: 'post',
           url: '/api/loginCtrl/login',
@@ -63,6 +77,8 @@
             },
           ).catch((e) => {
         });
+
+
       }
     }
   }
