@@ -180,7 +180,7 @@
     methods: {
       handleCurrentChange(val) {
         this.page = val;
-        this.handleSearch();
+        this.handleSearch(this.page);
       },
       dateTimeFormat(value) {
         let time = new Date(+value);
@@ -197,7 +197,7 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      handleSearch() {
+      handleSearch(i) {
         axios({//根据昵称查询
           method: 'post',
           url: '/api/adminCtrl/queryAdmin',
@@ -205,13 +205,15 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'page': '1',
+            'page': i,
             'size': '15',
             'nickname':this.filters.nickname
           }
         })
           .then((res) => {
-              this.users = res.data;
+            console.log(res)
+              this.users = res.data.adminList;
+              this.total = res.data.pageNumber;
               for(let i = 0;i < this.users.length;i++){
                 this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
               }
@@ -259,7 +261,7 @@
                 that.loading = false;
                 if(res.data == 'success'){
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch();
+                  that.handleSearch(1);
                 }else{
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
@@ -301,7 +303,7 @@
                   that.loading = false;
                   if (res.data == 'success') {
                     that.$message.success({showClose: true, message: '修改成功', duration: 1500});
-                    that.handleSearch();
+                    that.handleSearch(1);
                   } else {
                     that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                   }
@@ -354,7 +356,7 @@
                   type: 'success'
                 });
                 this.addFormVisible = false;//关闭弹窗
-                this.handleSearch();
+                this.handleSearch(1);
               }
             },
           ).catch((e) => {
@@ -400,7 +402,7 @@
                 that.loading = false;
                 if(res.data == 'success'){
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch();
+                  that.handleSearch(1);
                 }else{
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
@@ -415,7 +417,7 @@
       }
     },
     mounted() {
-      this.handleSearch()
+      this.handleSearch(1)
     }
   }
 </script>
