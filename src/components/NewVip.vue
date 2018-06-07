@@ -33,14 +33,8 @@
         <el-table-column prop="gender" label="会员性别" width="100" sortable></el-table-column>
         <el-table-column prop="phone" label="手机号" width="140" sortable></el-table-column>
         <el-table-column prop="createTime" label="注册时间" width="180" sortable>
-          <template slot-scope="scope">
-            {{ scope.row.createTime | dateTimeFormat }}
-          </template>
         </el-table-column>
         <el-table-column prop="vipEndTime" label="会员到期时间" width="180" sortable>
-          <template slot-scope="scope">
-            {{ scope.row.vipEndTime | dateTimeFormat }}
-          </template>
         </el-table-column>
       </el-table>
 
