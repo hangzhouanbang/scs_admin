@@ -4,9 +4,11 @@ import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
 import Admin from '@/components/Admin.vue'
 import NewVip from '@/components/NewVip.vue'
-import SetGold from '@/components/SetGold.vue'
 import SetNotice from '@/components/SetNotice.vue'
 import SelectNotice from '@/components/SelectNotice.vue'
+import MemberRules from '@/components/MemberRules.vue'
+import SystemMaintenance from '@/components/SystemMaintenance.vue'
+import SystemRecovery from '@/components/SystemRecovery.vue'
 
 Vue.use(Router)
 
@@ -37,19 +39,21 @@ export default new Router({
       menuShow: true,
       iconCls: 'iconfont icon-books',
       children: [
-        {path: '/newvip', component: NewVip, name: '会员查询', menuShow: true}
+        {path: '/newvip', component: NewVip, name: '会员管理', menuShow: true},
+        {path: '/memberRules', component: MemberRules, name: '会员权益', menuShow: true},
       ]
     },
     {
       path: '/home',
       component: Home,
-      name: '游戏大厅',
+      name: '系统设置',
       menuShow: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/setGold', component: SetGold, name: '设置金币', menuShow: true},
         {path: '/setNotice', component: SetNotice, name: '发布公告', menuShow: true},
-        {path: '/selectNotice', component: SelectNotice, name: '查询公告', menuShow: true}
+        {path: '/selectNotice', component: SelectNotice, name: '查询公告', menuShow: true},
+        {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
+        {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true}
       ]
     }
   ]

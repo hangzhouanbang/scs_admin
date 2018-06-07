@@ -83,16 +83,16 @@
           let that = this;
           that.loading = false;
         },
-        },
-        showAddDialog: function () {
-          this.addFormVisible = true;
-          this.addForm = {
-            name: '',
-            author: '',
-            publishAt: '',
-            description: ''
-          };
-        }
+      },
+      showAddDialog: function () {
+        this.addFormVisible = true;
+        this.addForm = {
+          name: '',
+          author: '',
+          publishAt: '',
+          description: ''
+        };
+      }
     }
 </script>
 
