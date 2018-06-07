@@ -31,14 +31,10 @@
         <el-table-column prop="user" label="姓名" width="100" sortable></el-table-column>
         <el-table-column prop="sex" label="性别" width="100" sortable></el-table-column>
         <el-table-column prop="idCard" label="身份证号" width="160" sortable></el-table-column>
-        <el-table-column prop="createTime" label="添加时间" width="160" sortable>
-          <template slot-scope="scope">
-            {{ scope.row.createTime | dateTimeFormat }}
-          </template>
-        </el-table-column>
+        <el-table-column prop="createTime" label="添加时间" width="160" sortable></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
+            <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">修改密码</el-button>
             <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -52,19 +48,28 @@
         </el-pagination>
       </el-col>
 
-      <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
+      <el-dialog title="修改密码" :visible.sync="editFormVisible" :close-on-click-modal="false">
         <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-          <el-form-item label="书名" prop="name">
-            <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          <el-form-item label="用户名" prop="nickname">
+            <el-input v-model="editForm.nickname" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="作者" prop="author">
-            <el-input v-model="editForm.author" auto-complete="off"></el-input>
+          <el-form-item label="姓名" prop="user">
+            <el-input v-model="editForm.user" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="出版日期">
-            <el-date-picker type="date" placeholder="选择日期" v-model="editForm.publishAt"></el-date-picker>
+          <el-form-item label="性别" prop="sex">
+            <template v-model="editForm.sex">
+              <el-radio v-model="editForm.sex" label="male">男</el-radio>
+              <el-radio v-model="editForm.sex" label="female">女</el-radio>
+            </template>
           </el-form-item>
-          <el-form-item label="简介" prop="description">
-            <el-input type="textarea" v-model="editForm.description" :rows="8"></el-input>
+          <el-form-item label="身份证号" prop="idCard">
+            <el-input v-model="editForm.idCard" :rows="8"></el-input>
+          </el-form-item>
+          <el-form-item label="添加时间" prop="createTime">
+            <el-input v-model="editForm.createTime" :rows="8"></el-input>
+          </el-form-item>
+          <el-form-item label="密码">
+            <el-input v-model="editForm.password" :rows="8"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -175,7 +180,22 @@
     methods: {
       handleCurrentChange(val) {
         this.page = val;
-        this.search();
+        this.handleSearch();
+      },
+      dateTimeFormat(value) {
+        let time = new Date(+value);
+        let rightTwo = (v) => {
+          v = '0' + v;
+          return v.substring(v.length - 2, v.length)
+        };
+        if (time == null) return;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        let hours = time.getHours();
+        let minutes = time.getMinutes();
+        let seconds = time.getSeconds();
+        return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
       handleSearch() {
         axios({//根据昵称查询
@@ -191,9 +211,10 @@
           }
         })
           .then((res) => {
-            this.users = res.data;
-            this.total_rows = res.data.total_rows;
-            this.selected.splice(0, this.selected.length);
+              this.users = res.data;
+              for(let i = 0;i < this.users.length;i++){
+                this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
+              }
             },
           ).catch((e) => {
           if(e && e.response){
@@ -216,21 +237,6 @@
           }
         });
       },
-      dateTimeFormat(value) {
-        var time = new Date(+value);
-        var rightTwo = (v) => {
-          v = '0' + v
-          return v.substring(v.length - 2, v.length)
-        }
-        if (time == null) return;
-        var year = time.getFullYear();
-        var month = time.getMonth() + 1;
-        var date = time.getDate();
-        var hours = time.getHours();
-        var minutes = time.getMinutes();
-        var seconds = time.getSeconds();
-        return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
-      },
       selsChange: function (sels) {
         this.sels = sels;
       },
@@ -239,21 +245,30 @@
         let that = this;
         this.$confirm('确认删除该记录吗?', '提示', {type: 'warning'}).then(() => {
           that.loading = true;
-          API.remove(row.id).then(function (result) {
-            that.loading = false;
-            if (result && parseInt(result.errcode) === 0) {
-              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-              that.search();
+          axios({//根据昵称查询
+            method: 'post',
+            url: '/api/adminCtrl/deleteAdmin',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'id':row.id
             }
-          }, function (err) {
-            that.loading = false;
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-          }).catch(function (error) {
+          })
+            .then((res) => {
+                that.loading = false;
+                if(res.data == 'success'){
+                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                  that.handleSearch();
+                }else{
+                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                }
+              },
+            ).catch((e) => {
             that.loading = false;
             console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
-        }).catch(() => {
         });
       },
       //显示编辑界面
@@ -263,26 +278,35 @@
       },
       //编辑
       editSubmit: function () {
-        let that = this;
+        this.editForm.createTime = this.dateTimeFormat(this.editForm.createTime);
         this.$refs.editForm.validate((valid) => {
           if (valid) {
             this.loading = true;
-            let para = Object.assign({}, this.editForm);
-            para.publishAt = (!para.publishAt || para.publishAt == '') ? '' : util.formatDate.format(new Date(para.publishAt), 'yyyy-MM-dd');
-            API.update(para.id, para).then(function (result) {
-              that.loading = false;
-              if (result && parseInt(result.errcode) === 0) {
-                that.$message.success({showClose: true, message: '修改成功', duration: 2000});
-                that.$refs['editForm'].resetFields();
-                that.editFormVisible = false;
-                that.search();
-              } else {
-                that.$message.error({showClose: true, message: '修改失败', duration: 2000});
+            axios({//根据昵称查询
+              method: 'post',
+              url: '/api/adminCtrl/editAdmin',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'id': this.editForm.id,
+                'nickname': this.editForm.nickname,
+                'pass': this.editForm.password,
+                'user': this.editForm.user,
+                'idCard': this.editForm.idCard,
+                'sex': this.editForm.sex
               }
-            }, function (err) {
-              that.loading = false;
-              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-            }).catch(function (error) {
+            })
+              .then((res) => {
+                  that.loading = false;
+                  if (res.data == 'success') {
+                    that.$message.success({showClose: true, message: '修改成功', duration: 1500});
+                    that.handleSearch();
+                  } else {
+                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((e) => {
               that.loading = false;
               console.log(error);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
@@ -330,6 +354,7 @@
                   type: 'success'
                 });
                 this.addFormVisible = false;//关闭弹窗
+                this.handleSearch();
               }
             },
           ).catch((e) => {
@@ -361,21 +386,30 @@
           type: 'warning'
         }).then(() => {
           that.loading = true;
-          API.removeBatch(ids).then(function (result) {
-            that.loading = false;
-            if (result && parseInt(result.errcode) === 0) {
-              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-              that.search();
+          axios({//根据昵称查询
+            method: 'post',
+            url: '/api/adminCtrl/deleteAdmin',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'id':ids
             }
-          }, function (err) {
-            that.loading = false;
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-          }).catch(function (error) {
+          })
+            .then((res) => {
+                that.loading = false;
+                if(res.data == 'success'){
+                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                  that.handleSearch();
+                }else{
+                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                }
+              },
+            ).catch((e) => {
             that.loading = false;
             console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
-        }).catch(() => {
 
         });
       }
