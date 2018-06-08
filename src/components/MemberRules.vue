@@ -75,7 +75,7 @@
         <el-input v-model="memberForm.exp"></el-input>
       </el-form-item>
       <el-form-item label="会员卡" prop="memberCard">
-        <el-select v-model="value" filterable placeholder="请选择" @change="memberchange">
+        <el-select v-model="value" filterable placeholder="请选择会员卡类型" @change="memberchange">
           <el-option
             v-for="item in card"
             :key="item.value"
@@ -156,7 +156,7 @@
               { required: true, message: '请输入经验值', trigger: 'blur' }
             ],
             memberCard: [
-              { required: true, message: '请选择会员卡', trigger: 'change' }
+              { required: true, message: '请选择会员卡类型', trigger: 'blur' }
             ],
             money: [
               { required: true, message: '请输入金额', trigger: 'blur' }
