@@ -3,7 +3,8 @@
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }"><b>会员管理</b></el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/' }"><b>会员中心</b></el-breadcrumb-item>
+        <el-breadcrumb-item>会员管理</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -32,9 +33,12 @@
         <el-table-column prop="nickname" label="会员名称" width="100" sortable></el-table-column>
         <el-table-column prop="gender" label="会员性别" width="100" sortable></el-table-column>
         <el-table-column prop="phone" label="手机号" width="140" sortable></el-table-column>
-        <el-table-column prop="createTime" label="注册时间" width="180" sortable>
-        </el-table-column>
-        <el-table-column prop="vipEndTime" label="会员到期时间" width="180" sortable>
+        <el-table-column prop="createTime" label="注册时间" width="180" sortable></el-table-column>
+        <el-table-column prop="vipEndTime" label="会员到期时间" width="180" sortable></el-table-column>
+        <el-table-column prop="billsRunningWater" label="账单流水" sortable>
+          <template slot-scope="scope">
+            <el-button type="primary" @click="showRunningWater">查看详情</el-button>
+          </template>
         </el-table-column>
       </el-table>
 
@@ -44,6 +48,31 @@
                        style="float:right;">
         </el-pagination>
       </el-col>
+
+      <!--账单流水-->
+      <el-dialog title="流水" :visible.sync="addFormVisible" :close-on-click-modal="false">
+        <el-table :data="vip" highlight-current-row @selection-change="selsChange"
+                  style="width: 100%;">
+          <el-table-column type="index" width="60"></el-table-column>
+          <el-table-column prop="time" label="操作时间" width="160" sortable></el-table-column>
+          <el-table-column prop="name" label="物品" width="100" sortable></el-table-column>
+          <el-table-column prop="number" label="变化数量" width="100" sortable></el-table-column>
+          <el-table-column prop="number2" label="剩余量" width="100" sortable></el-table-column>
+          <el-table-column prop="why" label="操作原因" sortable></el-table-column>
+        </el-table>
+
+        <!--工具条-->
+        <el-col :span="24" class="toolbar">
+          <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="15" :total="total"
+                         style="float:right;">
+          </el-pagination>
+        </el-col>
+
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click.native="integral">积分</el-button>
+          <el-button type="primary" @click.native="gold">金币</el-button>
+        </div>
+      </el-dialog>
 
     </el-col>
   </el-row>
@@ -64,9 +93,50 @@
         total: 0,
         limit: 10,
         loading: false,
+        addFormVisible: false,//新增界面是否显示
+        addLoading: false,
+        addFormRules: {
+          nickname: [
+            {required: true, message: '请输入用户名', trigger: 'blur'}
+          ],
+          pass: [
+            {required: true, message: '请输入密码', trigger: 'blur'}
+          ],
+          user: [
+            {required: true, message: '请输入真实姓名', trigger: 'blur'}
+          ],
+          idCard: [
+            {required: true, message: '请输入身份证号', trigger: 'blur'}
+          ]
+        },
+        addForm: {
+          name: '',
+          author: '',
+          publishAt: '',
+          description: ''
+        }
       }
     },
     methods: {
+      //按积分筛选
+      integral(){
+
+      },
+      //按金币筛选
+      gold(){
+
+      },
+      //账单流水
+      showRunningWater: function () {
+        this.addFormVisible = true;
+        this.addForm = {
+          name: '',
+          author: '',
+          publishAt: '',
+          description: ''
+        };
+      },
+
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -113,23 +183,22 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.loading = true;//显示加载条
                 this.$message({
                   showClose: true,
                   message: '服务器异常',
                   type: 'warning'
                 });
+                this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.loading = true;//显示加载条
                 this.$message({
                   showClose: true,
                   message: '服务器异常',
                   type: 'warning'
                 });
+                this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.loading = true;//显示加载条
                 this.$message({
                   showClose: true,
                   message: '请先登录',
@@ -157,6 +226,10 @@
 
   .toolbar {
     margin-top: 30px;
+  }
+
+  .dialog-footer {
+    margin-top: 50px;
   }
 </style>
 

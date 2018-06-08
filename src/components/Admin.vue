@@ -197,7 +197,7 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      handleSearch(i) {
+      handleSearch() {
         axios({//根据昵称查询
           method: 'post',
           url: '/api/adminCtrl/queryAdmin',
@@ -205,7 +205,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'page': i,
+            'page': this.page,
             'size': '15',
             'nickname':this.filters.nickname
           }

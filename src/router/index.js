@@ -4,8 +4,6 @@ import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
 import Admin from '@/components/Admin.vue'
 import NewVip from '@/components/NewVip.vue'
-import SetNotice from '@/components/SetNotice.vue'
-import SelectNotice from '@/components/SelectNotice.vue'
 import MemberRules from '@/components/MemberRules.vue'
 import SystemMaintenance from '@/components/SystemMaintenance.vue'
 import SystemRecovery from '@/components/SystemRecovery.vue'
@@ -39,7 +37,7 @@ export default new Router({
       menuShow: true,
       iconCls: 'iconfont icon-books',
       children: [
-        {path: '/newvip', component: NewVip, name: '会员管理', menuShow: true},
+        {path: '/newVip', component: NewVip, name: '会员管理', menuShow: true},
         {path: '/memberRules', component: MemberRules, name: '会员权益', menuShow: true},
       ]
     },
@@ -50,8 +48,6 @@ export default new Router({
       menuShow: true,
       iconCls: 'iconfont icon-setting1',
       children: [
-        {path: '/setNotice', component: SetNotice, name: '发布公告', menuShow: true},
-        {path: '/selectNotice', component: SelectNotice, name: '查询公告', menuShow: true},
         {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
         {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true}
       ]
