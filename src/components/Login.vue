@@ -42,20 +42,6 @@
     },
     methods: {
       handleLogin() {
-
-
-       /* let param = new URLSearchParams();
-        param.append("nickname", this.account.nickname);
-        param.append("pass", this.account.pass);
-
-        axios.post('http://192.168.0.114:99/loginCtrl/login',param)
-          .then(function(res){
-            self.userList=res.data;
-          })
-          .catch(function(res){
-            console.log(res);
-          });*/
-
         axios({//登录
           method: 'post',
           url: '/api/loginCtrl/login',
@@ -69,16 +55,23 @@
         })
           .then((res) => {
               if (res.data.user == null) {
-                alert("账号或密码错误");
+                this.$message({
+                  showClose: true,
+                  message: '账号或密码错误',
+                  type: 'warning'
+                });
               } else {
                 this.$router.replace('/home');
-                sessionStorage.setItem('nickname',res.data.user.admin.nickname);
+                this.$message({
+                  showClose: true,
+                  message: '登录成功',
+                  type: 'success'
+                });
+                sessionStorage.setItem('nickname', res.data.user.admin.nickname);
               }
             },
           ).catch((e) => {
         });
-
-
       }
     }
   }

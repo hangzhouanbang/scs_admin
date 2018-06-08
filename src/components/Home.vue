@@ -14,10 +14,7 @@
             class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
-              <div @click="jumpTo('/user/profile')"><span style="color: #555;font-size: 14px;">个人信息</span></div>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <div @click="jumpTo('/user/changepwd')"><span style="color: #555;font-size: 14px;">修改密码</span></div>
+              <div @click="jumpTo('/home')"><span style="color: #555;font-size: 14px;">个人信息</span></div>
             </el-dropdown-item>
             <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -68,25 +65,16 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: "Home",
-
     created() {
-      // bus.$on('setNickName', (text) => {
-      //   this.nickname = text;
-      // })
-      //
-      // bus.$on('goto', (url) => {
-      //   if (url === "/login") {
-      //     localStorage.removeItem('access-user');
-      //   }
-      //   this.$router.push(url);
-      // })
     },
     data() {
       return {
         defaultActiveIndex: "0",
-        nickname: '',
+        nickname: sessionStorage.getItem('nickname'),
         collapsed: false,
       }
     },
@@ -102,26 +90,27 @@
         this.defaultActiveIndex = url;
         this.$router.push(url); //用go刷新
       },
+      //退出登录
       logout() {
-        let that = this;
-        this.$confirm('确认退出吗?', '提示', {
-          confirmButtonClass: 'el-button--warning'
-        }).then(() => {
-          //确认
-          that.loading = true;
-          API.logout().then(function (result) {
-            that.loading = false;
-            localStorage.removeItem('access-user');
-            that.$router.go('/login'); //用go刷新
-          }, function (err) {
-            that.loading = false;
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-          }).catch(function (error) {
-            that.loading = false;
-            console.log(error);
-            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        }).catch(() => {
+        axios({//
+          method: 'post',
+          url: '/api/loginCtrl/logout',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+        })
+          .then((res) => {
+              if (res.data == "success") {
+                this.$router.replace('/');
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+              }
+            },
+          ).catch((e) => {
         });
       }
     },
@@ -200,7 +189,7 @@
 
     aside {
       min-width: 50px;
-      background: #fff;/*导航栏底部背景*/
+      background: #fff; /*导航栏底部背景*/
       &::-webkit-scrollbar {
         display: none;
       }
@@ -216,7 +205,7 @@
         height: -webkit-calc(100% - 80px);
         height: calc(100% - 80px);
         border-radius: 0px;
-        background-color: #fff;/*导航栏背景*/
+        background-color: #fff; /*导航栏背景*/
         border-right: 0px;
       }
 
@@ -241,7 +230,7 @@
     }
 
     .menu-toggle {
-      background: #4A5064;/*导航栏折叠背景*/
+      background: #4A5064; /*导航栏折叠背景*/
       text-align: center;
       color: white;
       height: 26px;
@@ -249,14 +238,14 @@
     }
 
     .content-container {
-      background: #fff;/*右侧总背景*/
+      background: #fff; /*右侧总背景*/
       flex: 1;
       overflow-y: auto;
       padding: 10px;
       padding-bottom: 1px;
 
       .content-wrapper {
-        background-color: #fff;/*右侧内容背景*/
+        background-color: #fff; /*右侧内容背景*/
         box-sizing: border-box;
       }
     }
