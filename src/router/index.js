@@ -7,6 +7,9 @@ import NewVip from '@/components/NewVip.vue'
 import MemberRules from '@/components/MemberRules.vue'
 import SystemMaintenance from '@/components/SystemMaintenance.vue'
 import SystemRecovery from '@/components/SystemRecovery.vue'
+import Role from '@/components/Role.vue'
+import Jurisdiction from '@/components/Jurisdiction.vue'
+import Server from '@/components/Server.vue'
 
 Vue.use(Router)
 
@@ -33,6 +36,18 @@ export default new Router({
     {
       path: '/home',
       component: Home,
+      //name: '管理员管理',
+      redirect: '/role',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-leaf', // 图标样式class
+      children: [
+        {path: '/role', component: Role, name: '角色管理', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
       name: '会员中心',
       menuShow: true,
       iconCls: 'iconfont icon-books',
@@ -50,6 +65,30 @@ export default new Router({
       children: [
         {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
         {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      //name: '管理员管理',
+      redirect: '/jurisdiction',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-menuunfold', // 图标样式class
+      children: [
+        {path: '/jurisdiction', component:Jurisdiction, name: '权限管理', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      //name: '管理员管理',
+      redirect: '/server',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-down', // 图标样式class
+      children: [
+        {path: '/server', component:Server, name: '服务器管理', menuShow: true}
       ]
     }
   ]
