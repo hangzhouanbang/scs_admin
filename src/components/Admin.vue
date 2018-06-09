@@ -29,12 +29,13 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="nickname" label="用户名" width="100" sortable></el-table-column>
         <el-table-column prop="user" label="姓名" width="100" sortable></el-table-column>
-        <el-table-column prop="sex" label="性别" width="100" sortable></el-table-column>
-        <el-table-column prop="idCard" label="身份证号" width="160" sortable></el-table-column>
+        <!--<el-table-column prop="sex" label="性别" width="100" sortable></el-table-column>-->
+        <el-table-column prop="idCard" label="身份证号" width="170" sortable></el-table-column>
         <el-table-column prop="createTime" label="添加时间" width="160" sortable></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">修改密码</el-button>
+            <el-button size="small" @click="showEditRole(scope.$index,scope.row)">编辑角色</el-button>
             <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -56,12 +57,12 @@
           <el-form-item label="姓名" prop="user">
             <el-input v-model="editForm.user" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <template v-model="editForm.sex">
-              <el-radio v-model="editForm.sex" label="male">男</el-radio>
-              <el-radio v-model="editForm.sex" label="female">女</el-radio>
-            </template>
-          </el-form-item>
+          <!--<el-form-item label="性别" prop="sex">-->
+            <!--<template v-model="editForm.sex">-->
+              <!--<el-radio v-model="editForm.sex" label="male">男</el-radio>-->
+              <!--<el-radio v-model="editForm.sex" label="female">女</el-radio>-->
+            <!--</template>-->
+          <!--</el-form-item>-->
           <el-form-item label="身份证号" prop="idCard">
             <el-input v-model="editForm.idCard" :rows="8"></el-input>
           </el-form-item>
@@ -77,7 +78,15 @@
           <el-button type="primary" @click.native="editSubmit">提交</el-button>
         </div>
       </el-dialog>
-
+      <!--编辑角色-->
+      <el-dialog title="编辑角色" :visible.sync="editRoleVisible" :close-on-click-modal="false">
+        <el-form :model="editRole" label-width="100px" :rules="editFormRules" ref="editRole">
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="editRoleVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="roleSubmit">提交</el-button>
+        </div>
+      </el-dialog>
       <!--新增界面-->
       <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
@@ -90,12 +99,12 @@
           <el-form-item label="姓名" prop="user">
             <el-input v-model="addForm.user" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <template v-model="addForm.sex">
-              <el-radio v-model="radio" label="male">男</el-radio>
-              <el-radio v-model="radio" label="female">女</el-radio>
-            </template>
-          </el-form-item>
+          <!--<el-form-item label="性别" prop="sex">-->
+            <!--<template v-model="addForm.sex">-->
+              <!--<el-radio v-model="radio" label="male">男</el-radio>-->
+              <!--<el-radio v-model="radio" label="female">女</el-radio>-->
+            <!--</template>-->
+          <!--</el-form-item>-->
           <el-form-item label="身份证号" prop="idCard">
             <el-input v-model="addForm.idCard" auto-complete="off"></el-input>
           </el-form-item>
@@ -116,7 +125,6 @@
 
   export default {
     name: "Admin",
-
     data() {
       return {
         radio: '',//默认性别选择
@@ -144,16 +152,12 @@
             {required: true, message: '请输入简介', trigger: 'blur'}
           ]
         },
-        editForm: {
-          id: 0,
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        },
-
+        editForm: {},
+        editRole: {},
+        addForm: {},
         //新增相关数据
         addFormVisible: false,//新增界面是否显示
+        editRoleVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
           nickname: [
@@ -168,12 +172,6 @@
           idCard: [
             {required: true, message: '请输入身份证号', trigger: 'blur'}
           ]
-        },
-        addForm: {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
         }
       }
     },
@@ -206,12 +204,11 @@
           },
           params: {
             'page': this.page,
-            'size': '15',
+            'size': '10',
             'nickname':this.filters.nickname
           }
         })
           .then((res) => {
-            console.log(res)
               this.users = res.data.adminList;
               this.total = res.data.pageNumber;
               for(let i = 0;i < this.users.length;i++){
@@ -273,18 +270,18 @@
           });
         });
       },
-      //显示编辑界面
+      //显示修改密码界面
       showEditDialog: function (index, row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
       },
-      //编辑
+      //修改密码
       editSubmit: function () {
         this.editForm.createTime = this.dateTimeFormat(this.editForm.createTime);
         this.$refs.editForm.validate((valid) => {
           if (valid) {
             this.loading = true;
-            axios({//根据昵称查询
+            axios({
               method: 'post',
               url: '/api/adminCtrl/editAdmin',
               headers: {
@@ -292,29 +289,63 @@
               },
               params: {
                 'id': this.editForm.id,
-                'nickname': this.editForm.nickname,
+                // 'nickname': this.editForm.nickname,
                 'pass': this.editForm.password,
-                'user': this.editForm.user,
-                'idCard': this.editForm.idCard,
-                'sex': this.editForm.sex
+                // 'user': this.editForm.user,
+                // 'idCard': this.editForm.idCard,
+                // 'sex': this.editForm.sex
               }
             })
               .then((res) => {
-                  that.loading = false;
+                  this.loading = false;
                   if (res.data == 'success') {
-                    that.$message.success({showClose: true, message: '修改成功', duration: 1500});
-                    that.handleSearch(1);
+                    this.editFormVisible = false;
+                    this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+                    this.handleSearch(1);
                   } else {
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                    this.$message.error({showClose: true, message: err.toString(), duration: 2000});
                   }
                 },
               ).catch((e) => {
-              that.loading = false;
+              this.loading = false;
               console.log(error);
-              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           }
         });
+      },
+      //编辑角色界面显示
+      showEditRole: function(){
+        this.editRoleVisible = true;
+        // this.editRole = Object.assign({}, row);
+        axios({
+          method: 'post',
+          url: '/api/roleCtrl/queryAllRole',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {}
+        })
+          .then((res) => {
+            console.log(res)
+              // this.loading = false;
+              // if (res.data == 'success') {
+              //   this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+              //   this.handleSearch(1);
+              // } else {
+              //   this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              // }
+            },
+          ).catch((e) => {
+
+          // this.loading = false;
+          // console.log(error);
+          // this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+        });
+      },
+      //编辑角色
+      roleSubmit: function () {
+
       },
       showAddDialog: function () {
         this.addFormVisible = true;
@@ -325,7 +356,6 @@
           description: ''
         };
       },
-
       //新增
       addSubmit: function () {
         axios({
@@ -339,7 +369,7 @@
             'pass': this.addForm.pass,
             'user': this.addForm.user,
             'idCard': this.addForm.idCard,
-            'sex':this.radio
+            // 'sex':this.radio
           }
         })
           .then((res) => {
