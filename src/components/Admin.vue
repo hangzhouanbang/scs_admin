@@ -57,12 +57,6 @@
           <el-form-item label="姓名" prop="user">
             <el-input v-model="editForm.user" auto-complete="off"></el-input>
           </el-form-item>
-          <!--<el-form-item label="性别" prop="sex">-->
-            <!--<template v-model="editForm.sex">-->
-              <!--<el-radio v-model="editForm.sex" label="male">男</el-radio>-->
-              <!--<el-radio v-model="editForm.sex" label="female">女</el-radio>-->
-            <!--</template>-->
-          <!--</el-form-item>-->
           <el-form-item label="身份证号" prop="idCard">
             <el-input v-model="editForm.idCard" :rows="8"></el-input>
           </el-form-item>
@@ -80,8 +74,11 @@
       </el-dialog>
       <!--编辑角色-->
       <el-dialog title="编辑角色" :visible.sync="editRoleVisible" :close-on-click-modal="false">
-        <el-form :model="editRole" label-width="100px" :rules="editFormRules" ref="editRole">
-        </el-form>
+        <el-table :data="roles" highlight-current-row @selection-change="selsChange"
+                  style="width: 100%;">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column label="角色名称" prop="role"></el-table-column>
+        </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="editRoleVisible = false">取消</el-button>
           <el-button type="primary" @click.native="roleSubmit">提交</el-button>
@@ -99,12 +96,6 @@
           <el-form-item label="姓名" prop="user">
             <el-input v-model="addForm.user" auto-complete="off"></el-input>
           </el-form-item>
-          <!--<el-form-item label="性别" prop="sex">-->
-            <!--<template v-model="addForm.sex">-->
-              <!--<el-radio v-model="radio" label="male">男</el-radio>-->
-              <!--<el-radio v-model="radio" label="female">女</el-radio>-->
-            <!--</template>-->
-          <!--</el-form-item>-->
           <el-form-item label="身份证号" prop="idCard">
             <el-input v-model="addForm.idCard" auto-complete="off"></el-input>
           </el-form-item>
@@ -129,6 +120,7 @@
       return {
         radio: '',//默认性别选择
         users: [],
+        roles: [],
         filters: {
           name: ''
         },
@@ -138,9 +130,9 @@
         limit: 10,
         loading: false,
         sels: [], //列表选中列
-
         //编辑相关数据
         editFormVisible: false,//编辑界面是否显示
+        checked: true,
         editFormRules: {
           name: [
             {required: true, message: '请输入书名', trigger: 'blur'}
@@ -315,9 +307,9 @@
         });
       },
       //编辑角色界面显示
-      showEditRole: function(){
+      showEditRole: function(index,row){
         this.editRoleVisible = true;
-        // this.editRole = Object.assign({}, row);
+        this.editRole = Object.assign({}, row);
         axios({
           method: 'post',
           url: '/api/roleCtrl/queryAllRole',
@@ -327,25 +319,47 @@
           params: {}
         })
           .then((res) => {
-            console.log(res)
-              // this.loading = false;
-              // if (res.data == 'success') {
-              //   this.$message.success({showClose: true, message: '修改成功', duration: 1500});
-              //   this.handleSearch(1);
-              // } else {
-              //   this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              // }
+              this.roles = res.data;
             },
           ).catch((e) => {
-
-          // this.loading = false;
-          // console.log(error);
-          // this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
         });
       },
       //编辑角色
       roleSubmit: function () {
-
+        let roleids = this.sels.map(item => item.id).toString();
+        console.log(roleids)
+        console.log(this.editRole)
+        axios({
+          method: 'post',
+          url: '/api/adminCtrl/editRole',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            adminId:this.editRole.id,
+            roleId:roleids
+          }
+        })
+          .then((res) => {
+              console.log(res.data)
+            if (res.data == "fail") {
+              this.$message({
+                showClose: true,
+                message: '编辑失败',
+                type: 'warning'
+              });
+            } else if (res.data == "success") {
+              this.$message({
+                showClose: true,
+                message: '编辑成功',
+                type: 'success'
+              });
+              this.editRoleVisible = false;//关闭弹窗
+              this.handleSearch(1);
+            }
+            },
+          ).catch((e) => {
+        });
       },
       showAddDialog: function () {
         this.addFormVisible = true;

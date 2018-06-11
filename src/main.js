@@ -14,6 +14,7 @@ cnpm install --save axios vue-axios*/
 import axios from 'axios'
 //引入图标
 import '@/assets/iconfont.css'
+import '@/assets/js/jquery.min.js'
 
 
 //全局注册

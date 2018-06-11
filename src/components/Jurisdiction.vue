@@ -36,9 +36,28 @@
     </el-table>
     </el-col>
 
+    <!--<div class="tishi" :visible.sync="addprivilegeVisible" :close-on-click-modal="false"  @selection-change="selsChange">-->
+      <!--<div class="title">新增权限</div>-->
+      <!--<div class="form" v-model="addprivilege" label-width="80px" :rules="addFormRules" ref="addprivilege">-->
+        <!--<div class="name">-->
+          <!--<label for="" prop="privilege">权限名称</label>-->
+          <!--<input type="text" v-model="addprivilege.privilege" auto-complete="off">-->
+        <!--</div>-->
+        <!--<div class="uri">-->
+          <!--<label for="" prop="uri">URI</label>-->
+          <!--<input type="text" v-model="addprivilege.uri" auto-complete="off">-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="button">-->
+        <!--<div class="add" v-on:click="add">增加</div>-->
+        <!--<div class="cancel" v-on:click="addprivilegeVisible = false">取消</div>-->
+        <!--<div class="submit" v-on:click="addSubmit" :loading="addLoading">提交</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
     <!--新增权限界面-->
     <el-dialog title="新增权限" :visible.sync="addprivilegeVisible" :close-on-click-modal="false">
-      <el-form :model="addprivilege" label-width="80px" :rules="addFormRules" ref="addprivilege">
+      <el-form :model="addprivilege" label-width="80px" :rules="addFormRules" ref="addprivilege" id="cc">
         <el-form-item label="权限名称" prop="privilege">
           <el-input v-model="addprivilege.privilege" auto-complete="off"></el-input>
         </el-form-item>
@@ -46,6 +65,7 @@
           <el-input v-model="addprivilege.uri" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
+      <!--<i class="el-icon-circle-plus" @click="add"></i>-->
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addprivilegeVisible = false">取消</el-button>
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
@@ -55,11 +75,11 @@
     <!--编辑权限页面-->
     <el-dialog title="编辑权限" :visible.sync="editprivilegeVisible" :close-on-click-modal="false">
       <el-form :model="editPrivilege" label-width="100px" :rules="editFormRules" ref="editPrivilege">
-        <el-form-item label="权限名称" prop="privileges">
-          <el-input v-model="editPrivilege.privileges" auto-complete="off"></el-input>
+        <el-form-item label="权限名称" prop="privilege">
+          <el-input v-model="editPrivilege.privilege" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="URI" prop="uris">
-          <el-input v-model="editPrivilege.uris" auto-complete="off"></el-input>
+        <el-form-item label="URI" prop="uri">
+          <el-input v-model="editPrivilege.uri" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -80,6 +100,7 @@
 
 <script>
   import axios from 'axios'
+  // @import '../assets/js/jquery.min.js'
 
   export default {
     name: "Jurisdiction",
@@ -91,6 +112,7 @@
         },
         total: 0,
         page: 1,
+        number:1,
         limit: 10,
         loading: false,
         sels: [], //列表选中列
@@ -185,7 +207,7 @@
                 that.loading = false;
                 if(res.data == 'success'){
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch(1);
+                  that.handleSearch();
                 }else{
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
@@ -219,7 +241,7 @@
                 that.loading = false;
                 if(res.data == 'success'){
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch(1);
+                  that.handleSearch();
                 }else{
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
@@ -237,6 +259,18 @@
         this.addprivilegeVisible = true;
         this.addprivilege = {};
       },
+      // add:function(){
+      //   // console.log()
+      //   this.addprivilege = {};
+      //   $('.form').append(' <div class="name">\n' +
+      //     '          <label for="" prop="privilege">权限名称</label>\n' +
+      //     '          <input type="text" v-model="addprivilege.privilege" auto-complete="off">\n' +
+      //     '        </div>\n' +
+      //     '        <div class="uri">\n' +
+      //     '          <label for="" prop="uri">URI</label>\n' +
+      //     '          <input type="text" v-model="addprivilege.uri" auto-complete="off">\n' +
+      //     '        </div>')
+      // },
       //新增
       addSubmit: function () {
         let privileges =[
@@ -312,8 +346,8 @@
               },
               params: {
                 'id': this.editPrivilege.id,
-                'privilege': this.editPrivilege.privileges,
-                'uri': this.editPrivilege.uris
+                'privilege': this.editPrivilege.privilege,
+                'uri': this.editPrivilege.uri
               }
             })
               .then((res) => {
@@ -339,6 +373,7 @@
       this.handleSearch(1)
     }
   }
+
 </script>
 
 <style scoped>
@@ -348,5 +383,17 @@
 
   .toolbar {
     margin-top: 30px;
+  }
+  .el-icon-circle-plus{
+    width:30px !important;
+    height:30px !important;
+    display:block;
+    margin-left:30px;
+    cursor:pointer;
+  }
+  .el-icon-circle-plus::before{
+    width:30px !important;
+    height:30px !important;
+    display:block;
   }
 </style>
