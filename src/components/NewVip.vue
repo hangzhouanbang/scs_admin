@@ -44,7 +44,7 @@
 
       <!--工具条-->
       <el-col :span="24" class="toolbar">
-        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="15" :total="total"
+        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
                        style="float:right;">
         </el-pagination>
       </el-col>
@@ -63,7 +63,7 @@
 
         <!--工具条-->
         <el-col :span="24" class="toolbar">
-          <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="15" :total="total"
+          <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
                          style="float:right;">
           </el-pagination>
         </el-col>
@@ -165,7 +165,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '15',//每页数量
+            'size':'15',//每页数量
             'page': this.page,//当前页
             'nickname': this.filters.nickname
           }

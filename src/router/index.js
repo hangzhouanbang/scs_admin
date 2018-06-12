@@ -10,6 +10,7 @@ import SystemRecovery from '@/components/SystemRecovery.vue'
 import Role from '@/components/Role.vue'
 import Jurisdiction from '@/components/Jurisdiction.vue'
 import Server from '@/components/Server.vue'
+import History from '@/components/History.vue'
 
 Vue.use(Router)
 
@@ -24,7 +25,6 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      name: '管理员管理',
       redirect: '/admin',
       menuShow: true,
       leaf: true, // 只有一个节点
@@ -36,7 +36,6 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      name: '角色管理',
       redirect: '/role',
       menuShow: true,
       leaf: true, // 只有一个节点
@@ -64,13 +63,13 @@ export default new Router({
       iconCls: 'iconfont icon-xitongshezhi',
       children: [
         {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
-        {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true}
+        {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true},
+        {path: '/History', component: History, name: '历史记录', menuShow: true}
       ]
     },
     {
       path: '/home',
       component: Home,
-      name: '权限管理',
       redirect: '/jurisdiction',
       menuShow: true,
       leaf: true, // 只有一个节点
@@ -82,7 +81,6 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      name: '服务器管理',
       redirect: '/server',
       menuShow: true,
       leaf: true, // 只有一个节点
