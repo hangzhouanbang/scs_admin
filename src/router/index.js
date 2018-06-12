@@ -24,11 +24,11 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      //name: '管理员管理',
+      name: '管理员管理',
       redirect: '/admin',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-users', // 图标样式class
+      iconCls: 'iconfont icon-guanliyuan', // 图标样式class
       children: [
         {path: '/admin', component: Admin, name: '管理员管理', menuShow: true}
       ]
@@ -36,11 +36,11 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      //name: '管理员管理',
+      name: '角色管理',
       redirect: '/role',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-leaf', // 图标样式class
+      iconCls: 'iconfont icon-navicon-jsgl', // 图标样式class
       children: [
         {path: '/role', component: Role, name: '角色管理', menuShow: true}
       ]
@@ -50,7 +50,7 @@ export default new Router({
       component: Home,
       name: '会员中心',
       menuShow: true,
-      iconCls: 'iconfont icon-books',
+      iconCls: 'iconfont icon-huiyuanzhongxin',
       children: [
         {path: '/newVip', component: NewVip, name: '会员管理', menuShow: true},
         {path: '/memberRules', component: MemberRules, name: '会员权益', menuShow: true},
@@ -61,7 +61,7 @@ export default new Router({
       component: Home,
       name: '系统设置',
       menuShow: true,
-      iconCls: 'iconfont icon-setting1',
+      iconCls: 'iconfont icon-xitongshezhi',
       children: [
         {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
         {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true}
@@ -70,11 +70,11 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      //name: '管理员管理',
+      name: '权限管理',
       redirect: '/jurisdiction',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-menuunfold', // 图标样式class
+      iconCls: 'iconfont icon-ic_opt_feature', // 图标样式class
       children: [
         {path: '/jurisdiction', component:Jurisdiction, name: '权限管理', menuShow: true}
       ]
@@ -82,11 +82,11 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      //name: '管理员管理',
+      name: '服务器管理',
       redirect: '/server',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-down', // 图标样式class
+      iconCls: 'iconfont icon-server', // 图标样式class
       children: [
         {path: '/server', component:Server, name: '服务器管理', menuShow: true}
       ]
