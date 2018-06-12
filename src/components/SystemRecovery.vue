@@ -8,12 +8,31 @@
       </el-breadcrumb>
     </el-col>
 
-    <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+    <el-form :model="normalForm" label-width="150px" :rules="rules" class="demo-ruleForm">
       <el-form-item label="标题" prop="title">
         <el-input v-model="normalForm.title" auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="图片" prop="image">
         <el-input type="file" v-model="normalForm.image" auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="补偿设置" prop="compensation">
+        <el-select v-model="value" placeholder="请选择" @change="change">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-form-item label="金币数量" prop="gold" class="memberCard" v-show="memberDisplay">
+          <el-input class="memberInput" v-model="normalForm.gold"></el-input>
+        </el-form-item>
+        <el-form-item label="积分数量" prop="integral" class="memberCard" v-show="memberDisplay">
+          <el-input class="memberInput" v-model="normalForm.integral"></el-input>
+        </el-form-item>
+        <el-form-item label="会员卡体验时间" prop="vip" class="memberCard" v-show="memberDisplay">
+          <el-input class="memberInput" v-model="normalForm.vip"></el-input>&nbsp;天
+        </el-form-item>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="issue">发布</el-button>
@@ -29,6 +48,15 @@
     name: "SystemRecovery",
     data() {
       return {
+        memberDisplay: false,
+        options: [{
+          value: '选项1',
+          label: '不设置奖励'
+        }, {
+          value: '选项2',
+          label: '设置奖励'
+        }],
+        value: '',
         normalForm: {},
         rules: {
           title: [
@@ -40,15 +68,25 @@
         }
       }
     },
-    methods:{
+    methods: {
+      change() {
+        if (this.value == '选项1') {
+          this.memberDisplay = false;
+        } else if (this.value == '选项2') {
+          this.memberDisplay = true;
+        }
+      },
       //发布
-      issue(){
+      issue() {
 
       },
       //取消
-      cancel(){
+      cancel() {
         this.normalForm.title = ''
-        this. normalForm.image = ''
+        this.normalForm.image = ''
+        this.normalForm.gold = ''
+        this.normalForm.integral = ''
+        this.normalForm.vip = ''
       }
     }
   }
@@ -57,5 +95,13 @@
 <style scoped>
   .demo-ruleForm {
     margin-top: 50px;
+  }
+
+  .memberCard {
+    margin-top: 20px;
+  }
+
+  .memberInput {
+    width: 30%;
   }
 </style>

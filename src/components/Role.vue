@@ -84,7 +84,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="chooseFormVisible = false">取消</el-button>
-          <el-button type="danger" @click.native="chooseSubmit" :disabled="this.privilege.length===0">保存</el-button>
+          <el-button type="danger" @click.native="chooseSubmit" :disabled="this.sels.length===0">保存</el-button>
         </div>
       </el-dialog>
 
@@ -332,7 +332,7 @@
 
       //编辑角色权限
       chooseSubmit: function () {
-        let ids = this.privilege.map(item => item.id).toString();
+        let ids = this.sels.map(item => item.id).toString();
         let that = this;
         this.$confirm('确认保存选中记录吗？', '提示', {
           type: 'warning'

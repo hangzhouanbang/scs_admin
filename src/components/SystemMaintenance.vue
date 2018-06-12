@@ -13,7 +13,8 @@
         <el-input v-model="normalForm.title" auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="图片" prop="image">
-        <el-input type="file" v-model="normalForm.image" auto-complete="off"></el-input>
+        <el-input type="file" name="file" accept="image/png,image/gif,image/jpeg" v-model="normalForm.image"
+                  auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="issue">发布</el-button>
@@ -25,6 +26,8 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: "SystemMaintenance",
     data() {
@@ -40,15 +43,16 @@
         }
       }
     },
-    methods:{
+    methods: {
       //发布
-      issue(){
+      issue(e) {
+
 
       },
       //取消
-      cancel(){
+      cancel() {
         this.normalForm.title = ''
-        this. normalForm.image = ''
+        this.normalForm.image = ''
       }
     }
   }
