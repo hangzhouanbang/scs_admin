@@ -15,7 +15,7 @@
       </el-option>
     </el-select>
     <!--普通用户-->
-    <el-form :model="normalForm" :rules="rules" ref="normalForm" label-width="150px" class="demo-ruleForm" v-show="normalshow">
+    <el-form :model="normalForm" :rules="rules" ref="normalForm" label-width="210px" class="demo-ruleForm" v-show="normalshow">
       <el-form-item label="签到得金币数量" prop="number1">
         <el-input v-model="normalForm.number1"></el-input>
       </el-form-item>
@@ -31,6 +31,9 @@
       <el-form-item label="积分增长速度" prop="speed">
         <el-input v-model="normalForm.speed"></el-input>
       </el-form-item>
+      <el-form-item label="创建房间的金币价格" prop="createprice">
+        <el-input v-model="normalForm.createprice"></el-input>
+      </el-form-item>
       <el-form-item label="加入房间的金币价格" prop="price">
         <el-input v-model="normalForm.price"></el-input>
       </el-form-item>
@@ -39,6 +42,12 @@
       </el-form-item>
       <el-form-item label="经验值" prop="exp">
         <el-input v-model="normalForm.exp"></el-input>
+      </el-form-item>
+      <el-form-item label="会员玩法需要的金币价格" prop="goldprice">
+        <el-input v-model="normalForm.goldprice"></el-input>
+      </el-form-item>
+      <el-form-item label="会员玩法每天可开的房间数量" prop="number">
+        <el-input v-model="normalForm.number"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('normalForm')">立即设置</el-button>
@@ -64,9 +73,6 @@
       </el-form-item>
       <el-form-item label="等级增长速度" prop="speed">
         <el-input v-model="memberForm.speed"></el-input>
-      </el-form-item>
-      <el-form-item label="加入房间的金币价格" prop="price">
-        <el-input v-model="memberForm.price"></el-input>
       </el-form-item>
       <el-form-item label="保存房间数量" prop="rooms">
         <el-input v-model="memberForm.rooms"></el-input>
@@ -146,14 +152,23 @@
             speed: [
               { required: true, message: '请输入增长速度', trigger: 'blur' }
             ],
+            createprice: [
+              { required: true, message: '请输入金币价格', trigger: 'blur' }
+            ],
             price: [
-              { required: true, message: '请输入增长速度', trigger: 'blur' }
+              { required: true, message: '请输入金币价格', trigger: 'blur' }
             ],
             rooms: [
               { required: true, message: '请输入房间数量', trigger: 'blur' }
             ],
             exp: [
               { required: true, message: '请输入经验值', trigger: 'blur' }
+            ],
+            goldprice: [
+              { required: true, message: '请输入金币价格', trigger: 'blur' }
+            ],
+            number: [
+              { required: true, message: '请输入房间数量', trigger: 'blur' }
             ],
             memberCard: [
               { required: true, message: '请选择会员卡类型', trigger: 'blur' }
@@ -199,5 +214,8 @@
   }
   .memberInput {
     width:40%;
+  }
+  .el-input{
+    width:500px;
   }
 </style>

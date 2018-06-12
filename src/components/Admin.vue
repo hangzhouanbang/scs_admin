@@ -29,8 +29,8 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="nickname" label="用户名" width="100" sortable></el-table-column>
         <el-table-column prop="user" label="姓名" width="100" sortable></el-table-column>
-        <!--<el-table-column prop="sex" label="性别" width="100" sortable></el-table-column>-->
         <el-table-column prop="idCard" label="身份证号" width="170" sortable></el-table-column>
+        <el-table-column prop="roleList[0].role" label="角色" width="100" sortable></el-table-column>
         <el-table-column prop="createTime" label="添加时间" width="160" sortable></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">

@@ -1,3 +1,4 @@
+
 <template>
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
@@ -35,25 +36,6 @@
       </el-table-column>
     </el-table>
     </el-col>
-
-    <!--<div class="tishi" :visible.sync="addprivilegeVisible" :close-on-click-modal="false"  @selection-change="selsChange">-->
-      <!--<div class="title">新增权限</div>-->
-      <!--<div class="form" v-model="addprivilege" label-width="80px" :rules="addFormRules" ref="addprivilege">-->
-        <!--<div class="name">-->
-          <!--<label for="" prop="privilege">权限名称</label>-->
-          <!--<input type="text" v-model="addprivilege.privilege" auto-complete="off">-->
-        <!--</div>-->
-        <!--<div class="uri">-->
-          <!--<label for="" prop="uri">URI</label>-->
-          <!--<input type="text" v-model="addprivilege.uri" auto-complete="off">-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class="button">-->
-        <!--<div class="add" v-on:click="add">增加</div>-->
-        <!--<div class="cancel" v-on:click="addprivilegeVisible = false">取消</div>-->
-        <!--<div class="submit" v-on:click="addSubmit" :loading="addLoading">提交</div>-->
-      <!--</div>-->
-    <!--</div>-->
 
     <!--新增权限界面-->
     <el-dialog title="新增权限" :visible.sync="addprivilegeVisible" :close-on-click-modal="false">
@@ -251,7 +233,6 @@
             console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
-
         });
       },
       //显示新增界面
@@ -259,18 +240,6 @@
         this.addprivilegeVisible = true;
         this.addprivilege = {};
       },
-      // add:function(){
-      //   // console.log()
-      //   this.addprivilege = {};
-      //   $('.form').append(' <div class="name">\n' +
-      //     '          <label for="" prop="privilege">权限名称</label>\n' +
-      //     '          <input type="text" v-model="addprivilege.privilege" auto-complete="off">\n' +
-      //     '        </div>\n' +
-      //     '        <div class="uri">\n' +
-      //     '          <label for="" prop="uri">URI</label>\n' +
-      //     '          <input type="text" v-model="addprivilege.uri" auto-complete="off">\n' +
-      //     '        </div>')
-      // },
       //新增
       addSubmit: function () {
         let privileges =[
@@ -380,7 +349,6 @@
   .demo-table-expand label {
     font-weight: bold;
   }
-
   .toolbar {
     margin-top: 30px;
   }
