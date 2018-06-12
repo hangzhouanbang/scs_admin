@@ -71,6 +71,17 @@
               }
             },
           ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                break
+            }
+          }
         });
       }
     }

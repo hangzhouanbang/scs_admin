@@ -10,7 +10,7 @@
       </div>
       <div class="topbar-account topbar-btn">
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i> {{nickname}}  <i
+          <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-guanliyuan"></i> {{nickname}}  <i
             class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
