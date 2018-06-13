@@ -10,7 +10,7 @@ import SystemRecovery from '@/components/SystemRecovery.vue'
 import Role from '@/components/Role.vue'
 import Jurisdiction from '@/components/Jurisdiction.vue'
 import Server from '@/components/Server.vue'
-import History from '@/components/History.vue'
+import SystemNotice from '@/components/SystemNotice.vue'
 
 Vue.use(Router)
 
@@ -64,7 +64,7 @@ export default new Router({
       children: [
         {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
         {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true},
-        {path: '/History', component: History, name: '历史记录', menuShow: true}
+        {path: '/systemNotice', component: SystemNotice, name: '系统公告', menuShow: true}
       ]
     },
     {

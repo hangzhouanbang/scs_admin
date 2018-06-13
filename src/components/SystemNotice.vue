@@ -1,10 +1,9 @@
-<!--系统维护-->
 <template>
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>系统设置</b></el-breadcrumb-item>
-        <el-breadcrumb-item>系统维护</el-breadcrumb-item>
+        <el-breadcrumb-item>系统公告</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -19,25 +18,24 @@
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="showAddDialog">维护系统</el-button>
+            <el-button type="primary" @click="showAddDialog">发公告</el-button>
           </el-form-item>
         </el-form>
       </el-col>
 
-      <!-- 系统维护列表-->
+      <!-- 历史公告列表-->
       <el-table :data="list" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="adminname" label="管理员名称" width="160" sortable></el-table-column>
-        <el-table-column prop="title" label="标题" width="180" sortable></el-table-column>
-        <el-table-column prop="file" label="图片" width="100" sortable>
+        <el-table-column prop="notice" label="公告内容" width="300" sortable></el-table-column>
+        <el-table-column prop="place" label="发布地方" width="100" sortable></el-table-column>
+        <el-table-column prop="state" label="状态">
           <template slot-scope="scope">
-            <img :src="scope.row.file" alt="" style="width: 50px;height: 50px">
+            <el-button type="primary" v-show="yshow">启用</el-button>
+            <el-button type="info" disabled v-show="nshow">禁用</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="金币数量" width="140" sortable></el-table-column>
-        <el-table-column prop="integral" label="积分数量" width="140" sortable></el-table-column>
-        <el-table-column prop="vipcard" label="会员卡体验时间(天)"></el-table-column>
       </el-table>
 
       <!--工具条-->
@@ -47,15 +45,23 @@
         </el-pagination>
       </el-col>
 
-      <!--系统维护弹窗-->
-      <el-dialog title="系统维护" :visible.sync="addFormVisible" :close-on-click-modal="false">
+      <!--发公告弹窗-->
+      <el-dialog title="发公告" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="标题" prop="title">
-            <el-input v-model="normalForm.title" auto-complete="off"></el-input>
+          <el-form-item label="内容" prop="notice">
+            <el-input
+              type="textarea"
+              autosize
+              placeholder="请输入公告内容"
+              v-model="normalForm.notice">
+            </el-input>
           </el-form-item>
-          <el-form-item label="图片" prop="file">
-            <el-input type="file" name="file" accept="image/png,image/gif,image/jpeg" v-model="normalForm.image"
-                      auto-complete="off"></el-input>
+          <el-form-item label="发布位置" prop="place">
+            <template>
+              <el-radio v-model="place" label="0">游戏大厅</el-radio>
+              <el-radio v-model="place" label="1">游戏房间</el-radio>
+              <el-radio v-model="place" label="2">游戏大厅和房间</el-radio>
+            </template>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="issue">发布</el-button>
@@ -72,47 +78,48 @@
   import axios from 'axios'
 
   export default {
-    name: "SystemMaintenance",
+    name: "History",
     data() {
       return {
+        place: '1',
         normalForm: {},
+        yshow:true,
+        nshow: true,
         rules: {
-          title: [
-            {required: true, message: '请输入标题', trigger: 'blur'}
-          ],
-          file: [
-            {required: true, message: '请选择图片', trigger: 'blur'}
+          notice: [
+            {required: true, message: '请输入公告内容', trigger: 'blur'}
           ]
         },
         list: [],
+        sels: [], //列表选中列
         filters: {
           name: ''
         },
         total: 0,
         loading: false,
-        addFormVisible: false,//系统维护页面是否显示
+        addFormVisible: false,//发公告页面是否显示
       }
     },
     methods: {
-      //发布
+      //发布公告
       issue() {
-        if (this.normalForm.title == undefined || this.normalForm.title == "") {
+        if (this.normalForm.notice == undefined || this.normalForm.notice == "") {
           this.$message({
             showClose: true,
-            message: '标题和图片不能为空',
+            message: '公告内容不能为空',
             type: 'warning'
           });
         } else {
           axios({
             method: 'post',
-            url: '/api/mailctrl/addmail',
+            url: '/api/noticectrl/addnotice',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
               'status': '0',
-              'title': this.normalForm.title,
-              'file': 'http://img.sccnn.com/bimg/338/27244.jpg'
+              'notice': this.normalForm.notice,
+              'place': this.place
             }
           })
             .then((res) => {
@@ -121,8 +128,7 @@
                   message: '发布成功',
                   type: 'success'
                 });
-                this.normalForm.title = ''
-                this.normalForm.file = ''
+                this.normalForm.notice = ''
                 this.addFormVisible = false;//关闭弹窗
                 this.handleSearch();
               },
@@ -157,29 +163,20 @@
           });
         }
       },
-      showAddDialog: function () {
-        this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
-      },
+
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
       },
       handleSearch() {
         this.loading = true;//显示加载条
-        axios({//根据管理员名称查询
+        axios({//根据管理员昵称查询
           method: 'post',
-          url: '/api/mailctrl/querymail',
+          url: '/api/noticectrl/querynotice',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'status': '0',
             'size': '15',//每页数量
             'page': this.page,//当前页
             'adminname': this.filters.adminname
@@ -189,6 +186,26 @@
               this.loading = false;//隐藏加载条
               this.list = res.data.list;
               this.total = res.data.count;//总页数
+
+
+              // console.log(res.data.list[0].state)
+              // console.log(res.data.list[1].state)
+
+              for (let i=0; i<res.data.list.length;i++){
+                console.log(res.data.list[i].state)
+              if (res.data.list[i].state == "1") {
+                // this.yshow = true
+                // this.nshow = false;
+              }
+              if (res.data.list[i].state == "0") {
+                // this.yshow = false
+                // this.nshow = true
+              }
+            }
+
+
+
+
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -223,7 +240,17 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
-    },
+      showAddDialog: function () {
+        this.addFormVisible = true;
+        this.addForm = {
+          name: '',
+          author: '',
+          publishAt: '',
+          description: ''
+        };
+      }
+    }
+    ,
     mounted() { //初始化页面
       this.handleSearch()
     }
