@@ -147,7 +147,7 @@
             params: {
               'status': 1,
               'title': this.normalForm.title,
-              'file': 'http://img.sccnn.com/bimg/338/27244.jpg',
+              'file': 'http://img3.redocn.com/tupian/20150314/huifeidekatonglonghanguochahua_4003414.jpg',//http://img3.redocn.com/tupian/20150314/huifeidekatonglonghanguochahua_4003414.jpg  http://img.sccnn.com/bimg/338/27244.jpg
               'number': this.normalForm.number,
               'integral': this.normalForm.integral,
               'vipcard': this.normalForm.vipcard

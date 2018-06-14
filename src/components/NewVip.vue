@@ -51,26 +51,24 @@
 
       <!--账单流水-->
       <el-dialog title="流水" :visible.sync="addFormVisible" :close-on-click-modal="false">
-        <el-table :data="vip" highlight-current-row @selection-change="selsChange"
+        <el-table :data="items" highlight-current-row @selection-change="selsChange"
                   style="width: 100%;">
           <el-table-column type="index" width="60"></el-table-column>
-          <el-table-column prop="time" label="操作时间" width="160" sortable></el-table-column>
-          <el-table-column prop="name" label="物品" width="100" sortable></el-table-column>
-          <el-table-column prop="number" label="变化数量" width="100" sortable></el-table-column>
-          <el-table-column prop="number2" label="剩余量" width="100" sortable></el-table-column>
-          <el-table-column prop="why" label="操作原因" sortable></el-table-column>
+          <el-table-column prop="accountingNo" label="流水号" width="100" sortable></el-table-column>
+          <el-table-column prop="accountingAmount" label="变化数量" width="100" sortable></el-table-column>
+          <el-table-column prop="balanceAfter" label="剩余量" width="100" sortable></el-table-column>
+          <el-table-column prop="summary.text" label="操作原因" sortable></el-table-column>
+          <el-table-column prop="accountingTime" label="操作时间" width="160" sortable></el-table-column>
         </el-table>
-
         <!--工具条-->
         <el-col :span="24" class="toolbar">
-          <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
+          <el-pagination layout="prev, pager, next" @current-change="ChangePage" :page-size="1" :total="page"
                          style="float:right;">
           </el-pagination>
         </el-col>
-
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click.native="integral">积分</el-button>
-          <el-button type="primary" @click.native="gold">金币</el-button>
+          <el-button type="primary" v-on:click="gold">金币</el-button>
+          <el-button type="primary" @click="integral">积分</el-button>
         </div>
       </el-dialog>
 
@@ -79,18 +77,19 @@
 </template>
 
 <script>
-
   import axios from 'axios'
 
   export default {
     name: "NewVip",
     data() {
       return {
+        items: [],
         vip: [],
         filters: {
           name: ''
         },
         total: 0,
+        page: 0,
         limit: 10,
         loading: false,
         addFormVisible: false,//新增界面是否显示
@@ -118,12 +117,65 @@
       }
     },
     methods: {
-      //按积分筛选
-      integral(){
-
+      ChangePage(val) {
+        this.page = val;
+        this.gold(this.page);
       },
+
       //按金币筛选
-      gold(){
+      gold() {
+        axios({
+          method: 'post',
+          url: '/api/memberCtrl/querygoldrecord',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '8',//每页数量
+            'page': this.page,//当前页
+            'memberId': '0023'
+          }
+        })
+          .then((res) => {
+              this.loading = false;//隐藏加载条
+              this.items = res.data.data.items;
+              this.page = res.data.data.pageNum;//总页数
+              for (let i = 0; i < this.items.length; i++) {
+                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+              }
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      },
+      //按积分筛选
+      integral() {
 
       },
       //账单流水
@@ -135,6 +187,7 @@
           publishAt: '',
           description: ''
         };
+        this.gold(1);//弹出框默认显示金币流水
       },
 
       handleCurrentChange(val) {
@@ -165,7 +218,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size':'15',//每页数量
+            'size': '15',//每页数量
             'page': this.page,//当前页
             'nickname': this.filters.nickname
           }

@@ -45,7 +45,10 @@
       save: function (index, row) {
         let that = this;
         this.$confirm('确认保存吗?', '提示', {type: 'warning'}).then(() => {
-          that.loading = true;
+          that.$message.success({showClose: true, message: '保存成功' + this.list[index].name, duration: 1500});
+
+
+          /*that.loading = true;
           axios({
             method: 'post',
             url: '/api/',
@@ -68,7 +71,7 @@
             that.loading = false;
             console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
+          });*/
         });
       },
     }
