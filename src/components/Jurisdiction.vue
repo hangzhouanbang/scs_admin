@@ -82,7 +82,6 @@
 
 <script>
   import axios from 'axios'
-  // @import '../assets/js/jquery.min.js'
 
   export default {
     name: "Jurisdiction",
@@ -129,7 +128,7 @@
         this.handleSearch(this.page);
       },
       handleSearch() {
-        axios({//根据昵称查询
+        axios({
           method: 'post',
           url: '/api/privilegeCtrl/queryPrivilege',
           headers: {
@@ -209,7 +208,7 @@
           type: 'warning'
         }).then(() => {
           that.loading = true;
-          axios({//根据昵称查询
+          axios({
             method: 'post',
             url: '/api/privilegeCtrl/deletePrivilege',
             headers: {

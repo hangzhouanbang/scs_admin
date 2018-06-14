@@ -9,87 +9,116 @@
 
     <!-- 会员卡列表-->
     <el-table :data="users" highlight-current-row @selection-change="selsChange"
-              style="width: 100%;">
+              style="width: 100%;margin-top:30px;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="privilege" label="会员卡名称" width="auto" sortable></el-table-column>
-      <el-table-column prop="uri" label="购买金额" width="auto" sortable></el-table-column>
-      <el-table-column prop="uri" label="购买获得积分数" width="auto" sortable></el-table-column>
-      <el-table-column prop="uri" label="购买获得金币数" width="auto" sortable></el-table-column>
+      <el-table-column prop="name" label="会员卡名称" width="auto" sortable></el-table-column>
+      <el-table-column prop="price" label="会员卡价格" width="auto" sortable></el-table-column>
+      <el-table-column prop="score" label="购买获得积分数" width="auto" sortable></el-table-column>
+      <el-table-column prop="gold" label="购买获得金币数" width="auto" sortable></el-table-column>
+      <el-table-column prop="time" label="延长的会员时间" width="auto" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="small" @click="showEditPrivilege(scope.$index,scope.row)">新增</el-button>
-          <el-button type="danger" @click="delprivilege(scope.$index,scope.row)" size="small">删除</el-button>
+          <el-button size="small" @click="showEditCard(scope.$index,scope.row)">编辑</el-button>
+          <el-button type="danger" @click="delCard(scope.$index,scope.row)" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!--新增会员卡界面-->
-    <el-dialog title="新增会员卡" :visible.sync="addprivilegeVisible" :close-on-click-modal="false">
-      <el-form :model="addprivilege" label-width="80px" :rules="addFormRules" ref="addprivilege" id="cc">
-        <el-form-item label="会员卡名称" prop="privilege">
-          <el-input v-model="addprivilege.privilege" auto-complete="off"></el-input>
+    <el-dialog title="新增会员卡" :visible.sync="addCardVisible" :close-on-click-modal="false">
+      <el-form :model="addCard" label-width="150px" :rules="editFormRules" ref="addCard">
+        <el-form-item label="会员卡名称" prop="name">
+          <el-input v-model="addCard.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="购买金额" prop="uri">
-          <el-input v-model="addprivilege.uri" auto-complete="off"></el-input>
+        <el-form-item label="会员卡价格" prop="price">
+          <el-input v-model="addCard.price" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="购买获得积分数" prop="uri">
-          <el-input v-model="addprivilege.uri" auto-complete="off"></el-input>
+        <el-form-item label="购买赠送的金币数" prop="gold">
+          <el-input v-model="addCard.gold" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="购买获得金币数" prop="uri">
-          <el-input v-model="addprivilege.uri" auto-complete="off"></el-input>
+        <el-form-item label="购买赠送的积分数" prop="score">
+          <el-input v-model="addCard.score" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="延长的会员时间" prop="time">
+          <el-input v-model="addCard.time" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addprivilegeVisible = false">取消</el-button>
+        <el-button @click.native="addFormVisible = false">取消</el-button>
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </div>
     </el-dialog>
+
+    <!--编辑会员卡-->
+    <el-dialog title="编辑会员卡" :visible.sync="editCardVisible" :close-on-click-modal="false">
+      <el-form :model="editCard" label-width="150px" :rules="editFormRules" ref="editCard">
+        <el-form-item label="会员卡名称" prop="name">
+          <el-input v-model="editCard.name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="会员卡价格" prop="price">
+          <el-input v-model="editCard.price" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="购买赠送金币数" prop="gold">
+          <el-input v-model="editCard.gold" :rows="8"></el-input>
+        </el-form-item>
+        <el-form-item label="购买赠送积分数" prop="score">
+          <el-input v-model="editCard.score" :rows="8"></el-input>
+        </el-form-item>
+        <el-form-item label="延长的会员时间" prop="time">
+          <el-input v-model="editCard.time" :rows="8"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="editCardVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="editSubmit">提交</el-button>
+      </div>
+    </el-dialog>
+
+    <!--工具条-->
+    <el-col :span="24" class="toolbar">
+      <el-button type="danger" @click="batchDeleteCard" :disabled="this.sels.length===0">批量删除</el-button>
+      <el-button type="primary" @click="addCards">新增</el-button>
+    </el-col>
+
 
   </el-row>
 </template>
 
 <script>
   import axios from 'axios'
-  // @import '../assets/js/jquery.min.js'
 
   export default {
     name: "MemberCard",
     data() {
       return {
         users: [],
-        filters: {
-          name: ''
-        },
-        total: 0,
-        page: 1,
-        number:1,
-        limit: 10,
         loading: false,
         sels: [], //列表选中列
         //编辑相关数据
-        editprivilegeVisible: false,//编辑界面是否显示
+        editCardVisible: false,//编辑界面是否显示
         editFormRules: {
-          privileges: [
-            {required: true, message: '请输入权限名称', trigger: 'blur'}
+          name: [
+            {required: true, message: '请输入会员卡名称', trigger: 'blur'}
           ],
-          uris: [
-            {required: true, message: '请输入URI', trigger: 'blur'}
+          price: [
+            {required: true, message: '请输入会员卡价格', trigger: 'blur'}
+          ],
+          gold: [
+            {required: true, message: '请输入金币数', trigger: 'blur'}
+          ],
+          score: [
+            {required: true, message: '请输入积分数', trigger: 'blur'}
+          ],
+          time: [
+            {required: true, message: '请输入会员时间', trigger: 'blur'}
           ]
         },
-        editPrivilege: {},
-        addprivilege: {},
+        editCard: {},
+        addCard: {},
         //新增相关数据
-        addprivilegeVisible: false,//新增界面是否显示
+        addCardVisible: false,//新增界面是否显示
         addLoading: false,
-        addFormRules: {
-          privilege: [
-            {required: true, message: '请输入权限名称', trigger: 'blur'}
-          ],
-          uri: [
-            {required: true, message: '请输入URI', trigger: 'blur'}
-          ]
-        }
       }
     },
     methods: {
@@ -98,7 +127,7 @@
         this.handleSearch(this.page);
       },
       handleSearch() {
-        axios({//根据昵称查询
+        axios({
           method: 'post',
           url: '/api/clubcard/showclubcard',
           headers: {
@@ -108,7 +137,7 @@
         })
           .then((res) => {
             console.log(res)
-              this.users = res.data.privilegeList;
+              this.users = res.data.data;
               this.total = res.data.pageNumber;
             },
           ).catch((e) => {
@@ -136,13 +165,13 @@
         this.sels = sels;
       },
       //删除
-      delprivilege: function (index, row) {
+      delCard: function (index, row) {
         let that = this;
         this.$confirm('确认删除该记录吗?', '提示', {type: 'warning'}).then(() => {
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/privilegeCtrl/deletePrivilege',
+            url: '/api/clubcard/deleteclubcard',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -153,7 +182,7 @@
             .then((res) => {
                 console.log(res)
                 that.loading = false;
-                if(res.data == 'success'){
+                if(res.data.success == true){
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch();
                 }else{
@@ -168,16 +197,16 @@
         });
       },
       //批量删除
-      batchDeleteprivilege: function () {
+      batchDeleteCard: function () {
         let ids = this.sels.map(item => item.id).toString();
         let that = this;
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
           that.loading = true;
-          axios({//根据昵称查询
+          axios({
             method: 'post',
-            url: '/api/privilegeCtrl/deletePrivilege',
+            url: '/api/clubcard/deleteclubcard',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -187,7 +216,7 @@
           })
             .then((res) => {
                 that.loading = false;
-                if(res.data == 'success'){
+                if(res.data.success == true){
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch();
                 }else{
@@ -202,44 +231,42 @@
         });
       },
       //显示新增界面
-      addPrivilegeDialog: function (index, row) {
-        this.addprivilegeVisible = true;
-        this.addprivilege = {};
+      addCards: function () {
+        this.addCardVisible = true;
+        this.addCard = {};
       },
       //新增
       addSubmit: function () {
-        let privileges =[
-          {
-            'privilege': this.addprivilege.privilege,
-            'uri': this.addprivilege.uri
-          }
-        ]
-        let params = JSON.stringify(privileges)
         axios({
           method: 'post',
-          url: '/api/privilegeCtrl/deployPrivilege',
+          url: '/api/clubcard/addclubcard',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params:{
-            'privileges':params
+            'name':this.addCard.name,
+            'price':this.addCard.price,
+            'gold':this.addCard.gold,
+            'score':this.addCard.score,
+            'time':this.addCard.time
           }
         })
           .then((res) => {
-              if (res.data == "fail") {
+            console.log(res.data)
+              if (res.data.success == false) {
                 this.$message({
                   showClose: true,
                   message: '添加失败',
                   type: 'warning'
                 });
-              } else if (res.data == "success") {
+              } else if (res.data.success == true) {
                 this.$message({
                   showClose: true,
                   message: '添加成功',
                   type: 'success'
                 });
-                this.addprivilegeVisible = false;//关闭弹窗
-                this.handleSearch(1);
+                this.addCardVisible = false;//关闭弹窗
+                this.handleSearch();
               }
             },
           ).catch((e) => {
@@ -264,40 +291,43 @@
         });
       },
       //编辑界面显示
-      showEditPrivilege: function(index,row){
-        this.editprivilegeVisible = true;
-        this.editPrivilege = Object.assign({}, row);
+      showEditCard: function(index,row){
+        this.editCardVisible = true;
+        this.editCard = Object.assign({}, row);
       },
       //编辑
       editSubmit: function () {
-        this.$refs.editPrivilege.validate((valid) => {
+        this.$refs.editCard.validate((valid) => {
           if (valid) {
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/privilegeCtrl/editPrivilege',
+              url: '/api/clubcard/updateclubcard',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'id': this.editPrivilege.id,
-                'privilege': this.editPrivilege.privilege,
-                'uri': this.editPrivilege.uri
+                'id':this.editCard.id,
+                'name':this.editCard.name,
+                'price':this.editCard.price,
+                'gold':this.editCard.gold,
+                'score':this.editCard.score,
+                'time':this.editCard.time
               }
             })
               .then((res) => {
                   this.loading = false;
-                  if (res.data == 'success') {
-                    this.editprivilegeVisible = false;
+                  if (res.data.success == true) {
+                    this.editCardVisible = false;
                     this.$message.success({showClose: true, message: '修改成功', duration: 1500});
-                    this.handleSearch(1);
+                    this.handleSearch();
                   } else {
                     this.$message.error({showClose: true, message: err.toString(), duration: 2000});
                   }
                 },
               ).catch((e) => {
               this.loading = false;
-              console.log(error);
+              // console.log(e);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           }
@@ -305,11 +335,13 @@
       },
     },
     mounted() {
-      this.handleSearch(1)
+      this.handleSearch()
     }
   }
 </script>
 
 <style scoped>
-
+  .toolbar{
+    margin-top:30px;
+  }
 </style>

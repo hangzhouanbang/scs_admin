@@ -75,7 +75,6 @@
           </el-form-item>
         </el-form>
       </el-dialog>
-
     </el-col>
   </el-row>
 </template>
@@ -147,7 +146,6 @@
           }
         });
       },
-
       //发布公告
       issue() {
         if (this.normalForm.notice == undefined || this.normalForm.notice == "") {
@@ -210,7 +208,6 @@
           });
         }
       },
-
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);

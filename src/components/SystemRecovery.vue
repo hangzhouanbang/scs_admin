@@ -128,7 +128,6 @@
           this.memberDisplay = true;
         }
       },
-
       //发布
       issue() {
         if (this.normalForm.title == undefined || this.normalForm.title == "") {
@@ -159,11 +158,11 @@
                   message: '发布成功',
                   type: 'success'
                 });
-                this.normalForm.title = ''
-                this.normalForm.file = ''
-                this.normalForm.number = ''
-                this.normalForm.integral = ''
-                this.normalForm.vipcard = ''
+                this.normalForm.title = '';
+                this.normalForm.file = '';
+                this.normalForm.number = '';
+                this.normalForm.integral = '';
+                this.normalForm.vipcard = '';
                 this.addFormVisible = false;//关闭弹窗
                 this.handleSearch();
               },
@@ -177,7 +176,7 @@
                     type: 'warning'
                   });
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({
                     showClose: true,
@@ -185,14 +184,14 @@
                     type: 'warning'
                   });
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({
                     showClose: true,
                     message: '请先登录',
                     type: 'warning'
                   });
-                  break
+                  break;
               }
             }
           });
