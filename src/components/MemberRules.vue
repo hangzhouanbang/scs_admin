@@ -15,7 +15,10 @@
       </el-option>
     </el-select>
     <!--普通用户-->
-    <el-form :model="normalForm" :rules="rules" ref="normalForm" label-width="210px" class="demo-ruleForm" v-show="normalshow">
+    <el-form :model="normalForm" :rules="rules" ref="normalForm" label-width="250px" class="demo-ruleForm" v-show="normalshow">
+      <el-form-item label="新用户注册赠送的金币数量" prop="newnumber">
+        <el-input v-model="normalForm.newnumber"></el-input>
+      </el-form-item>
       <el-form-item label="签到得金币数量" prop="number1">
         <el-input v-model="normalForm.number1"></el-input>
       </el-form-item>
@@ -31,24 +34,24 @@
       <el-form-item label="积分增长速度" prop="speed">
         <el-input v-model="normalForm.speed"></el-input>
       </el-form-item>
-      <el-form-item label="创建房间的金币价格" prop="createprice">
+      <el-form-item label="创建会员玩法房间的金币价格" prop="createprice">
         <el-input v-model="normalForm.createprice"></el-input>
       </el-form-item>
-      <el-form-item label="加入房间的金币价格" prop="price">
+      <el-form-item label="加入会员玩法房间的金币价格" prop="price">
         <el-input v-model="normalForm.price"></el-input>
+      </el-form-item>
+      <el-form-item label="加入会员玩法每天可开的房间数量" prop="number">
+        <el-input v-model="normalForm.number"></el-input>
       </el-form-item>
       <el-form-item label="保存房间数量" prop="rooms">
         <el-input v-model="normalForm.rooms"></el-input>
       </el-form-item>
-      <el-form-item label="经验值" prop="exp">
-        <el-input v-model="normalForm.exp"></el-input>
+      <el-form-item label="房间存活小时数" prop="hours">
+        <el-input v-model="normalForm.hours"></el-input>
       </el-form-item>
-      <el-form-item label="会员玩法需要的金币价格" prop="goldprice">
-        <el-input v-model="normalForm.goldprice"></el-input>
-      </el-form-item>
-      <el-form-item label="会员玩法每天可开的房间数量" prop="number">
-        <el-input v-model="normalForm.number"></el-input>
-      </el-form-item>
+      <!--<el-form-item label="经验值" prop="exp">-->
+        <!--<el-input v-model="normalForm.exp"></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item>
         <el-button type="primary" @click="submitForm('normalForm')">立即设置</el-button>
         <el-button @click="resetForm('normalForm')">重置</el-button>
@@ -71,36 +74,20 @@
       <el-form-item label="积分增长速度" prop="speed">
         <el-input v-model="memberForm.speed"></el-input>
       </el-form-item>
-      <el-form-item label="等级增长速度" prop="speed">
-        <el-input v-model="memberForm.speed"></el-input>
+      <el-form-item label="等级增长速度" prop="speed1">
+        <el-input v-model="memberForm.speed1"></el-input>
       </el-form-item>
       <el-form-item label="保存房间数量" prop="rooms">
         <el-input v-model="memberForm.rooms"></el-input>
       </el-form-item>
-      <el-form-item label="经验值" prop="exp">
-        <el-input v-model="memberForm.exp"></el-input>
+      <el-form-item label="房间存活小时数" prop="hours">
+        <el-input v-model="memberForm.hours"></el-input>
       </el-form-item>
-      <el-form-item label="会员卡" prop="memberCard">
-        <el-select v-model="value" filterable placeholder="请选择会员卡类型" @change="memberchange">
-          <el-option
-            v-for="item in card"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-        <el-form-item label="购买金额" prop="money" class="memberCard" v-show="memberDisplay">
-          <el-input v-model="memberForm.money" class="memberInput"></el-input>
-        </el-form-item>
-        <el-form-item label="购买获得积分数" prop="integral" class="memberCard" v-show="memberDisplay">
-          <el-input v-model="memberForm.integral" class="memberInput"></el-input>
-        </el-form-item>
-        <el-form-item label="购买获得金币数" prop="gold" class="memberCard" v-show="memberDisplay">
-          <el-input v-model="memberForm.gold" class="memberInput"></el-input>
-        </el-form-item>
-      </el-form-item>
+      <!--<el-form-item label="经验值" prop="exp">-->
+        <!--<el-input v-model="memberForm.exp"></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item>
-        <el-button type="primary" @click="submitForm('memberForm')">立即设置</el-button>
+        <el-button type="primary" @click="submitmemberForm('memberForm')">立即设置</el-button>
         <el-button @click="resetForm('memberForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -108,6 +95,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
     export default {
         name: "MemberRules",
       data() {
@@ -137,6 +125,9 @@
           normalForm: {},
           memberForm: {},
           rules: {
+            newnumber: [
+              {required: true, message: '请输入金币数量', trigger: 'blur'}
+            ],
             number1: [
               { required: true, message: '请输入金币数量', trigger: 'blur' }
             ],
@@ -161,14 +152,14 @@
             rooms: [
               { required: true, message: '请输入房间数量', trigger: 'blur' }
             ],
-            exp: [
-              { required: true, message: '请输入经验值', trigger: 'blur' }
-            ],
-            goldprice: [
-              { required: true, message: '请输入金币价格', trigger: 'blur' }
-            ],
+            // exp: [
+            //   { required: true, message: '请输入经验值', trigger: 'blur' }
+            // ],
             number: [
               { required: true, message: '请输入房间数量', trigger: 'blur' }
+            ],
+            hours: [
+              { required: true, message: '请输入时间', trigger: 'blur' }
             ],
             memberCard: [
               { required: true, message: '请选择会员卡类型', trigger: 'blur' }
@@ -197,6 +188,125 @@
           },
           memberchange(){
             this.memberDisplay = true;
+        },
+        //普通用户
+        submitForm:function(){
+          axios({
+            method: 'post',
+            url: '/api/rights/commonuser',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params:{
+              signGoldNumber:this.normalForm.number1,
+              shareIntegralNumber:this.normalForm.number2,
+              goldForNewNember:this.normalForm.newnumber,
+              shareGoldNumber:this.normalForm.number3,
+              inviteIntegralNumber:this.normalForm.number4,
+              planGrowIntegralSpeed:this.normalForm.speed,
+              planMemberCreateRoomDailyGoldPrice:this.normalForm.createprice,
+              planMemberaddRoomDailyGoldPrice:this.normalForm.price,
+              planMemberRoomsCount:this.normalForm.rooms,
+              planMemberMaxCreateRoomDaily:this.normalForm.number,
+              planMemberRoomsAliveHours:this.normalForm.hours
+            }
+          })
+            .then((res) => {
+              console.log(res)
+                if (res.data == "fail") {
+                  this.$message({
+                    showClose: true,
+                    message: '设置失败',
+                    type: 'warning'
+                  });
+                } else if (res.data == "success") {
+                  this.$message({
+                    showClose: true,
+                    message: '设置成功',
+                    type: 'success'
+                  });
+                  this.addprivilegeVisible = false;//关闭弹窗
+                  this.handleSearch(1);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          })
+        },
+        //会员用户
+        submitmemberForm:function(){
+          axios({
+            method: 'post',
+            url: '/api/rights/vipuser',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params:{
+              signGoldNumber:this.memberForm.number1,
+              shareIntegralNumber:this.memberForm.number2,
+              shareGoldNumber:this.memberForm.number3,
+              inviteIntegralNumber:this.memberForm.number4,
+              vipGrowIntegralSpeed:this.memberForm.speed,
+              vipGrowGradeSpeed:this.memberForm.speed1,
+              vipMemberRoomsCount:this.memberForm.rooms,
+              vipMemberRoomsAliveHours:this.memberForm.hours
+            }
+          })
+            .then((res) => {
+                console.log(res)
+                if (res.data == "fail") {
+                  this.$message({
+                    showClose: true,
+                    message: '设置失败',
+                    type: 'warning'
+                  });
+                } else if (res.data == "success") {
+                  this.$message({
+                    showClose: true,
+                    message: '设置成功',
+                    type: 'success'
+                  });
+                  this.addprivilegeVisible = false;//关闭弹窗
+                  this.handleSearch(1);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          })
         }
       }
     }

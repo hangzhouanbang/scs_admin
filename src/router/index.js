@@ -11,6 +11,8 @@ import Role from '@/components/Role.vue'
 import Jurisdiction from '@/components/Jurisdiction.vue'
 import Server from '@/components/Server.vue'
 import SystemNotice from '@/components/SystemNotice.vue'
+import MemberCard from '@/components/MemberCard.vue'
+import Microservice from '@/components/Microservice.vue'
 
 Vue.use(Router)
 
@@ -53,6 +55,7 @@ export default new Router({
       children: [
         {path: '/newVip', component: NewVip, name: '会员管理', menuShow: true},
         {path: '/memberRules', component: MemberRules, name: '会员权益', menuShow: true},
+        {path: '/memberCard', component: MemberCard, name: '会员卡', menuShow: true},
       ]
     },
     {
@@ -64,7 +67,8 @@ export default new Router({
       children: [
         {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
         {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true},
-        {path: '/systemNotice', component: SystemNotice, name: '系统公告', menuShow: true}
+        {path: '/systemNotice', component: SystemNotice, name: '系统公告', menuShow: true},
+        {path: '/Microservice', component: Microservice, name: '微服务', menuShow: true}
       ]
     },
     {
