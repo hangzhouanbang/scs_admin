@@ -29,11 +29,17 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="adminname" label="管理员名称" width="160" sortable></el-table-column>
         <el-table-column prop="notice" label="公告内容" width="300" sortable></el-table-column>
-        <el-table-column prop="place" label="发布地方" width="100" sortable></el-table-column>
+        <el-table-column prop="place" label="发布地方" width="160" sortable>
+          <template slot-scope="scope">
+            <el-button type="text" v-if="scope.row.place === '0'">游戏大厅</el-button>
+            <el-button type="text" v-if="scope.row.place === '1'">游戏房间</el-button>
+            <el-button type="text" v-if="scope.row.place === '2'">游戏大厅和房间</el-button>
+          </template>
+        </el-table-column>
         <el-table-column prop="state" label="状态">
           <template slot-scope="scope">
-            <el-button type="primary" v-show="yshow">启用</el-button>
-            <el-button type="info" disabled v-show="nshow">禁用</el-button>
+            <el-button type="primary" v-if="scope.row.state === 1" :disabled="false" @click="off">启用</el-button>
+            <el-button type="info" disabled v-if="scope.row.state === 0">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -83,8 +89,6 @@
       return {
         place: '1',
         normalForm: {},
-        yshow:true,
-        nshow: true,
         rules: {
           notice: [
             {required: true, message: '请输入公告内容', trigger: 'blur'}
@@ -101,6 +105,49 @@
       }
     },
     methods: {
+      //禁用按钮
+      off() {
+        axios({
+          method: 'post',
+          url: '/api/noticectrl/updatenotice',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+        })
+          .then((res) => {
+            this.handleSearch()
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      },
+
       //发布公告
       issue() {
         if (this.normalForm.notice == undefined || this.normalForm.notice == "") {
@@ -186,26 +233,6 @@
               this.loading = false;//隐藏加载条
               this.list = res.data.list;
               this.total = res.data.count;//总页数
-
-
-              // console.log(res.data.list[0].state)
-              // console.log(res.data.list[1].state)
-
-              for (let i=0; i<res.data.list.length;i++){
-                console.log(res.data.list[i].state)
-              if (res.data.list[i].state == "1") {
-                // this.yshow = true
-                // this.nshow = false;
-              }
-              if (res.data.list[i].state == "0") {
-                // this.yshow = false
-                // this.nshow = true
-              }
-            }
-
-
-
-
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -249,8 +276,7 @@
           description: ''
         };
       }
-    }
-    ,
+    },
     mounted() { //初始化页面
       this.handleSearch()
     }

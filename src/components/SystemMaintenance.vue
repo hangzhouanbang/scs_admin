@@ -30,7 +30,7 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="adminname" label="管理员名称" width="160" sortable></el-table-column>
         <el-table-column prop="title" label="标题" width="180" sortable></el-table-column>
-        <el-table-column prop="file" label="图片" width="100" sortable>
+        <el-table-column prop="file" label="内容" width="100" sortable>
           <template slot-scope="scope">
             <img :src="scope.row.file" alt="" style="width: 50px;height: 50px">
           </template>
