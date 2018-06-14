@@ -329,7 +329,6 @@
         this.chooseFormVisible = true;
         this.editForm = Object.assign({}, row);
       },
-
       //编辑角色权限
       chooseSubmit: function () {
         let ids = this.sels.map(item => item.id).toString();
@@ -368,10 +367,8 @@
             console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
-
         });
       },
-
       //新增角色
       addSubmit: function () {
         axios({

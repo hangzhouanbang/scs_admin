@@ -127,7 +127,7 @@
         this.handleSearch(this.page);
       },
       handleSearch() {
-        axios({//根据昵称查询
+        axios({
           method: 'post',
           url: '/api/clubcard/showclubcard',
           headers: {
@@ -204,7 +204,7 @@
           type: 'warning'
         }).then(() => {
           that.loading = true;
-          axios({//根据昵称查询
+          axios({
             method: 'post',
             url: '/api/clubcard/deleteclubcard',
             headers: {

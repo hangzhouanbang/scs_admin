@@ -120,11 +120,9 @@
     methods: {
       //按积分筛选
       integral(){
-
       },
       //按金币筛选
       gold(){
-
       },
       //账单流水
       showRunningWater: function () {
@@ -136,7 +134,6 @@
           description: ''
         };
       },
-
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
