@@ -6,7 +6,7 @@
         <el-breadcrumb-item>会员权益</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
-    <el-select v-model="value8" filterable placeholder="请选择" class="choice" @change="change">
+    <el-select v-model="value8" filterable placeholder="请选择" class="choice" @change="change(value8)">
       <el-option
         v-for="item in options"
         :key="item.value"
@@ -16,38 +16,38 @@
     </el-select>
     <!--普通用户-->
     <el-form :model="normalForm" :rules="rules" ref="normalForm" label-width="250px" class="demo-ruleForm" v-show="normalshow">
-      <el-form-item label="新用户注册赠送的金币数量" prop="newnumber">
-        <el-input v-model="normalForm.newnumber"></el-input>
+      <el-form-item label="新用户注册赠送的金币数量" prop="goldForNewNember ">
+        <el-input v-model="normalForm.goldForNewNember "></el-input>
       </el-form-item>
-      <el-form-item label="签到得金币数量" prop="number1">
-        <el-input v-model="normalForm.number1"></el-input>
+      <el-form-item label="签到得金币数量" prop="signGoldNumber ">
+        <el-input v-model="normalForm.signGoldNumber "></el-input>
       </el-form-item>
-      <el-form-item label="分享得积分数量" prop="number2">
-        <el-input v-model="normalForm.number2"></el-input>
+      <el-form-item label="分享得积分数量" prop="shareIntegralNumber">
+        <el-input v-model="normalForm.shareIntegralNumber"></el-input>
       </el-form-item>
-      <el-form-item label="分享得金币数量" prop="number3">
-        <el-input v-model="normalForm.number3"></el-input>
+      <el-form-item label="分享得金币数量" prop="shareGoldNumber">
+        <el-input v-model="normalForm.shareGoldNumber"></el-input>
       </el-form-item>
-      <el-form-item label="邀请得积分数量" prop="number4">
-        <el-input v-model="normalForm.number4"></el-input>
+      <el-form-item label="邀请得积分数量" prop="inviteIntegralNumber">
+        <el-input v-model="normalForm.inviteIntegralNumber"></el-input>
       </el-form-item>
-      <el-form-item label="积分增长速度" prop="speed">
-        <el-input v-model="normalForm.speed"></el-input>
+      <el-form-item label="积分增长速度" prop="planGrowIntegralSpeed">
+        <el-input v-model="normalForm.planGrowIntegralSpeed"></el-input>
       </el-form-item>
-      <el-form-item label="创建会员玩法房间的金币价格" prop="createprice">
-        <el-input v-model="normalForm.createprice"></el-input>
+      <el-form-item label="创建会员玩法房间的金币价格" prop="planMemberCreateRoomDailyGoldPrice">
+        <el-input v-model="normalForm.planMemberCreateRoomDailyGoldPrice"></el-input>
       </el-form-item>
-      <el-form-item label="加入会员玩法房间的金币价格" prop="price">
-        <el-input v-model="normalForm.price"></el-input>
+      <el-form-item label="加入会员玩法房间的金币价格" prop="planMemberaddRoomDailyGoldPrice">
+        <el-input v-model="normalForm.planMemberaddRoomDailyGoldPrice"></el-input>
       </el-form-item>
-      <el-form-item label="加入会员玩法每天可开的房间数量" prop="number">
-        <el-input v-model="normalForm.number"></el-input>
+      <el-form-item label="加入会员玩法每天可开的房间数量" prop="planMemberMaxCreateRoomDaily">
+        <el-input v-model="normalForm.planMemberMaxCreateRoomDaily"></el-input>
       </el-form-item>
-      <el-form-item label="保存房间数量" prop="rooms">
-        <el-input v-model="normalForm.rooms"></el-input>
+      <el-form-item label="保存房间数量" prop="planMemberRoomsCount">
+        <el-input v-model="normalForm.planMemberRoomsCount"></el-input>
       </el-form-item>
-      <el-form-item label="房间存活小时数" prop="hours">
-        <el-input v-model="normalForm.hours"></el-input>
+      <el-form-item label="房间存活小时数" prop="planMemberRoomsAliveHours">
+        <el-input v-model="normalForm.planMemberRoomsAliveHours"></el-input>
       </el-form-item>
       <!--<el-form-item label="经验值" prop="exp">-->
         <!--<el-input v-model="normalForm.exp"></el-input>-->
@@ -59,29 +59,29 @@
     </el-form>
     <!--会员用户-->
     <el-form :model="memberForm" :rules="rules" ref="memberForm" label-width="150px" class="demo-ruleForm" v-show="membershow">
-      <el-form-item label="签到得金币数量" prop="number1">
-        <el-input v-model="memberForm.number1"></el-input>
+      <el-form-item label="签到得金币数量" prop="signGoldNumber ">
+        <el-input v-model="memberForm.signGoldNumber "></el-input>
       </el-form-item>
-      <el-form-item label="分享得积分数量" prop="number2">
-        <el-input v-model="memberForm.number2"></el-input>
+      <el-form-item label="分享得积分数量" prop="shareIntegralNumber">
+        <el-input v-model="memberForm.shareIntegralNumber"></el-input>
       </el-form-item>
-      <el-form-item label="分享得金币数量" prop="number3">
-        <el-input v-model="memberForm.number3"></el-input>
+      <el-form-item label="分享得金币数量" prop="shareGoldNumber">
+        <el-input v-model="memberForm.shareGoldNumber"></el-input>
       </el-form-item>
-      <el-form-item label="邀请得积分数量" prop="number4">
-        <el-input v-model="memberForm.number4"></el-input>
+      <el-form-item label="邀请得积分数量" prop="inviteIntegralNumber">
+        <el-input v-model="memberForm.inviteIntegralNumber"></el-input>
       </el-form-item>
-      <el-form-item label="积分增长速度" prop="speed">
-        <el-input v-model="memberForm.speed"></el-input>
+      <el-form-item label="积分增长速度" prop="vipGrowIntegralSpeed">
+        <el-input v-model="memberForm.vipGrowIntegralSpeed"></el-input>
       </el-form-item>
-      <el-form-item label="等级增长速度" prop="speed1">
-        <el-input v-model="memberForm.speed1"></el-input>
+      <el-form-item label="等级增长速度" prop="vipGrowGradeSpeed">
+        <el-input v-model="memberForm.vipGrowGradeSpeed"></el-input>
       </el-form-item>
-      <el-form-item label="保存房间数量" prop="rooms">
-        <el-input v-model="memberForm.rooms"></el-input>
+      <el-form-item label="保存房间数量" prop="vipMemberRoomsCount">
+        <el-input v-model="memberForm.vipMemberRoomsCount"></el-input>
       </el-form-item>
-      <el-form-item label="房间存活小时数" prop="hours">
-        <el-input v-model="memberForm.hours"></el-input>
+      <el-form-item label="房间存活小时数" prop="vipMemberRoomsAliveHours">
+        <el-input v-model="memberForm.vipMemberRoomsAliveHours"></el-input>
       </el-form-item>
       <!--<el-form-item label="经验值" prop="exp">-->
         <!--<el-input v-model="memberForm.exp"></el-input>-->
@@ -177,13 +177,35 @@
         }
       },
       methods: {
-          change(){
+          change(value8){
             if(this.value8 == '普通用户'){
               this.normalshow = true;
               this.membershow = false;
+              axios({
+                method: 'post',
+                url: '/api/rights/commonrights',
+                headers: {
+                  'Content-type': 'application/x-www-form-urlencoded'
+                },
+                params:{}
+              })
+                .then((res) => {
+                  this.normalForm = res.data;
+              })
             }else{
               this.normalshow = false;
               this.membershow = true;
+              axios({
+                method: 'post',
+                url: '/api/rights/viprights',
+                headers: {
+                  'Content-type': 'application/x-www-form-urlencoded'
+                },
+                params:{}
+              })
+                .then((res) => {
+                  this.memberForm = res.data;
+                })
             }
           },
           memberchange(){
@@ -198,17 +220,17 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params:{
-              signGoldNumber:this.normalForm.number1,
-              shareIntegralNumber:this.normalForm.number2,
-              goldForNewNember:this.normalForm.newnumber,
-              shareGoldNumber:this.normalForm.number3,
-              inviteIntegralNumber:this.normalForm.number4,
-              planGrowIntegralSpeed:this.normalForm.speed,
-              planMemberCreateRoomDailyGoldPrice:this.normalForm.createprice,
-              planMemberaddRoomDailyGoldPrice:this.normalForm.price,
-              planMemberRoomsCount:this.normalForm.rooms,
-              planMemberMaxCreateRoomDaily:this.normalForm.number,
-              planMemberRoomsAliveHours:this.normalForm.hours
+              signGoldNumber:this.normalForm.signGoldNumber,
+              shareIntegralNumber:this.normalForm.shareIntegralNumber,
+              goldForNewNember:this.normalForm.goldForNewNember,
+              shareGoldNumber:this.normalForm.shareGoldNumber,
+              inviteIntegralNumber:this.normalForm.inviteIntegralNumber,
+              planGrowIntegralSpeed:this.normalForm.planGrowIntegralSpeed,
+              planMemberCreateRoomDailyGoldPrice:this.normalForm.planMemberCreateRoomDailyGoldPrice,
+              planMemberaddRoomDailyGoldPrice:this.normalForm.planMemberaddRoomDailyGoldPrice,
+              planMemberRoomsCount:this.normalForm.planMemberRoomsCount,
+              planMemberMaxCreateRoomDaily:this.normalForm.planMemberMaxCreateRoomDaily,
+              planMemberRoomsAliveHours:this.normalForm.planMemberRoomsAliveHours
             }
           })
             .then((res) => {
@@ -225,8 +247,7 @@
                     message: '设置成功',
                     type: 'success'
                   });
-                  this.addprivilegeVisible = false;//关闭弹窗
-                  this.handleSearch(1);
+                  this.change('普通用户');
                 }
               },
             ).catch((e) => {
@@ -259,14 +280,14 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params:{
-              signGoldNumber:this.memberForm.number1,
-              shareIntegralNumber:this.memberForm.number2,
-              shareGoldNumber:this.memberForm.number3,
-              inviteIntegralNumber:this.memberForm.number4,
-              vipGrowIntegralSpeed:this.memberForm.speed,
-              vipGrowGradeSpeed:this.memberForm.speed1,
-              vipMemberRoomsCount:this.memberForm.rooms,
-              vipMemberRoomsAliveHours:this.memberForm.hours
+              signGoldNumber:this.memberForm.signGoldNumber,
+              shareIntegralNumber:this.memberForm.shareIntegralNumber,
+              shareGoldNumber:this.memberForm.shareGoldNumber,
+              inviteIntegralNumber:this.memberForm.inviteIntegralNumber,
+              vipGrowIntegralSpeed:this.memberForm.vipGrowIntegralSpeed,
+              vipGrowGradeSpeed:this.memberForm.vipGrowGradeSpeed,
+              vipMemberRoomsCount:this.memberForm.vipMemberRoomsCount,
+              vipMemberRoomsAliveHours:this.memberForm.vipMemberRoomsAliveHours
             }
           })
             .then((res) => {
@@ -283,8 +304,7 @@
                     message: '设置成功',
                     type: 'success'
                   });
-                  this.addprivilegeVisible = false;//关闭弹窗
-                  this.handleSearch(1);
+                  this.change('会员用户');
                 }
               },
             ).catch((e) => {
