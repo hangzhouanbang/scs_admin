@@ -133,7 +133,7 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'memberId':sessionStorage.getItem('id')//0023
+            'memberId':sessionStorage.getItem('id')  //0023
           }
         })
           .then((res) => {
