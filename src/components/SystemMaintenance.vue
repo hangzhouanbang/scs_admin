@@ -112,7 +112,7 @@
             params: {
               'status': '0',
               'title': this.normalForm.title,
-              'file': 'http://img.sccnn.com/bimg/338/27244.jpg'
+              'file': 'http://pa5ggm6zj.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180615133408.png'
             }
           })
             .then((res) => {

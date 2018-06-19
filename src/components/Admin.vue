@@ -232,7 +232,7 @@
         this.sels = sels;
       },
       //删除
-      delBook: function (index, row) {
+      delBook: function (index,row) {
         let that = this;
         this.$confirm('确认删除该记录吗?', '提示', {type: 'warning'}).then(() => {
           that.loading = true;

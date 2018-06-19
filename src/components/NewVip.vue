@@ -37,7 +37,7 @@
         <el-table-column prop="vipEndTime" label="会员到期时间" width="180" sortable></el-table-column>
         <el-table-column prop="billsRunningWater" label="账单流水" sortable>
           <template slot-scope="scope">
-            <el-button type="primary" @click="showRunningWater">查看详情</el-button>
+            <el-button type="primary" @click="showRunningWater(scope.$index,scope.row)">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -131,9 +131,9 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '8',//每页数量
+            'size': '15',//每页数量
             'page': this.page,//当前页
-            'memberId': '0023'
+            'memberId':sessionStorage.getItem('id')//0023
           }
         })
           .then((res) => {
@@ -174,12 +174,64 @@
           }
         });
       },
+
       //按积分筛选
       integral() {
-
+        axios({
+          method: 'post',
+          url: '/api/memberCtrl/queryscorerecord',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+            'memberId':sessionStorage.getItem('id')//0023
+          }
+        })
+          .then((res) => {
+              this.loading = false;//隐藏加载条
+              this.items = res.data.data.items;
+              this.page = res.data.data.pageNum;//总页数
+              for (let i = 0; i < this.items.length; i++) {
+                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+              }
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
       },
+
       //账单流水
-      showRunningWater: function () {
+      showRunningWater: function (index, row) {
+        sessionStorage.setItem('id',this.vip[index].id);//保存id
+        console.log(this.vip[index].id)
         this.addFormVisible = true;
         this.addForm = {
           name: '',

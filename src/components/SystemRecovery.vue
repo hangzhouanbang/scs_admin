@@ -49,12 +49,11 @@
 
       <!--系统恢复弹窗-->
       <el-dialog title="系统恢复" :visible.sync="addFormVisible" :close-on-click-modal="false">
-
         <el-form :model="normalForm" label-width="150px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="标题" prop="title">
             <el-input v-model="normalForm.title" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="图片" prop="file">
+          <el-form-item label="内容" prop="file">
             <el-input type="file" v-model="normalForm.image" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="补偿设置" prop="compensation">
@@ -67,13 +66,16 @@
               </el-option>
             </el-select>
             <el-form-item label="金币数量" prop="number" class="memberCard" v-show="memberDisplay">
-              <el-input class="memberInput" v-model="normalForm.number"></el-input>
+              <el-input type="number" min="0" class="memberInput" v-model="normalForm.number"
+                        placeholder="请输入正整数"></el-input>
             </el-form-item>
             <el-form-item label="积分数量" prop="integral" class="memberCard" v-show="memberDisplay">
-              <el-input class="memberInput" v-model="normalForm.integral"></el-input>
+              <el-input type="number" min="0" class="memberInput" v-model="normalForm.integral"
+                        placeholder="请输入正整数"></el-input>
             </el-form-item>
             <el-form-item label="会员卡体验时间" prop="vipcard" class="memberCard" v-show="memberDisplay">
-              <el-input class="memberInput" v-model="normalForm.vipcard"></el-input>&nbsp;天
+              <el-input type="number" min="0" class="memberInput" v-model="normalForm.vipcard"
+                        placeholder="请输入正整数"></el-input>&nbsp;天
             </el-form-item>
           </el-form-item>
           <el-form-item>
@@ -136,6 +138,12 @@
             message: '标题和图片不能为空',
             type: 'warning'
           });
+        } else if (this.normalForm.number < 0 || this.normalForm.integral < 0 || this.normalForm.vipcard < 0) {
+          this.$message({
+            showClose: true,
+            message: '请输入正整数',
+            type: 'warning'
+          });
         } else {
           axios({
             method: 'post',
@@ -189,6 +197,13 @@
                   this.$message({
                     showClose: true,
                     message: '请先登录',
+                    type: 'warning'
+                  });
+                  break;
+                case 400:
+                  this.$message({
+                    showClose: true,
+                    message: '请按要求输入',
                     type: 'warning'
                   });
                   break;
@@ -276,7 +291,7 @@
   }
 
   .memberInput {
-    width: 30%;
+    width: 50%;
   }
 
   .warp-main {
