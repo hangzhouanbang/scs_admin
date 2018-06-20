@@ -53,7 +53,7 @@ export default new Router({
       menuShow: true,
       iconCls: 'iconfont icon-huiyuanzhongxin',
       children: [
-        {path: '/newVip', component: NewVip, name: '会员管理', menuShow: true},
+        {path: '/newVip', component: NewVip, name: '用户管理', menuShow: true},
         {path: '/memberRules', component: MemberRules, name: '会员权益', menuShow: true},
         {path: '/memberCard', component: MemberCard, name: '会员卡', menuShow: true},
       ]

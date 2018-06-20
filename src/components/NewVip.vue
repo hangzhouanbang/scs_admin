@@ -25,13 +25,14 @@
       <el-table :data="vip" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="headimgurl" label="会员头像" width="100" sortable>
+        <el-table-column prop="id" label="用户ID" width="100" sortable></el-table-column>
+        <el-table-column prop="headimgurl" label="用户头像" width="100" sortable>
           <template slot-scope="scope">
             <img :src="scope.row.headimgurl" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="nickname" label="会员名称" width="100" sortable></el-table-column>
-        <el-table-column prop="gender" label="会员性别" width="100" sortable></el-table-column>
+        <el-table-column prop="nickname" label="用户名称" width="100" sortable></el-table-column>
+        <el-table-column prop="gender" label="用户性别" width="100" sortable></el-table-column>
         <el-table-column prop="phone" label="手机号" width="140" sortable></el-table-column>
         <el-table-column prop="createTime" label="注册时间" width="180" sortable></el-table-column>
         <el-table-column prop="vipEndTime" label="会员到期时间" width="180" sortable></el-table-column>
