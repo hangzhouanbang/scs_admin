@@ -22,12 +22,12 @@
       <el-form-item label="签到得金币数量" prop="signGoldNumber ">
         <el-input v-model="normalForm.signGoldNumber "></el-input>
       </el-form-item>
-      <el-form-item label="分享得积分数量" prop="shareIntegralNumber">
-        <el-input v-model="normalForm.shareIntegralNumber"></el-input>
-      </el-form-item>
-      <el-form-item label="分享得金币数量" prop="shareGoldNumber">
-        <el-input v-model="normalForm.shareGoldNumber"></el-input>
-      </el-form-item>
+      <!--<el-form-item label="分享得积分数量" prop="shareIntegralNumber">-->
+        <!--<el-input v-model="normalForm.shareIntegralNumber"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="分享得金币数量" prop="shareGoldNumber">-->
+        <!--<el-input v-model="normalForm.shareGoldNumber"></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item label="邀请得积分数量" prop="inviteIntegralNumber">
         <el-input v-model="normalForm.inviteIntegralNumber"></el-input>
       </el-form-item>
@@ -62,12 +62,12 @@
       <el-form-item label="签到得金币数量" prop="signGoldNumber ">
         <el-input v-model="memberForm.signGoldNumber "></el-input>
       </el-form-item>
-      <el-form-item label="分享得积分数量" prop="shareIntegralNumber">
-        <el-input v-model="memberForm.shareIntegralNumber"></el-input>
-      </el-form-item>
-      <el-form-item label="分享得金币数量" prop="shareGoldNumber">
-        <el-input v-model="memberForm.shareGoldNumber"></el-input>
-      </el-form-item>
+      <!--<el-form-item label="分享得积分数量" prop="shareIntegralNumber">-->
+        <!--<el-input v-model="memberForm.shareIntegralNumber"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="分享得金币数量" prop="shareGoldNumber">-->
+        <!--<el-input v-model="memberForm.shareGoldNumber"></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item label="邀请得积分数量" prop="inviteIntegralNumber">
         <el-input v-model="memberForm.inviteIntegralNumber"></el-input>
       </el-form-item>
@@ -131,12 +131,12 @@
             number1: [
               { required: true, message: '请输入金币数量', trigger: 'blur' }
             ],
-            number2: [
-              { required: true, message: '请输入积分数量', trigger: 'blur' }
-            ],
-            number3: [
-              { required: true, message: '请输入金币数量', trigger: 'blur' }
-            ],
+            // number2: [
+            //   { required: true, message: '请输入积分数量', trigger: 'blur' }
+            // ],
+            // number3: [
+            //   { required: true, message: '请输入金币数量', trigger: 'blur' }
+            // ],
             number4: [
               { required: true, message: '请输入积分数量', trigger: 'blur' }
             ],
