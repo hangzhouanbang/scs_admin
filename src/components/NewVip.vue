@@ -25,12 +25,15 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-button type="primary" @click="showgold">赠送金币</el-button>
+          <el-button type="primary" @click="showintegral">赠送积分</el-button>
         </el-form>
       </el-col>
 
       <!-- 会员列表-->
       <el-table :data="vip" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="id" label="用户ID" width="100" sortable></el-table-column>
         <el-table-column prop="headimgurl" label="用户头像" width="100" sortable>
@@ -43,13 +46,11 @@
         <el-table-column prop="phone" label="手机号" width="140" sortable></el-table-column>
         <el-table-column prop="createTime" label="注册时间" width="180" sortable></el-table-column>
         <el-table-column prop="vipEndTime" label="会员到期时间" width="180" sortable></el-table-column>
-        <el-table-column prop="billsRunningWater" label="账单流水" width="140" sortable>
+        <el-table-column prop="other" label="其他信息">
           <template slot-scope="scope">
-            <el-button type="primary" @click="showRunningWater(scope.$index,scope.row)">查看详情</el-button>
+            <el-button type="text" @click="showother(scope.$index,scope.row)">详细信息</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="onlineTime" label="在线时长" width="100" sortable></el-table-column>
-        <el-table-column prop="loginIp" label="登录IP" width="180" sortable></el-table-column>
       </el-table>
 
       <!--工具条-->
@@ -59,27 +60,64 @@
         </el-pagination>
       </el-col>
 
-      <!--账单流水-->
-      <el-dialog title="流水" :visible.sync="addFormVisible" :close-on-click-modal="false">
-        <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                  style="width: 100%;">
-          <el-table-column type="index" width="60"></el-table-column>
-          <el-table-column prop="accountingNo" label="流水号" width="100" sortable></el-table-column>
-          <el-table-column prop="accountingAmount" label="变化数量" width="100" sortable></el-table-column>
-          <el-table-column prop="balanceAfter" label="剩余量" width="100" sortable></el-table-column>
-          <el-table-column prop="summary.text" label="操作原因" sortable></el-table-column>
-          <el-table-column prop="accountingTime" label="操作时间" width="160" sortable></el-table-column>
-        </el-table>
-        <!--工具条-->
-        <el-col :span="24" class="toolbar">
-          <el-pagination layout="prev, pager, next" @current-change="ChangePage" :page-size="1" :total="page"
-                         style="float:right;">
-          </el-pagination>
-        </el-col>
-        <div slot="footer" class="dialog-footer">
-          <el-button type="primary" v-on:click="gold">金币</el-button>
-          <el-button type="primary" @click="integral">积分</el-button>
-        </div>
+      <!--赠送金币弹窗-->
+      <el-dialog title="赠送金币" :visible.sync="giveFormVisible" :close-on-click-modal="false">
+        <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+          <el-form-item label="金币数量" prop="number">
+            <el-input v-model="normalForm.number" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="givegold">赠送</el-button>
+            <el-button type="primary" @click.native="giveFormVisible = false">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
+      <!--赠送积分弹窗-->
+      <el-dialog title="赠送积分" :visible.sync="givefromintegral" :close-on-click-modal="false">
+        <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+          <el-form-item label="积分数量" prop="giveintegral">
+            <el-input v-model="normalForm.giveintegral" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="giveintegral">赠送</el-button>
+            <el-button type="primary" @click.native="givefromintegral = false">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
+      <!--其他信息弹窗-->
+      <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false">
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane label="等级经验" name="first">
+            会员级别：<br/>
+            经验值：<br/>
+            积分：<br/>
+            金币：<br/>
+            消费金额：<br/>
+            游戏时长：<br/>
+            登录IP：<br/>
+          </el-tab-pane>
+          <el-tab-pane label="金币积分流水" name="second">
+            <el-table :data="items" highlight-current-row @selection-change="selsChange"
+                      style="width: 100%;">
+              <el-table-column type="index" width="60"></el-table-column>
+              <el-table-column prop="accountingNo" label="流水号" width="100" sortable></el-table-column>
+              <el-table-column prop="accountingAmount" label="变化数量" width="100" sortable></el-table-column>
+              <el-table-column prop="balanceAfter" label="剩余量" width="100" sortable></el-table-column>
+              <el-table-column prop="summary.text" label="操作原因" sortable></el-table-column>
+              <el-table-column prop="accountingTime" label="操作时间" width="160" sortable></el-table-column>
+            </el-table>
+            <!--工具条-->
+            <el-col :span="24" class="toolbar">
+              <el-pagination layout="prev, pager, next" @current-change="ChangePage" :page-size="1" :total="page"
+                             style="float:right;">
+              </el-pagination>
+            </el-col>
+            <el-button type="primary" v-on:click="gold">金币</el-button>
+            <el-button type="primary" @click="integral">积分</el-button>
+          </el-tab-pane>
+        </el-tabs>
       </el-dialog>
 
     </el-col>
@@ -93,6 +131,19 @@
     name: "NewVip",
     data() {
       return {
+        activeName: 'first',//选项卡默认显示第一页
+        giveFormVisible: false,//隐藏金币弹窗
+        givefromintegral: false,//隐藏积分弹窗
+        other: false,//隐藏其他信息弹窗
+        rules: {
+          number: [
+            {required: true, message: '请输入金币数量', trigger: 'blur'}
+          ],
+          giveintegral: [
+            {required: true, message: '请输入积分数量', trigger: 'blur'}
+          ],
+        },
+        normalForm: {},
         options: [{
           value: '选项1',
           label: '会员用户'
@@ -135,6 +186,57 @@
       }
     },
     methods: {
+      handleClick(tab, event) {
+        if (tab.index == "0") {
+          console.log("0")
+        }
+        if (tab.index == "1") {
+          this.gold(1);//显示金币流水
+        }
+      },
+      //弹窗显示其他信息
+      showother: function (index, row) {
+        sessionStorage.setItem('id', this.vip[index].id);//保存id
+        //console.log(this.vip[index].id)
+        this.other = true;
+        this.addForm = {
+          name: '',
+          author: '',
+          publishAt: '',
+          description: ''
+        };
+      },
+
+      //赠送金币
+      givegold() {
+
+      },
+      //赠送金币弹窗
+      showgold: function (index, row) {
+        this.giveFormVisible = true;
+        this.addForm = {
+          name: '',
+          author: '',
+          publishAt: '',
+          description: ''
+        };
+      },
+
+      //赠送金币
+      giveintegral() {
+
+      },
+      //赠送积分弹窗
+      showintegral: function (index, row) {
+        this.givefromintegral = true;
+        this.addForm = {
+          name: '',
+          author: '',
+          publishAt: '',
+          description: ''
+        };
+      },
+
       change() {
         if (this.value == '选项1') {//查询会员用户
           this.loading = true;//显示加载条
@@ -455,8 +557,5 @@
     margin-top: 30px;
   }
 
-  .dialog-footer {
-    margin-top: 50px;
-  }
 </style>
 
