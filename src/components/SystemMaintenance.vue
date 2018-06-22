@@ -54,8 +54,17 @@
             <el-input v-model="normalForm.title" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="图片" prop="file">
-            <el-input type="file" name="file" accept="image/png,image/gif,image/jpeg" v-model="normalForm.image"
-                      auto-complete="off"></el-input>
+            <div class="upload">
+              <el-upload
+                class="avatar-uploader"
+                :action=domain
+                :http-request=upqiniu
+                :show-file-list="false"
+                :before-upload="beforeUpload">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <el-button v-else class="el-icon-plus avatar-uploader-icon"></el-button>
+              </el-upload>
+            </div>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="issue">发布</el-button>
@@ -75,6 +84,11 @@
     name: "SystemMaintenance",
     data() {
       return {
+        imageUrl: '',
+        // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
+        domain: 'http://up.qiniu.com',
+        // 这是七牛云空间的外链默认域名
+        qiniuaddr: 'paly4iump.bkt.clouddn.com',
         normalForm: {},
         rules: {
           title: [
@@ -94,8 +108,59 @@
       }
     },
     methods: {
+      // 上传文件到七牛云
+      upqiniu(req) {
+        //console.log(req)
+        const config = {
+          headers: {'Content-Type': 'multipart/form-data'}
+        }
+        let filetype = ''
+        if (req.file.type === 'image/png') {
+          filetype = 'png'
+        } else {
+          filetype = 'jpg'
+        }
+        // 重命名要上传的文件
+        const keyname = 'anbang' + new Date() + Math.floor(Math.random() * 100) + '.' + filetype
+        // 从后端获取上传凭证token
+        axios({
+          method: 'post',
+          url: '/api/mailctrl/uptoken',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'accessKey': 'qQj7mRKyvE7dOOjObMC8W58i6Yn3penfr7-_fg4d',
+            'secretKey': '9f70kmAddF1maP1U0jy0vRNAhwWNv_huR1xDSH_s',
+            'bucket': 'anbang'
+          }
+        }).then(res => {
+          const formdata = new FormData()
+          formdata.append('file', req.file)
+          formdata.append('token', res.data.data)
+          formdata.append('key', keyname)
+          // 获取到凭证之后再将文件上传到七牛云空间
+          axios.post(this.domain, formdata, config).then(res => {
+            this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
+            //console.log(this.imageUrl)
+          })
+        })
+      },
+      // 验证文件合法性
+      beforeUpload(file) {
+        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+        const isLt2M = file.size / 1024 / 1024 < 2
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!')
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!')
+        }
+        return isJPG && isLt2M
+      },
+
       //发布
-      issue() {
+      issue(req) {
         if (this.normalForm.title == undefined || this.normalForm.title == "") {
           this.$message({
             showClose: true,
@@ -112,7 +177,7 @@
             params: {
               'status': '0',
               'title': this.normalForm.title,
-              'file': 'http://pa5ggm6zj.bkt.clouddn.com/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180615133408.png'
+              'file': this.imageUrl
             }
           })
             .then((res) => {
@@ -233,5 +298,9 @@
 <style scoped>
   .warp-main {
     margin-top: 20px;
+  }
+  img {
+    width: 180px;
+    height: 120px;
   }
 </style>

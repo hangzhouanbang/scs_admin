@@ -4,7 +4,7 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>会员中心</b></el-breadcrumb-item>
-        <el-breadcrumb-item>会员管理</el-breadcrumb-item>
+        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -13,10 +13,17 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.nickname" placeholder="会员名" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" v-on:click="handleSearch">查询</el-button>
+            <el-select v-model="value" placeholder="请选择身份进行查询" @change="change">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
       </el-col>
@@ -36,11 +43,13 @@
         <el-table-column prop="phone" label="手机号" width="140" sortable></el-table-column>
         <el-table-column prop="createTime" label="注册时间" width="180" sortable></el-table-column>
         <el-table-column prop="vipEndTime" label="会员到期时间" width="180" sortable></el-table-column>
-        <el-table-column prop="billsRunningWater" label="账单流水" sortable>
+        <el-table-column prop="billsRunningWater" label="账单流水" width="140" sortable>
           <template slot-scope="scope">
             <el-button type="primary" @click="showRunningWater(scope.$index,scope.row)">查看详情</el-button>
           </template>
         </el-table-column>
+        <el-table-column prop="onlineTime" label="在线时长" width="100" sortable></el-table-column>
+        <el-table-column prop="loginIp" label="登录IP" width="180" sortable></el-table-column>
       </el-table>
 
       <!--工具条-->
@@ -84,6 +93,14 @@
     name: "NewVip",
     data() {
       return {
+        options: [{
+          value: '选项1',
+          label: '会员用户'
+        }, {
+          value: '选项2',
+          label: '非会员用户'
+        },],
+        value: '',
         items: [],
         vip: [],
         filters: {
@@ -118,6 +135,114 @@
       }
     },
     methods: {
+      change() {
+        if (this.value == '选项1') {//查询会员用户
+          this.loading = true;//显示加载条
+          axios({//根据会员昵称查询
+            method: 'post',
+            url: '/api/memberCtrl/queryMember',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'size': '15',//每页数量
+              'page': this.page,//当前页
+              'id': this.filters.id
+            }
+          })
+            .then((res) => {
+                this.loading = false;//隐藏加载条
+                this.vip = res.data.memberList;
+                this.total = res.data.pageNumber;//总页数
+                for (let i = 0; i < this.vip.length; i++) {
+                  this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
+                  this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        } else if (this.value == '选项2') {//查询非会员用户
+          this.loading = true;//显示加载条
+          axios({//根据会员昵称查询
+            method: 'post',
+            url: '/api/memberCtrl/queryMember',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'size': '15',//每页数量
+              'page': this.page,//当前页
+              'id': this.filters.id
+            }
+          })
+            .then((res) => {
+                this.loading = false;//隐藏加载条
+                this.vip = res.data.memberList;
+                this.total = res.data.pageNumber;//总页数
+                for (let i = 0; i < this.vip.length; i++) {
+                  this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
+                  this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        }
+      },
+
       ChangePage(val) {
         this.page = val;
         this.gold(this.page);
@@ -134,7 +259,7 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'memberId':sessionStorage.getItem('id')  //0023
+            'memberId': sessionStorage.getItem('id')  //0023
           }
         })
           .then((res) => {
@@ -187,7 +312,7 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'memberId':sessionStorage.getItem('id')//0023
+            'memberId': sessionStorage.getItem('id')//0023
           }
         })
           .then((res) => {
@@ -231,8 +356,8 @@
 
       //账单流水
       showRunningWater: function (index, row) {
-        sessionStorage.setItem('id',this.vip[index].id);//保存id
-        console.log(this.vip[index].id)
+        sessionStorage.setItem('id', this.vip[index].id);//保存id
+        //console.log(this.vip[index].id)
         this.addFormVisible = true;
         this.addForm = {
           name: '',
@@ -262,65 +387,61 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      handleSearch() {
-        this.loading = true;//显示加载条
-        axios({//根据会员昵称查询
-          method: 'post',
-          url: '/api/memberCtrl/queryMember',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'size': '15',//每页数量
-            'page': this.page,//当前页
-            'nickname': this.filters.nickname
-          }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.vip = res.data.memberList;
-              this.total = res.data.pageNumber;//总页数
-              for (let i = 0; i < this.vip.length; i++) {
-                this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
-                this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
-              }
-            },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
-            }
-          }
-        });
-      },
       selsChange: function (sels) {
         this.sels = sels;
       },
     },
     mounted() { //初始化页面
-      this.handleSearch()
+      this.loading = true;//显示加载条
+      axios({//根据会员昵称查询
+        method: 'post',
+        url: '/api/memberCtrl/queryMember',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        },
+        params: {
+          'size': '15',//每页数量
+          'page': this.page,//当前页
+        }
+      })
+        .then((res) => {
+            this.loading = false;//隐藏加载条
+            this.vip = res.data.memberList;
+            this.total = res.data.pageNumber;//总页数
+            for (let i = 0; i < this.vip.length; i++) {
+              this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
+              this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
+            }
+          },
+        ).catch((e) => {
+        if (e && e.response) {
+          switch (e.response.status) {
+            case 504:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 500:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 405:
+              this.$message({
+                showClose: true,
+                message: '请先登录',
+                type: 'warning'
+              });
+              break
+          }
+        }
+      });
     }
   }
 </script>
