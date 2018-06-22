@@ -13,6 +13,8 @@ import Server from '@/components/Server.vue'
 import SystemNotice from '@/components/SystemNotice.vue'
 import MemberCard from '@/components/MemberCard.vue'
 import Microservice from '@/components/Microservice.vue'
+import MemberLevel from '@/components/MemberLevel.vue'
+import ReCharge from '@/components/ReCharge.vue'
 
 Vue.use(Router)
 
@@ -56,6 +58,8 @@ export default new Router({
         {path: '/newVip', component: NewVip, name: '用户管理', menuShow: true},
         {path: '/memberRules', component: MemberRules, name: '会员权益', menuShow: true},
         {path: '/memberCard', component: MemberCard, name: '会员卡', menuShow: true},
+        {path: '/memberLevel', component: MemberLevel, name: 'vip等级', menuShow: true},
+        {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
       ]
     },
     {
