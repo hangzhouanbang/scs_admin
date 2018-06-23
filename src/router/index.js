@@ -15,6 +15,7 @@ import MemberCard from '@/components/MemberCard.vue'
 import Microservice from '@/components/Microservice.vue'
 import MemberLevel from '@/components/MemberLevel.vue'
 import ReCharge from '@/components/ReCharge.vue'
+import OnlineUsers from '@/components/OnlineUsers.vue'
 
 Vue.use(Router)
 
@@ -60,6 +61,7 @@ export default new Router({
         {path: '/memberCard', component: MemberCard, name: '会员卡', menuShow: true},
         {path: '/memberLevel', component: MemberLevel, name: 'vip等级', menuShow: true},
         {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
+        {path: '/onlineUsers', component: OnlineUsers, name: '在线用户', menuShow: true},
       ]
     },
     {
@@ -83,7 +85,7 @@ export default new Router({
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-ic_opt_feature', // 图标样式class
       children: [
-        {path: '/jurisdiction', component:Jurisdiction, name: '权限管理', menuShow: true}
+        {path: '/jurisdiction', component: Jurisdiction, name: '权限管理', menuShow: true}
       ]
     },
     {
@@ -94,7 +96,7 @@ export default new Router({
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-server', // 图标样式class
       children: [
-        {path: '/server', component:Server, name: '服务器管理', menuShow: true}
+        {path: '/server', component: Server, name: '服务器管理', menuShow: true}
       ]
     }
   ]

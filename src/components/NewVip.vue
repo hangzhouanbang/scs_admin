@@ -456,20 +456,6 @@
         });
       },
 
-      //账单流水
-      showRunningWater: function (index, row) {
-        sessionStorage.setItem('id', this.vip[index].id);//保存id
-        //console.log(this.vip[index].id)
-        this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
-        this.gold(1);//弹出框默认显示金币流水
-      },
-
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
