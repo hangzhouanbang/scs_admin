@@ -16,6 +16,9 @@
             <el-input v-model="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
+            <el-input v-model="filters.nickname" placeholder="用户昵称" @keyup.enter.native="handleSearch"></el-input>
+          </el-form-item>
+          <el-form-item>
             <el-select v-model="value" placeholder="请选择身份进行查询" @change="change">
               <el-option
                 v-for="item in options"
@@ -63,8 +66,8 @@
       <!--赠送金币弹窗-->
       <el-dialog title="赠送金币" :visible.sync="giveFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="金币数量" prop="number">
-            <el-input v-model="normalForm.number" auto-complete="off"></el-input>
+          <el-form-item label="金币数量" prop="gold">
+            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.gold" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="givegold">赠送</el-button>
@@ -76,8 +79,8 @@
       <!--赠送积分弹窗-->
       <el-dialog title="赠送积分" :visible.sync="givefromintegral" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="积分数量" prop="giveintegral">
-            <el-input v-model="normalForm.giveintegral" auto-complete="off"></el-input>
+          <el-form-item label="积分数量" prop="score">
+            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.score" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="giveintegral">赠送</el-button>
@@ -90,13 +93,17 @@
       <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="等级经验" name="first">
-            会员级别：<br/>
-            经验值：<br/>
-            积分：<br/>
-            金币：<br/>
-            消费金额：<br/>
-            游戏时长：<br/>
-            登录IP：<br/>
+            <!-- 其他信息-->
+            <el-table :data="items" highlight-current-row @selection-change="selsChange"
+                      style="width: 100%;">
+              <el-table-column prop="vipLevel" label="会员级别" width="100" sortable></el-table-column>
+              <el-table-column prop="vipScore" label="经验值" width="100" sortable></el-table-column>
+              <el-table-column prop="score" label="积分" width="100" sortable></el-table-column>
+              <el-table-column prop="gold" label="金币" width="100" sortable></el-table-column>
+              <el-table-column prop="rmb" label="消费金额" width="100" sortable></el-table-column>
+              <el-table-column prop="onlineTime" label="游戏时长" width="100" sortable></el-table-column>
+              <el-table-column prop="loginIp" label="登录IP"></el-table-column>
+            </el-table>
           </el-tab-pane>
           <el-tab-pane label="金币积分流水" name="second">
             <el-table :data="items" highlight-current-row @selection-change="selsChange"
@@ -114,7 +121,7 @@
                              style="float:right;">
               </el-pagination>
             </el-col>
-            <el-button type="primary" v-on:click="gold">金币</el-button>
+            <el-button type="primary" v-on:click="goldwathercourse">金币</el-button>
             <el-button type="primary" @click="integral">积分</el-button>
           </el-tab-pane>
         </el-tabs>
@@ -131,15 +138,16 @@
     name: "NewVip",
     data() {
       return {
+        sels: [], //列表选中列
         activeName: 'first',//选项卡默认显示第一页
         giveFormVisible: false,//隐藏金币弹窗
         givefromintegral: false,//隐藏积分弹窗
         other: false,//隐藏其他信息弹窗
         rules: {
-          number: [
+          gold: [
             {required: true, message: '请输入金币数量', trigger: 'blur'}
           ],
-          giveintegral: [
+          score: [
             {required: true, message: '请输入积分数量', trigger: 'blur'}
           ],
         },
@@ -161,7 +169,6 @@
         page: 0,
         limit: 10,
         loading: false,
-        addFormVisible: false,//新增界面是否显示
         addLoading: false,
         addFormRules: {
           nickname: [
@@ -188,16 +195,103 @@
     methods: {
       handleClick(tab, event) {
         if (tab.index == "0") {
-          console.log("0")
+          axios({
+            method: 'post',
+            url: '/api/member/querymember',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'id': sessionStorage.getItem('id')
+            }
+          })
+            .then((res) => {
+                this.loading = false;//隐藏加载条
+                this.items = res.data.data.items;
+                //console.log(res.data.data.items)
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
         }
         if (tab.index == "1") {
-          this.gold(1);//显示金币流水
+          this.goldwathercourse(1);//显示金币流水
         }
       },
       //弹窗显示其他信息
       showother: function (index, row) {
         sessionStorage.setItem('id', this.vip[index].id);//保存id
         //console.log(this.vip[index].id)
+        axios({
+          method: 'post',
+          url: '/api/member/querymember',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'id': sessionStorage.getItem('id')
+          }
+        })
+          .then((res) => {
+              this.loading = false;//隐藏加载条
+              this.items = res.data.data.items;
+              //console.log(res.data.data.items)
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
         this.other = true;
         this.addForm = {
           name: '',
@@ -209,7 +303,85 @@
 
       //赠送金币
       givegold() {
-
+        let ids = this.sels.map(item => item.id).toString();
+        let that = this;
+        this.$confirm('确认赠送金币吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          if (this.normalForm.gold == undefined || this.normalForm.gold == "") {
+            this.$message({
+              showClose: true,
+              message: '不能为空',
+              type: 'warning'
+            });
+          } else if (this.normalForm.gold < 0) {
+            this.$message({
+              showClose: true,
+              message: '请输入正整数',
+              type: 'warning'
+            });
+          } else {
+            that.loading = true;
+            axios({
+              method: 'post',
+              url: '/api/member/give_reward',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'gold': this.normalForm.gold,
+                'id': ids
+              }
+            })
+              .then((res) => {
+                  that.loading = false;
+                  if (res.data.success == true) {
+                    that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
+                    this.normalForm.gold = '';//清空内容
+                    this.giveFormVisible = false;//关闭弹窗
+                  } else {
+                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((e) => {
+              if (e && e.response) {
+                switch (e.response.status) {
+                  case 504:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break;
+                  case 500:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break;
+                  case 405:
+                    this.$message({
+                      showClose: true,
+                      message: '请先登录',
+                      type: 'warning'
+                    });
+                    break;
+                  case 400:
+                    this.$message({
+                      showClose: true,
+                      message: '请按要求输入',
+                      type: 'warning'
+                    });
+                    that.loading = false;
+                    break;
+                }
+              }
+            });
+          }
+        });
       },
       //赠送金币弹窗
       showgold: function (index, row) {
@@ -224,7 +396,84 @@
 
       //赠送金币
       giveintegral() {
-
+        let ids = this.sels.map(item => item.id).toString();
+        let that = this;
+        this.$confirm('确认赠送金币吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          if (this.normalForm.score == undefined || this.normalForm.score == "") {
+            this.$message({
+              showClose: true,
+              message: '不能为空',
+              type: 'warning'
+            });
+          } else if (this.normalForm.score < 0) {
+            this.$message({
+              showClose: true,
+              message: '请输入正整数',
+              type: 'warning'
+            });
+          } else {
+            that.loading = true;
+            axios({
+              method: 'post',
+              url: '/api/member/give_reward',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'score': this.normalForm.score,
+                'id': ids
+              }
+            })
+              .then((res) => {
+                  that.loading = false;
+                  if (res.data.success == true) {
+                    that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
+                    this.normalForm.score = '';//清空内容
+                    this.givefromintegral = false;//关闭弹窗
+                  } else {
+                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((e) => {
+              if (e && e.response) {
+                switch (e.response.status) {
+                  case 504:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break;
+                  case 500:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break;
+                  case 405:
+                    this.$message({
+                      showClose: true,
+                      message: '请先登录',
+                      type: 'warning'
+                    });
+                    break;
+                  case 400:
+                    this.$message({
+                      showClose: true,
+                      message: '请按要求输入',
+                      type: 'warning'
+                    });
+                    break;
+                }
+              }
+            });
+          }
+        });
       },
       //赠送积分弹窗
       showintegral: function (index, row) {
@@ -242,20 +491,22 @@
           this.loading = true;//显示加载条
           axios({//根据会员昵称查询
             method: 'post',
-            url: '/api/memberCtrl/queryMember',
+            url: '/api/member/querymember',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
               'size': '15',//每页数量
               'page': this.page,//当前页
-              'id': this.filters.id
+              'id': this.filters.id,
+              'nickname': this.filters.nickname,
+              'vip': true
             }
           })
             .then((res) => {
                 this.loading = false;//隐藏加载条
-                this.vip = res.data.memberList;
-                this.total = res.data.pageNumber;//总页数
+                this.vip = res.data.data.items;
+                this.total = res.data.data.pageCount;//总页数
                 for (let i = 0; i < this.vip.length; i++) {
                   this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
                   this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
@@ -294,20 +545,22 @@
           this.loading = true;//显示加载条
           axios({//根据会员昵称查询
             method: 'post',
-            url: '/api/memberCtrl/queryMember',
+            url: '/api/member/querymember',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
               'size': '15',//每页数量
               'page': this.page,//当前页
-              'id': this.filters.id
+              'id': this.filters.id,
+              'nickname': this.filters.nickname,
+              'vip': false
             }
           })
             .then((res) => {
                 this.loading = false;//隐藏加载条
-                this.vip = res.data.memberList;
-                this.total = res.data.pageNumber;//总页数
+                this.vip = res.data.data.items;
+                this.total = res.data.data.pageCount;//总页数
                 for (let i = 0; i < this.vip.length; i++) {
                   this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
                   this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
@@ -351,10 +604,10 @@
       },
 
       //按金币筛选
-      gold() {
+      goldwathercourse() {
         axios({
           method: 'post',
-          url: '/api/memberCtrl/querygoldrecord',
+          url: '/api/member/querygoldrecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -407,7 +660,7 @@
       integral() {
         axios({
           method: 'post',
-          url: '/api/memberCtrl/queryscorerecord',
+          url: '/api/member/queryscorerecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -483,7 +736,7 @@
       this.loading = true;//显示加载条
       axios({//根据会员昵称查询
         method: 'post',
-        url: '/api/memberCtrl/queryMember',
+        url: '/api/member/querymember',
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },
@@ -494,8 +747,8 @@
       })
         .then((res) => {
             this.loading = false;//隐藏加载条
-            this.vip = res.data.memberList;
-            this.total = res.data.pageNumber;//总页数
+            this.vip = res.data.data.items;
+            this.total = res.data.data.pageCount;//总页数
             for (let i = 0; i < this.vip.length; i++) {
               this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
               this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);

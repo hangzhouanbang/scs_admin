@@ -95,6 +95,6 @@
 
 <style scoped>
   .warp-main {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 </style>
