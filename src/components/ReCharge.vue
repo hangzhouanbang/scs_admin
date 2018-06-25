@@ -56,7 +56,6 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="exportExcel">导出</el-button>
-            <!--<a href="#" @click="exportExcel">导出</a>-->
           </el-form-item>
         </el-form>
       </el-col>
@@ -85,7 +84,7 @@
       是否确定下载文件？
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">否</el-button>
-        <a href="#" id="download">是</a>
+        <a href="#" id="download" @click="addSubmit">是</a>
       </div>
     </el-dialog>
 
@@ -144,6 +143,34 @@
         },
         //导出Excel表
         exportExcel () {
+          if(this.filters.status == '未付款'){
+            this.state.status = 0;
+          }
+          if(this.filters.status == '支付失败'){
+            this.state.status = -1;
+          }
+          if(this.filters.status == '已付款'){
+            this.state.status = 1;
+          }
+          if(this.filters.pay_type == '支付宝'){
+            this.state.pay_type = 'alipay';
+          }
+          if(this.filters.pay_type == '微信'){
+            this.state.pay_type = 'wxpay';
+          }
+          if(this.filters.startTime){
+            let date = new Date(this.filters.startTime);
+            this.state.startTime = date.getTime();
+          }
+          if(this.filters.endTime){
+            let date = new Date(this.filters.endTime);
+            this.state.endTime = date.getTime();
+          }
+          if(this.filters.startTime &&
+            this.filters.endTime &&
+            this.state.endTime - this.state.startTime < 0){
+            return;
+          }
           this.addFormVisible = true;
           axios({
             method: 'post',
@@ -151,7 +178,16 @@
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
-            params: {}
+            params: {
+              out_trade_no:'',
+              pay_type:this.state.pay_type,
+              memberId:this.filters.memberId,
+              nickname:this.filters.nickname,
+              status:this.state.status,
+              startTime:this.state.startTime,
+              endTime:this.state.startTime,
+              deliveTime:''
+            }
           }).then(
             function(res){
               // console.log(res)
@@ -159,6 +195,9 @@
               download.href = '/api'+res.data.data;
             }
           )
+        },
+        addSubmit(){
+          this.addFormVisible = false;
         },
         handleSearch() {
           if(this.filters.status == '未付款'){

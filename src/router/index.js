@@ -16,12 +16,13 @@ import Microservice from '@/components/Microservice.vue'
 import MemberLevel from '@/components/MemberLevel.vue'
 import ReCharge from '@/components/ReCharge.vue'
 import OnlineUsers from '@/components/OnlineUsers.vue'
+import PlatformOperation from '@/components/PlatformOperation.vue'
+import Progression from '@/components/Progression.vue'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
-
     {
       path: '/',
       name: 'Login',
@@ -98,6 +99,17 @@ export default new Router({
       children: [
         {path: '/server', component: Server, name: '服务器管理', menuShow: true}
       ]
-    }
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '报表统计',
+      menuShow: true,
+      iconCls: 'iconfont icon-xitongshezhi',
+      children: [
+        {path: '/platformOperation', component:PlatformOperation, name: '平台运营日报', menuShow: true},
+        {path: '/progression', component:Progression, name: '游戏数据日报', menuShow: true},
+      ]
+    },
   ]
 })
