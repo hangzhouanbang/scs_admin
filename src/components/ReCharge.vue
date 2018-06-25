@@ -85,7 +85,6 @@
       是否确定下载文件？
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">否</el-button>
-        <!--<el-button type="primary" @click.native="addSubmit" :loading="addLoading">是</el-button>-->
         <a href="#" id="download">是</a>
       </div>
     </el-dialog>
@@ -100,8 +99,6 @@
 </template>
 
 <script>
-  import FileSaver from 'file-saver'
-  import XLSX from 'xlsx'
   import axios from 'axios'
 
     export default {
@@ -147,14 +144,6 @@
         },
         //导出Excel表
         exportExcel () {
-          // /* generate workbook object from table */
-          // var wb = XLSX.utils.table_to_book(document.querySelector('#out-table'))
-          // /* get binary string as output */
-          // var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-          // try {
-          //   FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
-          // } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
-          // return wbout
           this.addFormVisible = true;
           axios({
             method: 'post',
@@ -165,14 +154,11 @@
             params: {}
           }).then(
             function(res){
-              console.log(res)
+              // console.log(res)
               let download = document.getElementById('download');
-              download.href = res.data.data;
+              download.href = '/api'+res.data.data;
             }
           )
-        },
-        addSubmit:function(){
-
         },
         handleSearch() {
           if(this.filters.status == '未付款'){
@@ -259,5 +245,30 @@
 <style scoped>
   .toolbar{
     margin-top:30px;
+  }
+  #download{
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    -webkit-appearance: none;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    -webkit-transition: .1s;
+    transition: .1s;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #409EFF;
+    border-color: #409EFF;
+  }
+  #download:hover{
+    background: #66b1ff;
+    border-color: #66b1ff;
+    color: #fff;
   }
 </style>
