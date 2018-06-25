@@ -67,7 +67,8 @@
       <el-dialog title="赠送金币" :visible.sync="giveFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="金币数量" prop="gold">
-            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.gold" auto-complete="off"></el-input>
+            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.gold"
+                      auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="givegold">赠送</el-button>
@@ -80,7 +81,8 @@
       <el-dialog title="赠送积分" :visible.sync="givefromintegral" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="积分数量" prop="score">
-            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.score" auto-complete="off"></el-input>
+            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.score"
+                      auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="giveintegral">赠送</el-button>
@@ -94,15 +96,38 @@
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="等级经验" name="first">
             <!-- 其他信息-->
-            <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                      style="width: 100%;">
-              <el-table-column prop="vipLevel" label="会员级别" width="100" sortable></el-table-column>
-              <el-table-column prop="vipScore" label="经验值" width="100" sortable></el-table-column>
-              <el-table-column prop="score" label="积分" width="100" sortable></el-table-column>
-              <el-table-column prop="gold" label="金币" width="100" sortable></el-table-column>
-              <el-table-column prop="rmb" label="消费金额" width="100" sortable></el-table-column>
-              <el-table-column prop="onlineTime" label="游戏时长" width="100" sortable></el-table-column>
-              <el-table-column prop="loginIp" label="登录IP"></el-table-column>
+            <el-table
+              :data="items"
+              style="width: 100%">
+              <el-table-column type="expand">
+                <template slot-scope="props">
+                  <el-form label-position="left" inline class="demo-table-expand">
+                    <el-form-item label="积分">
+                      <span>{{ props.row.score }}</span>
+                    </el-form-item>
+                    <el-form-item label="金币">
+                      <span>{{ props.row.gold }}</span>
+                    </el-form-item>
+                    <el-form-item label="消费金额">
+                      <span>{{ props.row.cost }}</span>(元)
+                    </el-form-item>
+                    <el-form-item label="游戏时长">
+                      <span>{{Math.round(props.row.onlineTime/(1000*60*60)) }}</span>(小时)<!--毫秒转小时-->
+                    </el-form-item>
+                    <el-form-item label="登录IP">
+                      <span>{{ props.row.loginIp }}</span>
+                    </el-form-item>
+                  </el-form>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="会员级别"
+                prop="vipLevel">
+              </el-table-column>
+              <el-table-column
+                label="经验值"
+                prop="vipScore">
+              </el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="金币积分流水" name="second">
@@ -796,5 +821,19 @@
     margin-top: 30px;
   }
 
+  .demo-table-expand {
+    font-size: 0;
+  }
+
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 100%;
+  }
 </style>
 
