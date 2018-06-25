@@ -9,7 +9,7 @@
 
     <!--<el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">-->
       <!--工具条-->
-      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="用户ID" label-width="68px">
             <el-input v-model="filters.memberId" @keyup.enter.native="handleSearch" style="width:220px;"></el-input>
@@ -18,7 +18,7 @@
             <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch" style="width:220px;"></el-input>
           </el-form-item>
           <el-form-item label="支付方式" label-width="68px">
-            <el-select v-model="filters.pay_type" placeholder="请选择">
+            <el-select v-model="filters.pay_type" placeholder="请选择"  clearable>
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -42,7 +42,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="订单状态" label-width="68px">
-            <el-select v-model="filters.status" placeholder="所有状态">
+            <el-select v-model="filters.status" placeholder="所有状态" clearable>
               <el-option
                 v-for="item in status"
                 :key="item.value"
@@ -56,6 +56,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="exportExcel">导出</el-button>
+            <!--<a href="#" @click="exportExcel">导出</a>-->
           </el-form-item>
         </el-form>
       </el-col>
@@ -79,6 +80,16 @@
       <el-table-column prop="reqIP" label="下单地址" width="auto" sortable></el-table-column>
     </el-table>
 
+    <!--下载文件-->
+    <el-dialog title="下载文件" :visible.sync="addFormVisible" :close-on-click-modal="false">
+      是否确定下载文件？
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="addFormVisible = false">否</el-button>
+        <!--<el-button type="primary" @click.native="addSubmit" :loading="addLoading">是</el-button>-->
+        <a href="#" id="download">是</a>
+      </div>
+    </el-dialog>
+
     <!--工具条-->
     <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
@@ -101,9 +112,11 @@
             users:[],
             state:[],
             total:0,
+            down:[],
+            addFormVisible:false,
             options:[
               {value:'支付宝'},
-              {value:'微信'}
+              {value:'微信'},
             ],
             status:[
               {value:'已付款'},
@@ -134,14 +147,32 @@
         },
         //导出Excel表
         exportExcel () {
-          /* generate workbook object from table */
-          var wb = XLSX.utils.table_to_book(document.querySelector('#out-table'))
-          /* get binary string as output */
-          var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-          try {
-            FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
-          } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
-          return wbout
+          // /* generate workbook object from table */
+          // var wb = XLSX.utils.table_to_book(document.querySelector('#out-table'))
+          // /* get binary string as output */
+          // var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+          // try {
+          //   FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
+          // } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+          // return wbout
+          this.addFormVisible = true;
+          axios({
+            method: 'post',
+            url: '/api/order/download',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {}
+          }).then(
+            function(res){
+              console.log(res)
+              let download = document.getElementById('download');
+              download.href = res.data.data;
+            }
+          )
+        },
+        addSubmit:function(){
+
         },
         handleSearch() {
           if(this.filters.status == '未付款'){
@@ -195,15 +226,6 @@
                 this.total = res.data.data.pageCount;
                 for(let i = 0;i < this.users.length;i++){
                   this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
-                  if(this.users[i].status == '0'){
-                    this.users[i].status = '未付款';
-                  }
-                  if(this.users[i].status == '-1'){
-                    this.users[i].status = '支付失败'
-                  }
-                  if(this.users[i].status == '1'){
-                    this.users[i].status = '已付款';
-                  }
                 }
               },
             ).catch((e) => {

@@ -67,7 +67,6 @@
         },
       methods: {
         setLevel(){
-          this.setLevelVisible = true;
           axios({
             method: 'post',
             url: '/api/grade/find_grade',
@@ -112,7 +111,6 @@
                     type: 'warning'
                   });
                 }
-              this.setLevelVisible = false;
               },
             ).catch((e) => {})
         }
