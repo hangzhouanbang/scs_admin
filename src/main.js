@@ -16,6 +16,10 @@ import axios from 'axios'
 import '@/assets/iconfont.css'
 import '@/assets/js/jquery.min.js'
 
+//echarts
+import echarts from 'echarts'
+
+Vue.prototype.$echarts = echarts
 
 //全局注册
 Vue.use(ElementUI)
