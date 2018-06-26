@@ -64,7 +64,7 @@
             <el-input v-model="editForm.createTime" :rows="8"></el-input>
           </el-form-item>
           <el-form-item label="密码">
-            <el-input v-model="editForm.password" :rows="8"></el-input>
+            <el-input v-model="editForm.password" type='password' :rows="8"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -91,7 +91,7 @@
             <el-input v-model="addForm.nickname" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="pass">
-            <el-input type="pasword" v-model="addForm.pass" auto-complete="off"></el-input>
+            <el-input type="password" v-model="addForm.pass" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="姓名" prop="user">
             <el-input v-model="addForm.user" auto-complete="off"></el-input>
@@ -281,11 +281,7 @@
               },
               params: {
                 'id': this.editForm.id,
-                // 'nickname': this.editForm.nickname,
                 'pass': this.editForm.password,
-                // 'user': this.editForm.user,
-                // 'idCard': this.editForm.idCard,
-                // 'sex': this.editForm.sex
               }
             })
               .then((res) => {

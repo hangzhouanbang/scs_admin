@@ -105,7 +105,7 @@ export default new Router({
       component: Home,
       name: '报表统计',
       menuShow: true,
-      iconCls: 'iconfont icon-xitongshezhi',
+      iconCls: 'iconfont icon-baobiaotongji',
       children: [
         {path: '/platformOperation', component:PlatformOperation, name: '平台运营日报', menuShow: true},
         {path: '/progression', component:Progression, name: '游戏数据日报', menuShow: true},
