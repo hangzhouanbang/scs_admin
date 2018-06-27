@@ -31,18 +31,18 @@
       </el-col>
 
       <!-- 运营日报列表-->
-      <el-table :data="po" highlight-current-row @selection-change="selsChange"
+      <el-table :data="data" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
-        <el-table-column prop="time" label="日期" width="100" sortable></el-table-column>
-        <el-table-column prop="new" label="新增注册量" width="140" sortable></el-table-column>
-        <el-table-column prop="number" label="当日会员人数" width="140" sortable></el-table-column>
+        <el-table-column prop="date" label="日期" width="100" sortable></el-table-column>
+        <el-table-column prop="newMember" label="新增注册量" width="140" sortable></el-table-column>
+        <el-table-column prop="currentMember" label="当日会员人数" width="140" sortable></el-table-column>
         <el-table-column prop="cost" label="消费金额" width="100" sortable></el-table-column>
-        <el-table-column prop="createTime" label="游戏总局数" width="140" sortable></el-table-column>
-        <el-table-column prop="vipEndTime" label="独立玩家" width="100" sortable></el-table-column>
-        <el-table-column prop="vipEndTime" label="次日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="vipEndTime" label="三日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="vipEndTime" label="七日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="vipEndTime" label="三十日以外留存"></el-table-column>
+        <el-table-column prop="gameNum" label="游戏总局数" width="140" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="独立玩家" width="100" sortable></el-table-column>
+        <el-table-column prop="remainSecond" label="次日留存" width="100" sortable></el-table-column>
+        <el-table-column prop="remainThird" label="三日留存" width="100" sortable></el-table-column>
+        <el-table-column prop="remainSeventh" label="七日留存" width="100" sortable></el-table-column>
+        <el-table-column prop="remainMonth" label="三十日以外留存"></el-table-column>
       </el-table>
 
       <!--工具条-->
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: "PlatformOperation",
     data() {
@@ -65,7 +67,7 @@
         filters: {
           name: ''
         },
-        po: [],
+        data: [],
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
@@ -78,17 +80,64 @@
       },
       //搜索
       seek() {
-
+        axios({
+          method: 'post',
+          url: '/api/datareport/platform',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'startTime': '',
+            'endTime': ''
+          }
+        })
+          .then((res) => {
+              this.loading = false;//隐藏加载条
+              this.data = res.data.data;
+              //console.log(res.data.data.items)
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
       },
       selsChange: function (sels) {
         this.sels = sels;
       },
+    },
+    mounted() {
+      this.seek();
     }
   }
 </script>
 
 <style scoped>
   .warp-main {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 </style>

@@ -38,7 +38,7 @@
         </el-table-column>
         <el-table-column prop="state" label="状态">
           <template slot-scope="scope">
-            <el-button type="primary" v-if="scope.row.state === 1" :disabled="false" @click="off">启用</el-button>
+            <el-button type="primary" v-if="scope.row.state === 1" :disabled="false" @click="off(scope.$index,scope.row)">启用</el-button>
             <el-button type="info" disabled v-if="scope.row.state === 0">禁用</el-button>
           </template>
         </el-table-column>
@@ -105,13 +105,17 @@
     },
     methods: {
       //禁用按钮
-      off() {
+      off(index, row) {
+        sessionStorage.setItem('id', this.list[index].id);//保存id
         axios({
           method: 'post',
           url: '/api/noticectrl/updatenotice',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
+          params: {
+            'id': sessionStorage.getItem('id')
+          }
         })
           .then((res) => {
             this.handleSearch()
