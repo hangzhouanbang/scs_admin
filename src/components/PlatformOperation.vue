@@ -31,53 +31,20 @@
       </el-col>
 
       <!-- 运营日报列表-->
-      <el-table
-        :data="items"
-        style="width: 100%">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="次日留存">
-                <span>{{ props.row.remainSecond }}</span>
-              </el-form-item>
-              <el-form-item label="三日留存">
-                <span>{{ props.row.remainThird }}</span>
-              </el-form-item>
-              <el-form-item label="七日留存">
-                <span>{{ props.row.remainSeventh }}</span>
-              </el-form-item>
-              <el-form-item label="30日以外留存">
-                <span>{{ props.row.remainMonth }}</span>
-              </el-form-item>
-            </el-form>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="日期"
-          prop="date">
-        </el-table-column>
-        <el-table-column
-          label="新增注册量"
-          prop="newMember">
-        </el-table-column>
-        <el-table-column
-          label="当日会员人数"
-          prop="currentMember">
-        </el-table-column>
-        <el-table-column
-          label="消费金额（元）"
-          prop="cost">
-        </el-table-column>
-        <el-table-column
-          label="游戏总局数"
-          prop="gameNum">
-        </el-table-column>
-        <el-table-column
-          label="独立玩家"
-          prop="loginMember">
-        </el-table-column>
+      <el-table :data="items" highlight-current-row @selection-change="selsChange"
+                style="width: 100%;">
+        <el-table-column type="index" width="60"></el-table-column>
+        <el-table-column prop="date" label="日期" width="120" sortable></el-table-column>
+        <el-table-column prop="newMember" label="新增注册量" width="120" sortable></el-table-column>
+        <el-table-column prop="currentMember" label="当日会员人数" width="140" sortable></el-table-column>
+        <el-table-column prop="cost" label="消费金额（元）" width="160" sortable></el-table-column>
+        <el-table-column prop="gameNum" label="游戏总局数" width="120" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="独立玩家" width="100" sortable></el-table-column>
+        <el-table-column prop="remainSecond" label="次日留存" width="100" sortable></el-table-column>
+        <el-table-column prop="remainThird" label="三日留存" width="100" sortable></el-table-column>
+        <el-table-column prop="remainSeventh" label="七日留存" width="100" sortable></el-table-column>
+        <el-table-column prop="remainMonth" label="30日以外留存"></el-table-column>
       </el-table>
-
       <!--工具条-->
       <el-col :span="24" class="toolbar">
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
@@ -143,7 +110,7 @@
               this.items = res.data.data.items;
               this.total = res.data.data.pageCount;
               //console.log(res.data.data.items)
-              for (let i = 0; i < this.data.data.items.length; i++) {
+              for (let i = 0; i < this.items.length; i++) {
                 this.items[i].date = this.dateTimeFormat(this.items[i].date);
               }
             },
