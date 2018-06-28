@@ -56,6 +56,7 @@
           currentMember:[],
           gameNum:[],
           loginMember:[],
+          Time:[],
           options:[
             {value:'瑞安麻将'}
           ]
@@ -63,6 +64,11 @@
       },
       methods: {
         handleSearch(){
+          if(this.filters.pay_type){
+            if(this.filters.pay_type == '瑞安麻将'){
+              this.state.pay_type = 'ruianmajiang'
+            }
+          }
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
@@ -77,22 +83,38 @@
             return;
           }
           axios({
-            url:'/api/datareport/platform',
+            url:'/api/datareport/gamereport',
             method: 'post',
             params:{
               startTime:this.state.startTime,
-              endTime:this.state.endTime
+              endTime:this.state.endTime,
+              game:this.state.pay_type
             }
           }).then((res) => {
               for(let i = 0;i < res.data.data.length;i++){
-                console.log(res.data.data[i])
                 this.currentMember.push(res.data.data[i].currentMember);
                 this.gameNum.push(res.data.data[i].gameNum);
                 this.loginMember.push(res.data.data[i].loginMember);
+                this.Time.push(this.dateTimeFormat(res.data.data[i].date));
               }
               this.drawLine(this.loginMember,this.gameNum,this.currentMember)
             },
           ).catch((e) => {})
+        },
+        dateTimeFormat(value) {
+          let time = new Date(+value);
+          let rightTwo = (v) => {
+            v = '0' + v;
+            return v.substring(v.length - 2, v.length)
+          };
+          if (time == null) return;
+          let year = time.getFullYear();
+          let month = time.getMonth() + 1;
+          let date = time.getDate();
+          let hours = time.getHours();
+          let minutes = time.getMinutes();
+          let seconds = time.getSeconds();
+          return year + '-' + rightTwo(month) + '-' + rightTwo(date);
         },
         //折线图
         drawLine(loginMember,gameNum,currentMember){
@@ -122,7 +144,7 @@
             xAxis: {
               type: 'category',
               boundaryGap: false,
-              data: ['周一','周二','周三','周四','周五','周六','周日']
+              data: this.Time
             },
             yAxis: {
               type: 'value'
