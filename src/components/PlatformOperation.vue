@@ -32,7 +32,7 @@
 
       <!-- 运营日报列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
+                style="width: 100%;" v-show="po">
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="date" label="日期" width="120" sortable></el-table-column>
         <el-table-column prop="newMember" label="新增注册量" width="120" sortable></el-table-column>
@@ -71,6 +71,7 @@
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
+        po: false,//隐藏表单
       }
     },
     methods: {
@@ -106,6 +107,7 @@
           }
         })
           .then((res) => {
+              this.po = true;//显示表单
               this.loading = false;//隐藏加载条
               this.items = res.data.data.items;
               this.total = res.data.data.pageCount;
@@ -147,13 +149,6 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
-    },
-    mounted() {//初始化页面
-      this.$message({
-        showClose: true,
-        message: '请选择时间进行数据的查询',
-        type: 'warning'
-      });
     }
   }
 </script>

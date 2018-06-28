@@ -44,6 +44,7 @@
       <el-table-column prop="phone" label="任务类型" width="100" sortable></el-table-column>
       <el-table-column prop="createTime" label="奖励类型" width="100" sortable></el-table-column>
       <el-table-column prop="createTime" label="奖励数量" width="100" sortable></el-table-column>
+      <el-table-column prop="createTime" label="完成次数" width="100" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="deletetask(scope.$index,scope.row)" size="small">删除</el-button>
