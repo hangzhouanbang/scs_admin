@@ -18,6 +18,8 @@ import ReCharge from '@/components/ReCharge.vue'
 import OnlineUsers from '@/components/OnlineUsers.vue'
 import PlatformOperation from '@/components/PlatformOperation.vue'
 import Progression from '@/components/Progression.vue'
+import PendingReleaseTask from '@/components/PendingReleaseTask.vue'
+import PublishedTask from '@/components/PublishedTask.vue'
 
 Vue.use(Router)
 
@@ -111,5 +113,16 @@ export default new Router({
         {path: '/progression', component:Progression, name: '游戏数据日报', menuShow: true},
       ]
     },
+    {
+      path: '/home',
+      component: Home,
+      name: '任务管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-xitongshezhi',
+      children: [
+        {path: '/pendingReleaseTask', component: PendingReleaseTask, name: '待发布任务', menuShow: true},
+        {path: '/publishedTask', component: PublishedTask, name: '已发布任务', menuShow: true},
+      ]
+    }
   ]
 })

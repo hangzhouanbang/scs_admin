@@ -52,17 +52,50 @@
       data() {
         return {
           filters:{},
+          state:{},
+          currentMember:[],
+          gameNum:[],
+          loginMember:[],
           options:[
             {value:'瑞安麻将'}
           ]
         }
       },
-      mounted(){
-        this.drawLine();
-      },
       methods: {
-        handleSearch(){},
-        drawLine(){
+        handleSearch(){
+          if(this.filters.startTime){
+            let date = new Date(this.filters.startTime);
+            this.state.startTime = date.getTime();
+          }
+          if(this.filters.endTime){
+            let date = new Date(this.filters.endTime);
+            this.state.endTime = date.getTime();
+          }
+          if(this.filters.startTime &&
+            this.filters.endTime &&
+            this.state.endTime - this.state.startTime < 0){
+            return;
+          }
+          axios({
+            url:'/api/datareport/platform',
+            method: 'post',
+            params:{
+              startTime:this.state.startTime,
+              endTime:this.state.endTime
+            }
+          }).then((res) => {
+              for(let i = 0;i < res.data.data.length;i++){
+                console.log(res.data.data[i])
+                this.currentMember.push(res.data.data[i].currentMember);
+                this.gameNum.push(res.data.data[i].gameNum);
+                this.loginMember.push(res.data.data[i].loginMember);
+              }
+              this.drawLine(this.loginMember,this.gameNum,this.currentMember)
+            },
+          ).catch((e) => {})
+        },
+        //折线图
+        drawLine(loginMember,gameNum,currentMember){
           // 基于准备好的dom，初始化echarts实例
           let myChart = this.$echarts.init(document.getElementById('myChart'))
           myChart.setOption({
@@ -99,19 +132,19 @@
                 name:'独立玩家',
                 type:'line',
                 stack: '总量',
-                data:[120, 132, 101, 134, 90, 230, 210]
+                data:loginMember
               },
               {
                 name:'游戏局数',
                 type:'line',
                 stack: '总量',
-                data:[220, 182, 191, 234, 290, 330, 310]
+                data:gameNum
               },
               {
                 name:'会员人数',
                 type:'line',
                 stack: '总量',
-                data:[150, 232, 201, 154, 190, 330, 410]
+                data:currentMember
               }
             ]
           })
