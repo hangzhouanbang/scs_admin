@@ -31,18 +31,51 @@
       </el-col>
 
       <!-- 运营日报列表-->
-      <el-table :data="data" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
-        <el-table-column prop="date" label="日期" width="100" sortable></el-table-column>
-        <el-table-column prop="newMember" label="新增注册量" width="140" sortable></el-table-column>
-        <el-table-column prop="currentMember" label="当日会员人数" width="140" sortable></el-table-column>
-        <el-table-column prop="cost" label="消费金额" width="100" sortable></el-table-column>
-        <el-table-column prop="gameNum" label="游戏总局数" width="140" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="独立玩家" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSecond" label="次日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="remainThird" label="三日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSeventh" label="七日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="remainMonth" label="三十日以外留存"></el-table-column>
+      <el-table
+        :data="items"
+        style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="次日留存">
+                <span>{{ props.row.remainSecond }}</span>
+              </el-form-item>
+              <el-form-item label="三日留存">
+                <span>{{ props.row.remainThird }}</span>
+              </el-form-item>
+              <el-form-item label="七日留存">
+                <span>{{ props.row.remainSeventh }}</span>
+              </el-form-item>
+              <el-form-item label="30日以外留存">
+                <span>{{ props.row.remainMonth }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="日期"
+          prop="date">
+        </el-table-column>
+        <el-table-column
+          label="新增注册量"
+          prop="newMember">
+        </el-table-column>
+        <el-table-column
+          label="当日会员人数"
+          prop="currentMember">
+        </el-table-column>
+        <el-table-column
+          label="消费金额（元）"
+          prop="cost">
+        </el-table-column>
+        <el-table-column
+          label="游戏总局数"
+          prop="gameNum">
+        </el-table-column>
+        <el-table-column
+          label="独立玩家"
+          prop="loginMember">
+        </el-table-column>
       </el-table>
 
       <!--工具条-->
@@ -67,34 +100,52 @@
         filters: {
           name: ''
         },
-        data: [],
+        items: [],
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
       }
     },
     methods: {
+      dateTimeFormat(value) {
+        let time = new Date(+value);
+        let rightTwo = (v) => {
+          v = '0' + v;
+          return v.substring(v.length - 2, v.length)
+        };
+        if (time == null) return;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        return year + '-' + rightTwo(month) + '-' + rightTwo(date);
+      },
       handleCurrentChange(val) {
         this.page = val;
-        this.handleSearch(this.page);
+        this.seek(this.page);
       },
       //搜索
       seek() {
         axios({
           method: 'post',
-          url: '/api/datareport/platform',
+          url: '/api/datareport/platformreport',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'startTime': '',
-            'endTime': ''
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+            'startTime': new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
+            'endTime': new Date(this.value2).getTime()
           }
         })
           .then((res) => {
               this.loading = false;//隐藏加载条
-              this.data = res.data.data;
+              this.items = res.data.data.items;
+              this.total = res.data.data.pageCount;
               //console.log(res.data.data.items)
+              for (let i = 0; i < this.data.data.items.length; i++) {
+                this.items[i].date = this.dateTimeFormat(this.items[i].date);
+              }
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -130,8 +181,12 @@
         this.sels = sels;
       },
     },
-    mounted() {
-      this.seek();
+    mounted() {//初始化页面
+      this.$message({
+        showClose: true,
+        message: '请选择时间进行数据的查询',
+        type: 'warning'
+      });
     }
   }
 </script>
@@ -139,5 +194,20 @@
 <style scoped>
   .warp-main {
     margin-top: 20px;
+  }
+
+  .demo-table-expand {
+    font-size: 0;
+  }
+
+  .demo-table-expand label {
+    width: 200px;
+    color: #99a9bf;
+  }
+
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 25%;
   }
 </style>
