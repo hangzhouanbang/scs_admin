@@ -42,14 +42,14 @@
     <!--添加-->
     <el-dialog title="新增任务" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="任务名称" prop="nickname">
-          <el-input v-model="addForm.nickname" auto-complete="off"></el-input>
+        <el-form-item label="任务名称" prop="name">
+          <el-input v-model="addForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="详细描述" prop="pass">
-          <el-input type="password" v-model="addForm.pass" auto-complete="off"></el-input>
+        <el-form-item label="详细描述" prop="description">
+          <el-input v-model="addForm.description" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="任务类型" prop="pass">
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="任务类型" prop="taskType">
+          <el-select v-model="addForm.taskType" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -58,8 +58,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="奖励类型" prop="pass">
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="奖励类型" prop="rewardType">
+          <el-select v-model="addForm.rewardType" placeholder="请选择">
             <el-option
               v-for="item in type"
               :key="item.value"
@@ -78,14 +78,14 @@
     <!--发布-->
     <el-dialog title="发布任务" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="任务名称" prop="nickname">
-          <el-input v-model="addForm.nickname" auto-complete="off"></el-input>
+        <el-form-item label="任务名称" prop="name">
+          <el-input v-model="addForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="详细描述" prop="pass">
-          <el-input type="password" v-model="addForm.pass" auto-complete="off"></el-input>
+        <el-form-item label="详细描述" prop="description">
+          <el-input v-model="addForm.description" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="任务类型" prop="pass">
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="任务类型" prop="taskType">
+          <el-select v-model="addForm.taskType" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -94,8 +94,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="奖励类型" prop="pass">
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="奖励类型" prop="rewardType">
+          <el-select v-model="addForm.rewardType" placeholder="请选择">
             <el-option
               v-for="item in type"
               :key="item.value"
@@ -104,11 +104,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="完成次数" prop="nickname">
-          <el-input v-model="addForm.nickname" auto-complete="off"></el-input>
+        <el-form-item label="完成次数" prop="completionTimes">
+          <el-input type='number' v-model="addForm.completionTimes" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="奖励次数" prop="nickname">
-          <el-input v-model="addForm.nickname" auto-complete="off"></el-input>
+        <el-form-item label="奖励次数" prop="numberOfReward">
+          <el-input type='number' v-model="addForm.numberOfReward" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -135,7 +135,27 @@
             type:[
               {value:'金币'},
               {value:'积分'}
-            ]
+            ],
+            addFormRules:{
+              name: [
+                {required: true, message: '请输入任务名称', trigger: 'blur'}
+              ],
+              description: [
+                {required: true, message: '请输入详细描述', trigger: 'blur'}
+              ],
+              taskType: [
+                {required: true, message: '请选择任务类型', trigger: 'change'}
+              ],
+              rewardType: [
+                {required: true, message: '请选择奖励类型', trigger: 'change'}
+              ],
+              completionTimes: [
+                {required: true, message: '请输入完成次数', trigger: 'blur'}
+              ],
+              numberOfReward: [
+                {required: true, message: '请输入奖励次数', trigger: 'blur'}
+              ]
+            }
           }
         },
         methods:{
@@ -144,6 +164,9 @@
           },
           publishDialog:function(){
             this.addFormVisible = true;
+          },
+          handleSearch(){
+
           }
         }
     }
