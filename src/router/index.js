@@ -20,6 +20,9 @@ import PlatformOperation from '@/components/PlatformOperation.vue'
 import Progression from '@/components/Progression.vue'
 import PendingReleaseTask from '@/components/PendingReleaseTask.vue'
 import PublishedTask from '@/components/PublishedTask.vue'
+import MailingList from '@/components/MailingList.vue'
+import Mailing from '@/components/Mailing.vue'
+import MailRecord from '@/components/MailRecord.vue'
 
 Vue.use(Router)
 
@@ -122,6 +125,18 @@ export default new Router({
       children: [
         {path: '/pendingReleaseTask', component: PendingReleaseTask, name: '待发布任务', menuShow: true},
         {path: '/publishedTask', component: PublishedTask, name: '已发布任务', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '邮件管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-xitongshezhi',
+      children: [
+        {path: '/mailingList', component:MailingList, name: '邮件列表', menuShow: true},
+        {path: '/mailing', component:Mailing, name: '邮件发送', menuShow: true},
+        {path: '/mailRecord', component:MailRecord, name: '邮件记录', menuShow: true},
       ]
     }
   ]
