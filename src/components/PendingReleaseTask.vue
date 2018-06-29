@@ -107,9 +107,10 @@
         <el-form-item label="完成次数" prop="completionTimes">
           <el-input type='number' v-model="addForm.completionTimes" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="奖励次数" prop="numberOfReward">
+        <el-form-item label="奖励数量" prop="numberOfReward">
           <el-input type='number' v-model="addForm.numberOfReward" auto-complete="off"></el-input>
         </el-form-item>
+        <el-radio v-model="radio" label="1" class="radio">每日</el-radio>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
@@ -128,7 +129,9 @@
             filters:{},
             addFormVisible:false,
             addLoading:false,
+            publishVisible:false,
             addForm:{},
+            radio: '1',
             options:[
               {value:'每日任务'}
             ],
@@ -163,7 +166,7 @@
             this.addFormVisible = true;
           },
           publishDialog:function(){
-            this.addFormVisible = true;
+            this.publishVisible = true;
           },
           handleSearch(){
 
@@ -175,5 +178,8 @@
 <style scoped>
   .toolbar{
     margin-top:30px;
+  }
+  .radio{
+    margin-left:80px;
   }
 </style>
