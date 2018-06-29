@@ -121,7 +121,7 @@ export default new Router({
       component: Home,
       name: '任务管理',
       menuShow: true,
-      iconCls: 'iconfont icon-xitongshezhi',
+      iconCls: 'iconfont icon-renwuguanli',
       children: [
         {path: '/pendingReleaseTask', component: PendingReleaseTask, name: '待发布任务', menuShow: true},
         {path: '/publishedTask', component: PublishedTask, name: '已发布任务', menuShow: true},
@@ -132,7 +132,7 @@ export default new Router({
       component: Home,
       name: '邮件管理',
       menuShow: true,
-      iconCls: 'iconfont icon-xitongshezhi',
+      iconCls: 'iconfont icon-mailmanagement',
       children: [
         {path: '/mailingList', component:MailingList, name: '邮件列表', menuShow: true},
         {path: '/mailing', component:Mailing, name: '邮件发送', menuShow: true},
