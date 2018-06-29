@@ -121,7 +121,7 @@
           filetype = 'jpg'
         }
         // 重命名要上传的文件
-        const keyname = 'anbang' + new Date() + Math.floor(Math.random() * 100) + '.' + filetype
+        const keyname = 'anbang' + Math.random() + '.' + filetype
         // 从后端获取上传凭证token
         axios({
           method: 'post',
@@ -299,6 +299,7 @@
   .warp-main {
     margin-top: 20px;
   }
+
   img {
     width: 180px;
     height: 120px;
