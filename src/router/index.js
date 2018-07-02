@@ -112,8 +112,8 @@ export default new Router({
       menuShow: true,
       iconCls: 'iconfont icon-baobiaotongji',
       children: [
-        {path: '/platformOperation', component:PlatformOperation, name: '平台运营日报', menuShow: true},
-        {path: '/progression', component:Progression, name: '游戏数据日报', menuShow: true},
+        {path: '/platformOperation', component: PlatformOperation, name: '平台运营日报', menuShow: true},
+        {path: '/progression', component: Progression, name: '游戏数据日报', menuShow: true},
       ]
     },
     {
@@ -134,9 +134,9 @@ export default new Router({
       menuShow: true,
       iconCls: 'iconfont icon-mailmanagement',
       children: [
-        {path: '/mailingList', component:MailingList, name: '邮件列表', menuShow: true},
-        {path: '/mailing', component:Mailing, name: '邮件发送', menuShow: true},
-        {path: '/mailRecord', component:MailRecord, name: '邮件记录', menuShow: true},
+        {path: '/mailingList', component: MailingList, name: '邮件列表', menuShow: true},
+        {path: '/mailing', component: Mailing, name: '邮件发送', menuShow: true},
+        {path: '/mailRecord', component: MailRecord, name: '邮件记录', menuShow: true},
       ]
     }
   ]

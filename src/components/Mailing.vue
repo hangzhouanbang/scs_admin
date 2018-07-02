@@ -35,22 +35,29 @@
               </el-upload>
             </div>
           </el-form-item>
-          <el-form-item label="用户ID" prop="id">
+          <el-form-item label="用户ID" prop="ids">
             <el-input
               type="textarea"
               autosize
               placeholder="多个以上ID，用“，”分隔开来。"
-              v-model="filters.id">
+              v-model="filters.ids">
             </el-input>
           </el-form-item>
           <el-form-item label="金币" prop="number">
-            <el-input type="number" min="0" placeholder="数目" v-model="filters.gold"></el-input>
+            <el-input type="number" min="0" placeholder="数目" v-model="filters.number"></el-input>
           </el-form-item>
-          <el-form-item label="积分" prop="number">
-            <el-input type="number" min="0" placeholder="数目" v-model="filters.score"></el-input>
+          <el-form-item label="积分" prop="integral">
+            <el-input type="number" min="0" placeholder="数目" v-model="filters.integral"></el-input>
           </el-form-item>
           <el-form-item label="物品" prop="number">
-            <el-input placeholder="会员卡编号" v-model="filters.uid"></el-input>
+            <el-select v-model="id" placeholder="请选择">
+              <el-option
+                v-for="item in this.data"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="邮件有效期">
             <el-select v-model="value2" placeholder="请选择">
@@ -60,7 +67,7 @@
                 :label="item.label"
                 :value="item.value2">
               </el-option>
-            </el-select>
+            </el-select>&nbsp;天
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="send">确认发送</el-button>
@@ -81,30 +88,25 @@
     data() {
       return {
         options: [{
-          value: '选项1',
-          label: '奖励发送'
+          value: '奖励发送',
         }, {
-          value: '选项2',
-          label: '系统通知'
+          value: '系统通知',
         }, {
-          value: '选项3',
-          label: '活动通知'
+          value: '活动通知',
         }],
         value: '奖励发送',
         day: [{
-          value2: '选项1',
-          label: '1天'
+          value2: '1',
         }, {
-          value2: '选项2',
-          label: '3天'
+          value2: '3',
         }, {
-          value2: '选项3',
-          label: '7天'
+          value2: '7',
         }, {
-          value2: '选项4',
-          label: '30天'
+          value2: '30',
         }],
-        value2: '1天',
+        value2: '1',
+        data: [],
+        id: this.data,
         filters: {
           name: ''
         },
@@ -114,7 +116,7 @@
         // 这是七牛云空间的外链默认域名
         qiniuaddr: 'paly4iump.bkt.clouddn.com',
         rules: {
-          id: [
+          ids: [
             {required: true, message: '请输入ID', trigger: 'blur'}
           ]
         },
@@ -174,42 +176,61 @@
 
       //重置
       reset() {
-        this.filters.id = ''
-        this.filters.gold = ''
-        this.filters.score = ''
-        this.filters.uid = ''
+        this.filters.ids = ''
+        this.filters.number = ''
+        this.filters.integral = ''
+        this.id = ''
       },
 
       //发送
       send() {
-        if (this.filters.id == undefined || this.filters.id == "") {
+        if (this.filters.ids == undefined || this.filters.ids == "") {
           this.$message({
             showClose: true,
             message: '用户ID不能为空',
             type: 'warning'
           });
+        } else if (this.filters.number < 0 || this.filters.integral < 0) {
+          this.$message({
+            showClose: true,
+            message: '金币或积分为正整数',
+            type: 'warning'
+          });
         } else {
           axios({
             method: 'post',
-            url: '/api/',
+            url: '/api/mailctrl/addmailbyid',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'status': '0',
-              'file': this.imageUrl
+              'mailType': this.value,
+              'file': this.imageUrl,
+              'ids': this.filters.ids,
+              'number': this.filters.number,
+              'integral': this.filters.integral,
+              'vipCardId': this.id,
+              'validDay': this.value2
             }
           })
             .then((res) => {
-                this.$message({
-                  showClose: true,
-                  message: '发布成功',
-                  type: 'success'
-                });
-                this.filters.id = ''
-                this.filters.gold = ''
-                this.filters.score = ''
-                this.filters.uid = ''
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '发布失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '发布成功',
+                    type: 'success'
+                  });
+                  this.filters.ids = ''
+                  this.filters.number = ''
+                  this.filters.integral = ''
+                  this.id = ''
+                }
               },
             ).catch((e) => {
             if (e && e.response) {
@@ -242,7 +263,48 @@
           });
         }
       }
-
+    },
+    mounted() { //初始化页面
+      axios({//查出所有会员卡
+        method: 'post',
+        url: '/api/mailctrl/find_vipcard',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        },
+      })
+        .then((res) => {
+            this.data = res.data.data;
+            //console.log(this.data)
+          },
+        ).catch((e) => {
+        if (e && e.response) {
+          switch (e.response.status) {
+            case 504:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 500:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 405:
+              this.$message({
+                showClose: true,
+                message: '请先登录',
+                type: 'warning'
+              });
+              break
+          }
+        }
+      });
     }
   }
 </script>
@@ -254,5 +316,10 @@
 
   .el-form-item {
     width: 500px;
+  }
+
+  img {
+    width: 180px;
+    height: 120px;
   }
 </style>
