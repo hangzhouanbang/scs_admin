@@ -88,13 +88,13 @@
     data() {
       return {
         options: [{
-          value: '奖励发送',
+          value: '活动奖励',
         }, {
           value: '系统通知',
         }, {
           value: '活动通知',
         }],
-        value: '奖励发送',
+        value: '活动奖励',
         day: [{
           value2: '1',
         }, {
