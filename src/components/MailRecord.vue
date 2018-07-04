@@ -1,3 +1,4 @@
+<!--邮件记录-->
 <template>
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
@@ -34,7 +35,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="操作人" label-width="68px">
-          <el-select v-model="filters.nickname" placeholder="请选择">
+          <el-select v-model="nickname" placeholder="请选择">
             <el-option
               v-for="item in this.adminList"
               :key="item.nickname"
@@ -50,7 +51,7 @@
     </el-col>
 
     <!-- 邮件列表-->
-    <el-table :data="lists" highlight-current-row style="width: 100%;">
+    <el-table :data="items" highlight-current-row style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="memberId" label="用户ID" width="auto" sortable></el-table-column>
@@ -99,7 +100,7 @@
     data() {
       return {
         filters: {},
-        lists: [],
+        items: [],
         options: [
           {value: '',
             label:'所有'
@@ -158,7 +159,7 @@
                   type: 'warning'
                 });
               } else if (res.data.success == true) {
-                this.lists = res.data.data.lists;
+                this.items = res.data.data.items;
                 this.total = res.data.data.pageCount;//总页数
                 //console.log(this.data)
                 for (let i = 0; i < this.lists.length; i++) {
