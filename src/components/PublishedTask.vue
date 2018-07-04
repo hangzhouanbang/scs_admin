@@ -96,11 +96,53 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.handleSearch(this.page);
+        this.showtask(this.page);
       },
       //查询
       showtask() {
+        axios({
+          method: 'post',
+          url: '/api/task/querytaskdocumenthistory',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+          }
+        })
+          .then((res) => {
 
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
       },
 
       //删除

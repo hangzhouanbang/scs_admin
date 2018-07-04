@@ -24,7 +24,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="类型" label-width="68px">
-          <el-select v-model="filters.type" placeholder="请选择">
+          <el-select v-model="filters.mailType" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -34,12 +34,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="操作人" label-width="68px">
-          <el-select v-model="filters.operator" placeholder="请选择">
+          <el-select v-model="filters.nickname" placeholder="请选择">
             <el-option
-              v-for="item in operator"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in this.adminList"
+              :key="item.nickname"
+              :label="item.nickname"
+              :value="item.nickname">
             </el-option>
           </el-select>
         </el-form-item>
@@ -50,50 +50,266 @@
     </el-col>
 
     <!-- 邮件列表-->
-    <el-table :data="email" highlight-current-row style="width: 100%;">
+    <el-table :data="lists" highlight-current-row style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="createTime" label="用户ID" width="auto" sortable></el-table-column>
-      <el-table-column prop="idCard" label="邮件内容" width="auto" sortable></el-table-column>
-      <el-table-column prop="roleList[0].role" label="类型" width="auto" sortable></el-table-column>
-      <el-table-column prop="createTime" label="金币" width="auto" sortable></el-table-column>
-      <el-table-column prop="createTime" label="积分" width="auto" sortable></el-table-column>
-      <el-table-column prop="createTime" label="会员卡" width="auto" sortable></el-table-column>
-      <el-table-column prop="nickname" label="有效时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="user" label="发送时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="createTime" label="是否领取" width="auto" sortable></el-table-column>
-      <el-table-column prop="createTime" label="领取时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="createTime" label="发送人" width="auto" sortable></el-table-column>
+      <el-table-column prop="memberId" label="用户ID" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.file" label="邮件内容" width="auto" sortable>
+        <template slot-scope="scope">
+          <img :src="scope.row.systemMail.file" alt="" style="width: 50px;height: 50px">
+        </template>
+      </el-table-column>
+      <el-table-column prop="systemMail.mailType" label="类型" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.number" label="金币" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.integral" label="积分" width="auto" sortable></el-table-column>
+      <el-table-column prop="vipCardName" label="会员卡" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.validTime" label="有效时间" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.createtime" label="发送时间" width="auto" sortable></el-table-column>
+      <el-table-column prop="receive" label="是否领取" width="auto" sortable>
+        <template slot-scope="scope">
+          <el-button type="text" v-if="scope.row.receive === '0'">已领取</el-button>
+          <el-button type="text" v-if="scope.row.receive === '1'">未领取</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="rewardTime" label="领取时间" width="auto" sortable>
+        <template slot-scope="scope">
+          <el-button type="text" v-if="scope.row.rewardTime === '1970-01-01 08:00:00'">未领取</el-button>
+          <el-button type="text" v-if="scope.row.rewardTime !== '1970-01-01 08:00:00'">{{scope.row.rewardTime}}
+          </el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="systemMail.adminname" label="发送人" width="auto" sortable></el-table-column>
     </el-table>
+
+    <!--工具条-->
+    <el-col :span="24" class="toolbar">
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
+                     style="float:right;">
+      </el-pagination>
+    </el-col>
+
   </el-row>
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: "MailRecord",
-    data(){
-      return{
-        filters:{},
-        email:[],
-        options:[
-          {value:'活动奖励'},
-          {value:'系统通知'},
-          {value:'活动通知'}
+    data() {
+      return {
+        filters: {},
+        lists: [],
+        options: [
+          {value: '',
+            label:'所有'
+          },
+          {value: '活动奖励'},
+          {value: '系统通知'},
+          {value: '活动通知'}
         ],
-        operator:[]
+        value: '',
+        adminList: [],
+        nickname: this.adminList,
+        total: 0,
       }
     },
-    methods:{
-      handleSearch(){
+    methods: {
+      dateTimeFormat(value) {
+        let time = new Date(+value);
+        let rightTwo = (v) => {
+          v = '0' + v;
+          return v.substring(v.length - 2, v.length)
+        };
+        if (time == null) return;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        let hours = time.getHours();
+        let minutes = time.getMinutes();
+        let seconds = time.getSeconds();
+        return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.handleSearch(this.page);
+      },
+      handleSearch() {
+        axios({
+          method: 'post',
+          url: '/api/mailctrl/find_mail_record',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+            'startTime':'NaN'? '0':new Date(this.filters.startTime).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
+            'endTime':'NaN'? '0': new Date(this.filters.endTime).getTime(),
+            'mailType': this.filters.mailType,
+            'adminName': this.nickname
+          }
+        })
+          .then((res) => {
+              if (res.data.success == false) {
+                this.$message({
+                  showClose: true,
+                  message: '发布失败',
+                  type: 'warning'
+                });
+              } else if (res.data.success == true) {
+                this.lists = res.data.data.lists;
+                this.total = res.data.data.pageCount;//总页数
+                //console.log(this.data)
+                for (let i = 0; i < this.lists.length; i++) {
+                  this.lists[i].systemMail.validTime = this.dateTimeFormat(this.lists[i].systemMail.validTime);
+                  this.lists[i].systemMail.createtime = this.dateTimeFormat(this.lists[i].systemMail.createtime);
+                  this.lists[i].rewardTime = this.dateTimeFormat(this.lists[i].rewardTime);
+                }
+              }
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      },
 
-      }
+     /* handleSearch2() {
+        axios({
+          method: 'post',
+          url: '/api/mailctrl/find_mail_record',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+          }
+        })
+          .then((res) => {
+              if (res.data.success == false) {
+                this.$message({
+                  showClose: true,
+                  message: '数据读取失败',
+                  type: 'warning'
+                });
+              } else if (res.data.success == true) {
+                this.lists = res.data.data.lists;
+                this.total = res.data.data.pageCount;//总页数
+                //console.log(this.data)
+                for (let i = 0; i < this.lists.length; i++) {
+                  this.lists[i].systemMail.validTime = this.dateTimeFormat(this.lists[i].systemMail.validTime);
+                  this.lists[i].systemMail.createtime = this.dateTimeFormat(this.lists[i].systemMail.createtime);
+                  this.lists[i].rewardTime = this.dateTimeFormat(this.lists[i].rewardTime);
+                }
+              }
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      }*/
+
+    },
+    mounted() {
+      this.handleSearch();
+      axios({//查出所有管理员名称
+        method: 'post',
+        url: '/api/adminCtrl/queryAdmin',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        },
+      })
+        .then((res) => {
+            this.adminList = res.data.adminList;
+            //console.log(this.data)
+          },
+        ).catch((e) => {
+        if (e && e.response) {
+          switch (e.response.status) {
+            case 504:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 500:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 405:
+              this.$message({
+                showClose: true,
+                message: '请先登录',
+                type: 'warning'
+              });
+              break
+          }
+        }
+      });
     }
   }
 </script>
 
 <style scoped>
-  .toolbar{
-    margin-top:30px;
+  .toolbar {
+    margin-top: 30px;
   }
 </style>
 
