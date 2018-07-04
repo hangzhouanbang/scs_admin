@@ -162,10 +162,10 @@
                 this.items = res.data.data.items;
                 this.total = res.data.data.pageCount;//总页数
                 //console.log(this.data)
-                for (let i = 0; i < this.lists.length; i++) {
-                  this.lists[i].systemMail.validTime = this.dateTimeFormat(this.lists[i].systemMail.validTime);
-                  this.lists[i].systemMail.createtime = this.dateTimeFormat(this.lists[i].systemMail.createtime);
-                  this.lists[i].rewardTime = this.dateTimeFormat(this.lists[i].rewardTime);
+                for (let i = 0; i < this.items.length; i++) {
+                  this.items[i].systemMail.validTime = this.dateTimeFormat(this.items[i].systemMail.validTime);
+                  this.items[i].systemMail.createtime = this.dateTimeFormat(this.items[i].systemMail.createtime);
+                  this.items[i].rewardTime = this.dateTimeFormat(this.items[i].rewardTime);
                 }
               }
             },
