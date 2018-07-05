@@ -13,18 +13,28 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.id" placeholder="任务ID"></el-input>
+            <el-input v-model="filters.taskDocId" placeholder="任务ID"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="filters.nickname" placeholder="管理员名称"></el-input>
+            <el-input v-model="filters.promulgator" placeholder="管理员名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="value" placeholder="请选择身份">
+            <el-select v-model="value" placeholder="请选择发布对象">
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="filters.type" placeholder="请选择任务类型">
+              <el-option
+                v-for="(item,index) in data"
+                :key="index"
+                :label="item.label"
+                :value="item">
               </el-option>
             </el-select>
           </el-form-item>
@@ -34,17 +44,24 @@
     </el-col>
 
     <!-- 任务列表-->
-    <el-table :data="task" highlight-current-row @selection-change="selsChange"
+    <el-table :data="items" highlight-current-row @selection-change="selsChange"
               style="width: 100%;">
       <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column type="index" width="50"></el-table-column>
-      <el-table-column prop="id" label="管理员名称" width="140" sortable></el-table-column>
-      <el-table-column prop="nickname" label="任务名称" width="100" sortable></el-table-column>
-      <el-table-column prop="gender" label="详细描述" width="160" sortable></el-table-column>
-      <el-table-column prop="phone" label="任务类型" width="100" sortable></el-table-column>
-      <el-table-column prop="createTime" label="奖励类型" width="100" sortable></el-table-column>
-      <el-table-column prop="createTime" label="奖励数量" width="100" sortable></el-table-column>
-      <el-table-column prop="createTime" label="完成次数" width="100" sortable></el-table-column>
+      <el-table-column prop="taskDocId" label="任务ID" width="120" sortable></el-table-column>
+      <el-table-column prop="promulgator" label="管理员名称" width="120" sortable></el-table-column>
+      <el-table-column prop="name" label="任务名称" width="100" sortable></el-table-column>
+      <el-table-column prop="desc" label="详细描述" width="100" sortable></el-table-column>
+      <el-table-column prop="type" label="任务类型" width="100" sortable></el-table-column>
+      <el-table-column prop="rewardType" label="奖励类型" width="100" sortable></el-table-column>
+      <el-table-column prop="rewardNum" label="奖励数量" width="100" sortable>
+        <template slot-scope="scope">
+          <el-button type="text" v-if="scope.row.rewardType == '积分奖励'">{{scope.row.rewardNum}}</el-button>
+          <el-button type="text" v-if="scope.row.rewardType == '金币奖励'">{{scope.row.rewardNum}}万</el-button>
+          <el-button type="text" v-if="scope.row.rewardType == '会员卡奖励'">{{scope.row.rewardNum}}天</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="targetNum" label="完成次数" width="100" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="deletetask(scope.$index,scope.row)" size="small">删除</el-button>
@@ -71,13 +88,13 @@
     data() {
       return {
         options: [{
-          value: '选项1',
+          value: null,
           label: '所有任务'
         }, {
-          value: '选项2',
+          value: true,
           label: '会员任务'
         }, {
-          value: '选项3',
+          value: false,
           label: '非会员任务'
         }],
         value: '',
@@ -85,9 +102,10 @@
           name: ''
         },
         loading: false,
-        task: [],
+        items: [],
         sels: [], //列表选中列
         total: 0,
+        data:[]
       }
     },
     methods: {
@@ -109,10 +127,14 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
+            'taskDocId': this.filters.taskDocId,
+            'promulgator': this.filters.promulgator,
+            'vip': this.value,
           }
         })
           .then((res) => {
-
+              this.items = res.data.data.items;
+              this.total = res.data.data.pageCount;
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -152,20 +174,20 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/',
+            url: '/api/task/withdraw',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': row.id
+              'taskId': row.id
             }
           })
             .then((res) => {
                 that.loading = false;
-                if (res.data == 'success') {
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.showtask();
-                } else {
+                } else if (res.data.success == false) {
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
               },
@@ -187,20 +209,20 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/',
+            url: '/api/task/withdraw',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': ids
+              'taskId': ids
             }
           })
             .then((res) => {
                 that.loading = false;
-                if (res.data == 'success') {
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.showtask();
-                } else {
+                  this.showtask();
+                } else if(res.data.success == false){
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
               },
@@ -214,6 +236,45 @@
     },
     mounted() { //初始化页面
       this.showtask();
+      axios({//查出所有任务类型
+        method: 'post',
+        url: '/api/task/querytasktype',
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        },
+      })
+        .then((res) => {
+            this.data = res.data.data;
+          },
+        ).catch((e) => {
+        if (e && e.response) {
+          switch (e.response.status) {
+            case 504:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 500:
+              this.$message({
+                showClose: true,
+                message: '服务器异常',
+                type: 'warning'
+              });
+              this.loading = false;//隐藏加载条
+              break
+            case 405:
+              this.$message({
+                showClose: true,
+                message: '请先登录',
+                type: 'warning'
+              });
+              break
+          }
+        }
+      });
     }
   }
 </script>
@@ -222,6 +283,7 @@
   .warp-main {
     margin-top: 20px;
   }
+
   .toolbar {
     margin-top: 20px;
   }
