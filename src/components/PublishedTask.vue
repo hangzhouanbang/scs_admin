@@ -19,7 +19,7 @@
             <el-input v-model="filters.promulgator" placeholder="管理员名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="value" placeholder="请选择发布对象">
+            <el-select v-model="filters.vip" placeholder="请选择发布对象">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -105,7 +105,7 @@
         items: [],
         sels: [], //列表选中列
         total: 0,
-        data:[]
+        data: []
       }
     },
     methods: {
@@ -222,7 +222,7 @@
                 if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   this.showtask();
-                } else if(res.data.success == false){
+                } else if (res.data.success == false) {
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
               },
