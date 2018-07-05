@@ -139,6 +139,9 @@
             console.log(res)
               this.users = res.data.data;
               this.total = res.data.pageNumber;
+              for(let i = 0; i < this.users.length;i++){
+                this.users[i].time = this.users[i].time / 1000 / 60 / 60 / 24;
+              }
             },
           ).catch((e) => {
           if(e && e.response){
@@ -248,7 +251,7 @@
             'price':this.addCard.price,
             'gold':this.addCard.gold,
             'score':this.addCard.score,
-            'time':this.addCard.time
+            'time':this.addCard.time * 24 * 60 * 60 * 1000
           }
         })
           .then((res) => {
