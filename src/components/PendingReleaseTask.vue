@@ -27,8 +27,8 @@
               style="width:100%;" id="out-table">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="name" label="任务名称" width="120" sortable></el-table-column>
-      <el-table-column prop="desc" label="详细描述" width="120" sortable></el-table-column>
+      <el-table-column prop="name" label="任务名称" width="160" sortable></el-table-column>
+      <el-table-column prop="desc" label="详细描述" width="200" sortable></el-table-column>
       <el-table-column prop="type" label="任务类型" width="120" sortable></el-table-column>
       <el-table-column prop="taskName" label="任务种类" width="120" sortable></el-table-column>
       <el-table-column prop="rewardType" label="奖励类型" width="120" sortable></el-table-column>
@@ -115,13 +115,15 @@
           <el-input v-model="publishForm.rewardType" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="完成次数" prop="completionTimes" required>
-          <el-input type='number' v-model="publishForm.completionTimes" auto-complete="off"></el-input>
+          <el-input type='number' v-model="publishForm.completionTimes" auto-complete="off" style="width:220px;"></el-input>
         </el-form-item>
         <el-form-item label="奖励数量" prop="numberOfReward" required v-if="show">
-          <el-input type='number' v-model="publishForm.numberOfReward" auto-complete="off"></el-input>
+          <el-input type='number' v-model="publishForm.numberOfReward" auto-complete="off" style="width:220px;"></el-input>
+          万
         </el-form-item>
         <el-form-item label="奖励天数" prop="numberOfReward" required v-if="hide">
-          <el-input type='number' v-model="publishForm.numberOfReward" auto-complete="off"></el-input>
+          <el-input type='number' v-model="publishForm.numberOfReward" auto-complete="off" style="width:220px;"></el-input>
+          天
         </el-form-item>
         <el-radio v-model="radio" label="1" class="radio">每日</el-radio>
       </el-form>
