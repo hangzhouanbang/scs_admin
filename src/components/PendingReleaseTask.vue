@@ -31,7 +31,6 @@
       <el-table-column prop="desc" label="详细描述" width="200" sortable></el-table-column>
       <el-table-column prop="type" label="任务类型" width="120" sortable></el-table-column>
       <el-table-column prop="taskName" label="任务种类" width="120" sortable></el-table-column>
-      <el-table-column prop="rewardType" label="奖励类型" width="120" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="small" @click="publishDialog(scope.$index,scope.row)">发布</el-button>
@@ -69,16 +68,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="奖励类型" prop="rewardType" required>
-          <el-select v-model="addForm.rewardType" placeholder="请选择">
-            <el-option
-              v-for="item in type"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
@@ -88,7 +77,7 @@
 
     <!--发布-->
     <el-dialog title="发布任务" :visible.sync="publishVisible" :close-on-click-modal="false">
-      <el-form :model="publishForm" label-width="80px" :rules="addFormRules" ref="addForm">
+      <el-form :model="publishForm" label-width="120px" :rules="addFormRules" ref="addForm">
         <el-form-item label="发布对象" prop="releaseObject" required>
           <el-select v-model="publishForm.releaseObject" placeholder="请选择">
             <el-option
@@ -111,24 +100,22 @@
         <el-form-item label="任务种类" prop="taskName" required>
           <el-input v-model="publishForm.taskName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="奖励类型" prop="rewardType" required>
-          <el-input v-model="publishForm.rewardType" auto-complete="off"></el-input>
+        <el-form-item label="奖励金币数量" prop="goldNumber">
+          <el-input v-model="publishForm.goldNumber" auto-complete="off" style="width:220px;"></el-input>万
+        </el-form-item>
+        <el-form-item label="奖励积分数量" prop="integralNumber">
+          <el-input v-model="publishForm.integralNumber" auto-complete="off" style="width:220px;"></el-input>个
+        </el-form-item>
+        <el-form-item label="奖励会员天数" prop="vipDays">
+          <el-input v-model="publishForm.vipDays" auto-complete="off" style="width:220px;"></el-input>天
         </el-form-item>
         <el-form-item label="完成次数" prop="completionTimes" required>
           <el-input type='number' v-model="publishForm.completionTimes" auto-complete="off" style="width:220px;"></el-input>
         </el-form-item>
-        <el-form-item label="奖励数量" prop="numberOfReward" required v-if="show">
-          <el-input type='number' v-model="publishForm.numberOfReward" auto-complete="off" style="width:220px;"></el-input>
-          万
-        </el-form-item>
-        <el-form-item label="奖励天数" prop="numberOfReward" required v-if="hide">
-          <el-input type='number' v-model="publishForm.numberOfReward" auto-complete="off" style="width:220px;"></el-input>
-          天
-        </el-form-item>
         <el-radio v-model="radio" label="1" class="radio">每日</el-radio>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取消</el-button>
+        <el-button @click.native="publishVisible = false">取消</el-button>
         <el-button type="primary" @click.native="publishSubmit" :loading="addLoading">确认</el-button>
       </div>
     </el-dialog>
@@ -306,8 +293,7 @@
                 name:this.addForm.name,
                 type:this.addForm.taskType,
                 desc:this.addForm.description,
-                taskName:this.addForm.Typetask,
-                rewardType:this.addForm.rewardType
+                taskName:this.addForm.Typetask
               }
             })
               .then((res) => {
@@ -336,6 +322,16 @@
             if(this.publishForm.releaseObject == '所有用户'){
               this.publishForm.userTypes = 'null';
             }
+            console.log(this.publishForm.goldNumber)
+            if(this.publishForm.goldNumber == undefined){
+              this.publishForm.goldNumber = 0;
+            }
+            if(this.publishForm.integralNumber == undefined){
+              this.publishForm.integralNumber = 0;
+            }
+            if(this.publishForm.vipDays == undefined){
+              this.publishForm.vipDays = 0;
+            }
             this.publishForm.promulgator = sessionStorage.getItem('nickname');
             this.loading = true;
             axios({
@@ -347,7 +343,9 @@
               params: {
                 taskDocId:this.publishForm.id,
                 promulgator:this.publishForm.promulgator,
-                rewardNum:this.publishForm.numberOfReward,
+                rewardGold:this.publishForm.goldNumber,
+                rewardScore:this.publishForm.integralNumber,
+                rewardVip:this.publishForm.vipDays,
                 vip:this.publishForm.userTypes,
                 targetNum:this.publishForm.completionTimes
               }
