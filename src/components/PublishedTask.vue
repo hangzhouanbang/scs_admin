@@ -53,15 +53,11 @@
       <el-table-column prop="name" label="任务名称" width="100" sortable></el-table-column>
       <el-table-column prop="desc" label="详细描述" width="100" sortable></el-table-column>
       <el-table-column prop="type" label="任务类型" width="100" sortable></el-table-column>
-      <el-table-column prop="rewardType" label="奖励类型" width="100" sortable></el-table-column>
-      <el-table-column prop="rewardNum" label="奖励数量" width="100" sortable>
-        <template slot-scope="scope">
-          <el-button type="text" v-if="scope.row.rewardType == '积分'">{{scope.row.rewardNum}}</el-button>
-          <el-button type="text" v-if="scope.row.rewardType == '金币'">{{scope.row.rewardNum}}万</el-button>
-          <el-button type="text" v-if="scope.row.rewardType == '会员卡'">{{scope.row.rewardNum}}天</el-button>
-        </template>
-      </el-table-column>
+      <el-table-column prop="rewardGold" label="金币（万）" width="120" sortable></el-table-column>
+      <el-table-column prop="rewardScore" label="积分" width="100" sortable></el-table-column>
+      <el-table-column prop="rewardVip" label="会员卡（天）" width="140" sortable></el-table-column>
       <el-table-column prop="targetNum" label="完成次数" width="100" sortable></el-table-column>
+
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="deletetask(scope.$index,scope.row)" size="small">删除</el-button>
