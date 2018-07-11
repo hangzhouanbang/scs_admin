@@ -44,7 +44,7 @@
       handleLogin() {
         axios({//登录
           method: 'post',
-          url: '/api/loginCtrl/login',
+          url: '/api/login/login',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

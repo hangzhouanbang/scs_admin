@@ -156,7 +156,7 @@
       handleSearch() {
         axios({//根据角色名称查询
           method: 'post',
-          url: '/api/roleCtrl/queryRole',
+          url: '/api/role/queryrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -167,9 +167,9 @@
           }
         })
           .then((res) => {
-              console.log(res)
-              this.role = res.data.roleList;
-              this.total = res.data.pageNumber;
+              //console.log(res)
+              this.role = res.data.data.items;
+              this.total = res.data.data.pageCount;
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -202,7 +202,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/roleCtrl/deleteRole',
+            url: '/api/role/deleterole',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -212,7 +212,7 @@
           })
             .then((res) => {
                 that.loading = false;
-                if (res.data == 'success') {
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch();
                 } else {
@@ -235,7 +235,7 @@
       editSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/roleCtrl/editRole',
+          url: '/api/role/updaterole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -245,13 +245,13 @@
           }
         })
           .then((res) => {
-              if (res.data == "fail") {
+              if (res.data.success == false) {
                 this.$message({
                   showClose: true,
                   message: '编辑失败',
                   type: 'warning'
                 });
-              } else if (res.data == "success") {
+              } else if (res.data.success == true) {
                 this.$message({
                   showClose: true,
                   message: '编辑成功',
@@ -297,13 +297,13 @@
         //查询所有权限
         axios({
           method: 'post',
-          url: '/api/privilegeCtrl/queryAllPrivilege',
+          url: '/api/privilege/queryallprivilege',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
         })
           .then((res) => {
-              this.privilege = res.data;
+              this.privilege = res.data.data;
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -339,7 +339,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/roleCtrl/editPrivilege',
+            url: '/api/role/editprivilege',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -350,7 +350,7 @@
           })
             .then((res) => {
                 that.loading = false;
-                if (res.data == 'success') {
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '保存成功', duration: 1500});
                   this.chooseFormVisible = false;//关闭弹窗
                 } else {
@@ -373,7 +373,7 @@
       addSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/roleCtrl/addRole',
+          url: '/api/role/addrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -382,13 +382,13 @@
           }
         })
           .then((res) => {
-              if (res.data == "fail") {
+              if (res.data.success == false) {
                 this.$message({
                   showClose: true,
                   message: '添加失败',
                   type: 'warning'
                 });
-              } else if (res.data == "success") {
+              } else if (res.data.success == true) {
                 this.$message({
                   showClose: true,
                   message: '添加成功',
@@ -429,7 +429,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/roleCtrl/deleteRole',
+            url: '/api/role/deleterole',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -439,7 +439,7 @@
           })
             .then((res) => {
                 that.loading = false;
-                if (res.data == 'success') {
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch(1);
                 } else {

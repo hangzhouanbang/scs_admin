@@ -23,7 +23,7 @@
       </el-col>
 
       <!-- 管理员列表-->
-      <el-table :data="users" highlight-current-row @selection-change="selsChange"
+      <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
@@ -119,7 +119,7 @@
     data() {
       return {
         radio: '',//默认性别选择
-        users: [],
+        items: [],
         roles: [],
         filters: {
           name: ''
@@ -190,25 +190,25 @@
       handleSearch() {
         axios({//根据昵称查询
           method: 'post',
-          url: '/api/adminCtrl/queryAdmin',
+          url: '/api/admin/queryadmin',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
             'page': this.page,
-            'size': '10',
-            'nickname':this.filters.nickname
+            'size': '15',
+            'nickname': this.filters.nickname
           }
         })
           .then((res) => {
-              this.users = res.data.adminList;
-              this.total = res.data.pageNumber;
-              for(let i = 0;i < this.users.length;i++){
-                this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
+              this.items = res.data.data.items;
+              this.total = res.data.data.pageCount;
+              for (let i = 0; i < this.items.length; i++) {
+                this.items[i].createTime = this.dateTimeFormat(this.items[i].createTime);
               }
             },
           ).catch((e) => {
-          if(e && e.response){
+          if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({
@@ -231,27 +231,27 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
-      //删除
-      delBook: function (index,row) {
+      //删除管理员
+      delBook: function (index, row) {
         let that = this;
         this.$confirm('确认删除该记录吗?', '提示', {type: 'warning'}).then(() => {
           that.loading = true;
-          axios({//根据昵称查询
+          axios({
             method: 'post',
-            url: '/api/adminCtrl/deleteAdmin',
+            url: '/api/admin/deleteadmin',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id':row.id
+              'id': row.id
             }
           })
             .then((res) => {
                 that.loading = false;
-                if(res.data == 'success'){
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch(1);
-                }else{
+                } else {
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
               },
@@ -275,7 +275,7 @@
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/adminCtrl/editAdmin',
+              url: '/api/admin/repass',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -286,7 +286,7 @@
             })
               .then((res) => {
                   this.loading = false;
-                  if (res.data == 'success') {
+                  if (res.data.success == true) {
                     this.editFormVisible = false;
                     this.$message.success({showClose: true, message: '修改成功', duration: 1500});
                     this.handleSearch(1);
@@ -303,19 +303,19 @@
         });
       },
       //编辑角色界面显示
-      showEditRole: function(index,row){
+      showEditRole: function (index, row) {
         this.editRoleVisible = true;
         this.editRole = Object.assign({}, row);
         axios({
           method: 'post',
-          url: '/api/roleCtrl/queryAllRole',
+          url: '/api/role/queryallrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {}
         })
           .then((res) => {
-              this.roles = res.data;
+              this.roles = res.data.data;
             },
           ).catch((e) => {
         });
@@ -327,32 +327,32 @@
         console.log(this.editRole)
         axios({
           method: 'post',
-          url: '/api/adminCtrl/editRole',
+          url: '/api/admin/editrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            adminId:this.editRole.id,
-            roleId:roleids
+            adminId: this.editRole.id,
+            roleId: roleids
           }
         })
           .then((res) => {
               console.log(res.data)
-            if (res.data == "fail") {
-              this.$message({
-                showClose: true,
-                message: '编辑失败',
-                type: 'warning'
-              });
-            } else if (res.data == "success") {
-              this.$message({
-                showClose: true,
-                message: '编辑成功',
-                type: 'success'
-              });
-              this.editRoleVisible = false;//关闭弹窗
-              this.handleSearch(1);
-            }
+              if (res.data.success == false) {
+                this.$message({
+                  showClose: true,
+                  message: '编辑失败',
+                  type: 'warning'
+                });
+              } else if (res.data.success == true) {
+                this.$message({
+                  showClose: true,
+                  message: '编辑成功',
+                  type: 'success'
+                });
+                this.editRoleVisible = false;//关闭弹窗
+                this.handleSearch(1);
+              }
             },
           ).catch((e) => {
         });
@@ -366,11 +366,11 @@
           description: ''
         };
       },
-      //新增
+      //新增管理员
       addSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/adminCtrl/addAdmin',
+          url: '/api/admin/addadmin',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -383,13 +383,13 @@
           }
         })
           .then((res) => {
-              if (res.data == "fail") {
+              if (res.data.success == false) {
                 this.$message({
                   showClose: true,
                   message: '添加失败',
                   type: 'warning'
                 });
-              } else if (res.data == "success") {
+              } else if (res.data.success == true) {
                 this.$message({
                   showClose: true,
                   message: '添加成功',
@@ -400,7 +400,7 @@
               }
             },
           ).catch((e) => {
-          if(e && e.response){
+          if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({
@@ -428,22 +428,22 @@
           type: 'warning'
         }).then(() => {
           that.loading = true;
-          axios({//根据昵称查询
+          axios({
             method: 'post',
-            url: '/api/adminCtrl/deleteAdmin',
+            url: '/api/admin/deleteadmin',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id':ids
+              'id': ids
             }
           })
             .then((res) => {
                 that.loading = false;
-                if(res.data == 'success'){
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch(1);
-                }else{
+                } else {
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
               },

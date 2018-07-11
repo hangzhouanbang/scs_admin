@@ -1,4 +1,3 @@
-
 <template>
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
@@ -21,20 +20,20 @@
         </el-form>
       </el-col>
 
-    <!-- 权限列表-->
-    <el-table :data="users" highlight-current-row @selection-change="selsChange"
-              style="width: 100%;">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="privilege" label="权限名称" width="auto" sortable></el-table-column>
-      <el-table-column prop="uri" label="URI" width="auto" sortable></el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button size="small" @click="showEditPrivilege(scope.$index,scope.row)">编辑</el-button>
-          <el-button type="danger" @click="delprivilege(scope.$index,scope.row)" size="small">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+      <!-- 权限列表-->
+      <el-table :data="users" highlight-current-row @selection-change="selsChange"
+                style="width: 100%;">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="index" width="60"></el-table-column>
+        <el-table-column prop="privilege" label="权限名称" width="auto" sortable></el-table-column>
+        <el-table-column prop="uri" label="URI" width="auto" sortable></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="small" @click="showEditPrivilege(scope.$index,scope.row)">编辑</el-button>
+            <el-button type="danger" @click="delprivilege(scope.$index,scope.row)" size="small">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-col>
 
     <!--新增权限界面-->
@@ -93,7 +92,7 @@
         },
         total: 0,
         page: 1,
-        number:1,
+        number: 1,
         limit: 10,
         loading: false,
         sels: [], //列表选中列
@@ -130,22 +129,22 @@
       handleSearch() {
         axios({
           method: 'post',
-          url: '/api/privilegeCtrl/queryPrivilege',
+          url: '/api/privilege/queryprivilege',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
             'page': this.page,
             'size': '10',
-            'privilege':this.filters.privilege
+            'privilege': this.filters.privilege
           }
         })
           .then((res) => {
-              this.users = res.data.privilegeList;
-              this.total = res.data.pageNumber;
+              this.users = res.data.data.items;
+              this.total = res.data.data.pageCount;
             },
           ).catch((e) => {
-          if(e && e.response){
+          if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({
@@ -175,21 +174,21 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/privilegeCtrl/deletePrivilege',
+            url: '/api/privilege/deleteprivilege',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id':row.id
+              'id': row.id
             }
           })
             .then((res) => {
-              console.log(res)
+                console.log(res)
                 that.loading = false;
-                if(res.data == 'success'){
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch();
-                }else{
+                } else {
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
               }
@@ -210,20 +209,20 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/privilegeCtrl/deletePrivilege',
+            url: '/api/privilege/deleteprivilege',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id':ids
+              'id': ids
             }
           })
             .then((res) => {
                 that.loading = false;
-                if(res.data == 'success'){
+                if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
                   that.handleSearch();
-                }else{
+                } else {
                   that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                 }
               },
@@ -241,31 +240,31 @@
       },
       //新增
       addSubmit: function () {
-        let privileges =[
+        let privileges = [
           {
-          'privilege': this.addprivilege.privilege,
-          'uri': this.addprivilege.uri
+            'privilege': this.addprivilege.privilege,
+            'uri': this.addprivilege.uri
           }
-         ]
+        ]
         let params = JSON.stringify(privileges)
         axios({
           method: 'post',
-          url: '/api/privilegeCtrl/deployPrivilege',
+          url: '/api/privilege/deployprivilege',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
-          params:{
-            'privileges':params
+          params: {
+            'privileges': params
           }
         })
           .then((res) => {
-              if (res.data == "fail") {
+              if (res.data.success == false) {
                 this.$message({
                   showClose: true,
                   message: '添加失败',
                   type: 'warning'
                 });
-              } else if (res.data == "success") {
+              } else if (res.data.success == true) {
                 this.$message({
                   showClose: true,
                   message: '添加成功',
@@ -276,7 +275,7 @@
               }
             },
           ).catch((e) => {
-          if(e && e.response){
+          if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({
@@ -297,7 +296,7 @@
         });
       },
       //编辑界面显示
-      showEditPrivilege: function(index,row){
+      showEditPrivilege: function (index, row) {
         this.editprivilegeVisible = true;
         this.editPrivilege = Object.assign({}, row);
       },
@@ -308,7 +307,7 @@
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/privilegeCtrl/editPrivilege',
+              url: '/api/privilege/updateprivilege',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -320,7 +319,7 @@
             })
               .then((res) => {
                   this.loading = false;
-                  if (res.data == 'success') {
+                  if (res.data.success == true) {
                     this.editprivilegeVisible = false;
                     this.$message.success({showClose: true, message: '修改成功', duration: 1500});
                     this.handleSearch(1);
@@ -348,19 +347,22 @@
   .demo-table-expand label {
     font-weight: bold;
   }
+
   .toolbar {
     margin-top: 30px;
   }
-  .el-icon-circle-plus{
-    width:30px !important;
-    height:30px !important;
-    display:block;
-    margin-left:30px;
-    cursor:pointer;
+
+  .el-icon-circle-plus {
+    width: 30px !important;
+    height: 30px !important;
+    display: block;
+    margin-left: 30px;
+    cursor: pointer;
   }
-  .el-icon-circle-plus::before{
-    width:30px !important;
-    height:30px !important;
-    display:block;
+
+  .el-icon-circle-plus::before {
+    width: 30px !important;
+    height: 30px !important;
+    display: block;
   }
 </style>
