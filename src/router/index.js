@@ -23,6 +23,7 @@ import PublishedTask from '@/components/PublishedTask.vue'
 import MailingList from '@/components/MailingList.vue'
 import Mailing from '@/components/Mailing.vue'
 import MailRecord from '@/components/MailRecord.vue'
+import PromoterManagement from '@/components/PromoterManagement.vue'
 import PromoterApplicationRecord from '@/components/PromoterApplicationRecord.vue'
 import MembershipCardPurchaseRecord from '@/components/MembershipCardPurchaseRecord.vue'
 import MembershipCardConsumptionRecord from '@/components/MembershipCardConsumptionRecord.vue'
@@ -147,10 +148,11 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      name: '推广员管理',
+      name: '推广员中心',
       menuShow: true,
       iconCls: 'iconfont icon-yewurenyuanxinxiguanli',
       children: [
+        {path: '/promoterManagement', component: PromoterManagement, name: '推广员管理', menuShow: true},
         {path: '/promoterApplicationRecord', component: PromoterApplicationRecord, name: '推广员申请记录', menuShow: true},
         {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
         {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡消费记录', menuShow: true},
