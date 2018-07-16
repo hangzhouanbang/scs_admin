@@ -27,6 +27,7 @@ import PromoterApplicationRecord from '@/components/PromoterApplicationRecord.vu
 import MembershipCardPurchaseRecord from '@/components/MembershipCardPurchaseRecord.vue'
 import MembershipCardConsumptionRecord from '@/components/MembershipCardConsumptionRecord.vue'
 import PromoterOperationRecord from '@/components/PromoterOperationRecord.vue'
+import Activity from '@/components/Activity.vue'
 
 Vue.use(Router)
 
@@ -154,6 +155,16 @@ export default new Router({
         {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
         {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡消费记录', menuShow: true},
         {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '推广员操作记录', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      menuShow: true,
+      leaf: true,
+      iconCls: 'iconfont icon-yewurenyuanxinxiguanli',
+      children: [
+        {path: '/activity', component: Activity, name: '活动管理', menuShow: true}
       ]
     }
   ]
