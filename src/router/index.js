@@ -23,6 +23,10 @@ import PublishedTask from '@/components/PublishedTask.vue'
 import MailingList from '@/components/MailingList.vue'
 import Mailing from '@/components/Mailing.vue'
 import MailRecord from '@/components/MailRecord.vue'
+import PromoterApplicationRecord from '@/components/PromoterApplicationRecord.vue'
+import MembershipCardPurchaseRecord from '@/components/MembershipCardPurchaseRecord.vue'
+import MembershipCardConsumptionRecord from '@/components/MembershipCardConsumptionRecord.vue'
+import PromoterOperationRecord from '@/components/PromoterOperationRecord.vue'
 
 Vue.use(Router)
 
@@ -137,6 +141,19 @@ export default new Router({
         {path: '/mailingList', component: MailingList, name: '邮件列表', menuShow: true},
         {path: '/mailing', component: Mailing, name: '邮件发送', menuShow: true},
         {path: '/mailRecord', component: MailRecord, name: '邮件记录', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '推广员管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-yewurenyuanxinxiguanli',
+      children: [
+        {path: '/promoterApplicationRecord', component: PromoterApplicationRecord, name: '推广员申请记录', menuShow: true},
+        {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
+        {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡消费记录', menuShow: true},
+        {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '推广员操作记录', menuShow: true},
       ]
     }
   ]
