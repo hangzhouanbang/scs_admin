@@ -180,6 +180,22 @@
       }
     },
     methods: {
+      dateTimeFormat(value) {
+        let time = new Date(+value);
+        let rightTwo = (v) => {
+          v = '0' + v;
+          return v.substring(v.length - 2, v.length)
+        };
+        if (time == null) return;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        let hours = time.getHours();
+        let minutes = time.getMinutes();
+        let seconds = time.getSeconds();
+        return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
+      },
+
       handleCurrentChange(val) {
         this.page = val;
         this.memberCardBuy(this.page);
