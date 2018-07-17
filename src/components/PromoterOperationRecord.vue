@@ -38,7 +38,7 @@
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
             <el-button size="small" @click="publishDialog(scope.$index,scope.row)">操作</el-button>
-            <el-button size="small">详情</el-button>
+            <el-button size="small" @click="Dialog_particulars(scope.$index,scope.row)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -53,23 +53,100 @@
     <!-- 操作-->
     <el-dialog title="" :visible.sync="publishVisible" :close-on-click-modal="false">
       <el-form :model="publishForm" label-width="120px" ref="addForm">
-        <el-tabs :tab-position="tabPosition" style="height: 200px;">
+        <el-tabs :tab-position="tabPosition" style="height: auto;">
           <el-tab-pane label="绑定">
-
-
             <el-col :span="24">
-              <el-form :inline="true">
+              <el-form :inline="true" label-width="150px">
                 <el-form-item label="一级推广员ID">
-                  <el-input v-model="id" placeholder="推广员ID"></el-input>
+                  <el-input placeholder="推广员ID"></el-input>
                 </el-form-item>
+                <el-form-item label="二级推广员ID">
+                  <el-input placeholder="推广员ID"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="notice">
+                  <el-input
+                    type="textarea"
+                    autosize
+                    placeholder="请输入备注内容">
+                  </el-input>
+                </el-form-item>
+                <table width="100%">
+                  <tr>
+                    <td align="center">
+                      <el-button type="primary">绑定</el-button>
+                    </td>
+                    <td>
+                      <el-button type="primary">解除绑定</el-button>
+                    </td>
+                  </tr>
+                </table>
               </el-form>
             </el-col>
-
-
           </el-tab-pane>
-          <el-tab-pane label="调整等级">调整等级</el-tab-pane>
+          <el-tab-pane label="调整等级">
+            <el-col :span="24">
+              <el-form :inline="true" label-width="150px">
+                <el-form-item label="一级推广员ID">
+                  <el-input placeholder="推广员ID"></el-input>
+                </el-form-item>
+                <el-form-item label="当前等级">
+                  <el-input></el-input>
+                </el-form-item>
+                <el-form-item label="提升等级">
+                  <el-input></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="notice">
+                  <el-input
+                    type="textarea"
+                    autosize
+                    placeholder="请输入备注内容">
+                  </el-input>
+                </el-form-item>
+                <table width="100%">
+                  <tr>
+                    <td align="center">
+                      <el-button type="primary">确认修改</el-button>
+                    </td>
+                  </tr>
+                </table>
+              </el-form>
+            </el-col>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
+    </el-dialog>
+
+    <!--详情-->
+    <el-dialog title="" :visible.sync="centerDialogVisible" :close-on-click-modal="false">
+      <div class="img">
+        <img src="../assets/images/girl.jpg" alt="">
+      </div>
+      <el-table :data="roles" highlight-current-row
+                style="width: auto">
+        <el-table-column label="游戏昵称" width="100"></el-table-column>
+        <el-table-column label="游戏ID" prop="role"></el-table-column>
+        <el-table-column label="会员" prop="role"></el-table-column>
+        <el-table-column label="会员时间" prop="role"></el-table-column>
+        <el-table-column label="注册时间" prop="role"></el-table-column>
+      </el-table>
+      <el-table :data="roles" highlight-current-row
+                style="width: auto">
+        <el-table-column label="推广员等级" prop="role"></el-table-column>
+        <el-table-column label="周卡剩余" prop="role"></el-table-column>
+        <el-table-column label="月卡剩余" prop="role"></el-table-column>
+        <el-table-column label="季卡剩余" prop="role"></el-table-column>
+        <el-table-column label="充值金额" prop="role"></el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <router-link :to="{path:'/membershipCardPurchaseRecord'}">
+          <el-button>会员卡购买记录</el-button>
+        </router-link>
+        <router-link :to="{path:'/membershipCardConsumptionRecord'}">
+          <el-button>会员卡消费记录</el-button>
+        </router-link>
+        <el-button :visible.sync="relieveDialogVisible">取消推广员资格</el-button>
+        <!--<el-button @click.native="relieveSubmit" :visible.sync="centerDialogVisible">解除封停状态</el-button>-->
+      </div>
     </el-dialog>
 
   </el-row>
@@ -86,7 +163,8 @@
         filters: {
           name: ''
         },
-        items: ["1", "2"],
+        items: [],
+        roles: [],
         total: 0,
         options: [
           {value: '一级推广员'},
@@ -95,13 +173,16 @@
         publishVisible: false,
         publishForm: {},
         addForm: {},
+        centerDialogVisible: false,
+        centerDialogVisible: false,
+        relieveDialogVisible: false,
         tabPosition: 'left'
       }
     },
     methods: {
       handleCurrentChange(val) {
         this.page = val;
-        this.seek(this.page);
+        this.memberCardBuy(this.page);
       },
       //查询会员卡购买记录
       memberCardBuy() {
@@ -119,7 +200,6 @@
           }
         })
           .then((res) => {
-              this.po = true;//显示表单
               this.loading = false;//隐藏加载条
               this.items = res.data.data.items;
               this.total = res.data.data.pageCount;
@@ -165,6 +245,10 @@
         this.publishVisible = true;
         this.publishForm = Object.assign({}, row);
       },
+      Dialog_particulars: function (index, row) {
+        this.centerDialogVisible = true;
+        this.publishForm = Object.assign({}, row);
+      },
     }
   }
 </script>
@@ -172,5 +256,10 @@
 <style scoped>
   .warp-main {
     margin-top: 30px;
+  }
+
+  .img {
+    float: left;
+    margin-right: 40px;
   }
 </style>
