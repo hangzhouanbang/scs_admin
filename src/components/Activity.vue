@@ -11,25 +11,35 @@
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
+          <el-form-item label="发布者">
+            <el-input v-model="filters.promulgator" placeholder="发布人名称"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleSearch">查询</el-button>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="showAddDialog">新建活动</el-button>
           </el-form-item>
         </el-form>
       </el-col>
 
-      <!-- 系统维护列表-->
-      <el-table :data="list" highlight-current-row @selection-change="selsChange"
+      <!-- 活动列表-->
+      <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
-        <el-table-column prop="title" label="活动标题" width="100" sortable></el-table-column>
-        <el-table-column prop="file" label="内容" width="100" sortable>
+        <el-table-column prop="theme" label="活动标题" width="100" sortable></el-table-column>
+        <el-table-column prop="content" label="内容" width="100" sortable>
           <template slot-scope="scope">
-            <img :src="scope.row.file" alt="" style="width: 50px;height: 50px">
+            <img :src="scope.row.content" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="活动地址" width="100" sortable></el-table-column>
+        <el-table-column prop="url" label="活动地址" width="180" sortable></el-table-column>
+        <el-table-column prop="promulgator" label="发布者" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
-            <el-button size="small" @click="publishDialog(scope.$index,scope.row)">停用</el-button>
+            <el-button type="primary" v-if="scope.row.state === 'START'" :disabled="false"
+                       @click="off(scope.$index,scope.row)">停用
+            </el-button>
+            <el-button type="info" disabled v-if="scope.row.state === 'STOP'">已停用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -42,9 +52,9 @@
       </el-col>
 
       <!--新建活动弹窗-->
-      <el-dialog title="系统维护" :visible.sync="addFormVisible" :close-on-click-modal="false">
+      <el-dialog title="新建活动" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="标题" prop="title">
+          <el-form-item label="活动主题" prop="title">
             <el-input v-model="normalForm.title" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="图片" prop="file">
@@ -96,10 +106,10 @@
             {required: true, message: '请选择图片', trigger: 'blur'}
           ],
           address: [
-            {required: true, message: '请选择图片', trigger: 'blur'}
+            {required: true, message: '请输入活动地址', trigger: 'blur'}
           ]
         },
-        list: [],
+        items: [],
         filters: {
           name: ''
         },
@@ -171,26 +181,36 @@
         } else {
           axios({
             method: 'post',
-            url: '/api/',
+            url: '/api/activity/addactivity',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'status': '0',
-              'title': this.normalForm.title,
-              'file': this.imageUrl
+              'theme': this.normalForm.title,
+              'content': this.imageUrl,
+              'url': this.normalForm.address,
+              'promulgator': sessionStorage.getItem('nickname')
             }
           })
             .then((res) => {
-                this.$message({
-                  showClose: true,
-                  message: '发布成功',
-                  type: 'success'
-                });
-                this.normalForm.title = ''
-                this.normalForm.file = ''
-                this.addFormVisible = false;//关闭弹窗
-                this.handleSearch();
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '新建活动失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '新建活动成功',
+                    type: 'success'
+                  });
+                  this.normalForm.title = ''
+                  this.imageUrl = ''
+                  this.normalForm.address = ''
+                  this.addFormVisible = false;//关闭弹窗
+                  this.handleSearch();
+                }
               },
             ).catch((e) => {
             if (e && e.response) {
@@ -239,21 +259,21 @@
       handleSearch() {
         axios({
           method: 'post',
-          url: '/api/',
+          url: '/api/activity/queryactivity',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'status': '0',
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'adminname': this.filters.adminname
+            'promulgator': this.filters.promulgator,//发布人
+            'state': 'START'//活动状态
           }
         })
           .then((res) => {
               this.loading = false;//隐藏加载条
-              this.list = res.data.list;
-              this.total = res.data.count;//总页数
+              this.items = res.data.data.items;
+              this.total = res.data.data.pageCount;//总页数
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -288,10 +308,57 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
+
+      //停用活动
+      off(index, row) {
+        sessionStorage.setItem('id', this.items[index].id);//保存id
+        axios({
+          method: 'post',
+          url: '/api/activity/stopactivity',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'activityId': sessionStorage.getItem('id')
+          }
+        })
+          .then((res) => {
+              this.handleSearch()
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      }
     },
     mounted() { //初始化页面
       this.handleSearch()
-    }
+    },
   }
 </script>
 

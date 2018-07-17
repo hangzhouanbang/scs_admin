@@ -54,7 +54,19 @@
     <el-dialog title="" :visible.sync="publishVisible" :close-on-click-modal="false">
       <el-form :model="publishForm" label-width="120px" ref="addForm">
         <el-tabs :tab-position="tabPosition" style="height: 200px;">
-          <el-tab-pane label="绑定">绑定</el-tab-pane>
+          <el-tab-pane label="绑定">
+
+
+            <el-col :span="24">
+              <el-form :inline="true">
+                <el-form-item label="一级推广员ID">
+                  <el-input v-model="id" placeholder="推广员ID"></el-input>
+                </el-form-item>
+              </el-form>
+            </el-col>
+
+
+          </el-tab-pane>
           <el-tab-pane label="调整等级">调整等级</el-tab-pane>
         </el-tabs>
       </el-form>
