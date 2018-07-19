@@ -154,8 +154,18 @@ export default new Router({
       children: [
         {path: '/promoterManagement', component: PromoterManagement, name: '推广员管理', menuShow: true},
         {path: '/promoterApplicationRecord', component: PromoterApplicationRecord, name: '推广员申请记录', menuShow: true},
-        {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
-        {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡消费记录', menuShow: true},
+        {
+          path: '/membershipCardPurchaseRecord',
+          component: MembershipCardPurchaseRecord,
+          name: '会员卡购买记录',
+          menuShow: true
+        },
+        {
+          path: '/membershipCardConsumptionRecord',
+          component: MembershipCardConsumptionRecord,
+          name: '会员卡兑换记录',
+          menuShow: true
+        },
         {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '推广员操作记录', menuShow: true},
       ]
     },

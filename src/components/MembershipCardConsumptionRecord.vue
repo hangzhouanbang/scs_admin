@@ -1,10 +1,10 @@
-<!--会员卡消费记录-->
+<!--会员卡兑换记录-->
 <template>
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>推广员中心</b></el-breadcrumb-item>
-        <el-breadcrumb-item>会员卡消费记录</el-breadcrumb-item>
+        <el-breadcrumb-item>会员卡兑换记录</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -13,9 +13,9 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="推广员ID">
-            <el-input v-model="filters.game" placeholder="单行输入"></el-input>
+            <el-input v-model="this.filters.id" placeholder="单行输入"></el-input>
           </el-form-item>
-          <el-form-item label="注册时间">
+          <el-form-item label="购买时间">
             <el-date-picker
               v-model="value1"
               type="date"
@@ -33,17 +33,17 @@
         </el-form>
       </el-col>
 
-      <!-- 会员卡消费记录列表-->
+      <!-- 积分流水列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column prop="date" label="昵称" width="100" sortable></el-table-column>
-        <el-table-column prop="newMember" label="ID" width="100" sortable></el-table-column>
-        <el-table-column prop="currentMember" label="商品名称" width="100" sortable></el-table-column>
-        <el-table-column prop="cost" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="gameNum" label="说明" width="100" sortable></el-table-column>
+        <el-table-column prop="agentId" label="ID" width="100" sortable></el-table-column>
+        <el-table-column prop="accounting" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="summary" label="说明" width="120" sortable></el-table-column>
+        <el-table-column prop="accountingTime" label="购买时间" width="160" sortable></el-table-column>
         <el-table-column prop="loginMember" label="使用时间" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSecond" label="目标ID" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSecond" label="记录"></el-table-column>
+        <el-table-column prop="loginMember" label="目标ID" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingAmount" label="累积购买金额" sortable></el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">
@@ -75,6 +75,22 @@
       }
     },
     methods: {
+      dateTimeFormat(value) {
+        let time = new Date(+value);
+        let rightTwo = (v) => {
+          v = '0' + v;
+          return v.substring(v.length - 2, v.length)
+        };
+        if (time == null) return;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        let hours = time.getHours();
+        let minutes = time.getMinutes();
+        let seconds = time.getSeconds();
+        return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
+      },
+
       handleCurrentChange(val) {
         this.page = val;
         this.seek(this.page);
@@ -83,25 +99,25 @@
       seek() {
         axios({
           method: 'post',
-          url: '/api/',
+          url: '/api/agent/queryscorerecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'startTime': new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime': new Date(this.value2).getTime()
+            'agentId': this.filters.id,
+            'startTime': 'NaN' ? '0' : new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
+            'endTime': 'NaN' ? '0' : new Date(this.value2).getTime()
           }
         })
           .then((res) => {
-              this.po = true;//显示表单
               this.loading = false;//隐藏加载条
               this.items = res.data.data.items;
               this.total = res.data.data.pageCount;
               //console.log(res.data.data.items)
               for (let i = 0; i < this.items.length; i++) {
-                this.items[i].date = this.dateTimeFormat(this.items[i].date);
+                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
               }
             },
           ).catch((e) => {
@@ -137,6 +153,9 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
+    },
+    mounted() {
+      this.seek();
     }
   }
 </script>

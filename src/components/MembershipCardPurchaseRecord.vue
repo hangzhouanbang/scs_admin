@@ -13,9 +13,12 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="推广员ID">
-            <el-input v-model="filters.game" placeholder="单行输入"></el-input>
+            <el-input v-model="filters.id" placeholder="请输入推广员ID"></el-input>
           </el-form-item>
-          <el-form-item label="注册时间">
+          <el-form-item label="推广员昵称">
+            <el-input v-model="filters.id" placeholder="请输入推广员昵称"></el-input>
+          </el-form-item>
+          <el-form-item label="购买时间">
             <el-date-picker
               v-model="value1"
               type="date"
@@ -29,20 +32,26 @@
               placeholder="时间选择">
             </el-date-picker>
           </el-form-item>
-          <el-button type="primary" @click="seek">查询</el-button>
+          <el-button type="primary" @click="seek">搜索</el-button>
         </el-form>
       </el-col>
 
-      <!-- 会员卡购买记录列表-->
+      <!-- 会员卡流水列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
-        <el-table-column prop="date" label="昵称" width="100" sortable></el-table-column>
-        <el-table-column prop="newMember" label="ID" width="100" sortable></el-table-column>
-        <el-table-column prop="currentMember" label="商品名称" width="100" sortable></el-table-column>
-        <el-table-column prop="cost" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="gameNum" label="说明" width="120" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="购买时间" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSecond" label="累积购买金额"></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="140" sortable></el-table-column>
+        <el-table-column prop="date" label="推广员昵称" width="140" sortable></el-table-column>
+        <el-table-column prop="currentMember" label="会员卡名称" width="120" sortable></el-table-column>
+        <el-table-column prop="accounting" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="summary" label="购买金额" width="120" sortable></el-table-column>
+        <el-table-column prop="accountingTime" label="购买时间" width="160" sortable></el-table-column>
+        <el-table-column prop="summary" label="说明" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="累积消费" width="100" sortable></el-table-column>
+        <el-table-column prop="remainSecond" label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">会员卡调整</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">
@@ -50,6 +59,37 @@
                        style="float:right;">
         </el-pagination>
       </el-col>
+
+      <!--会员卡调整弹窗-->
+      <el-dialog title="会员卡调整" :visible.sync="publishVisible" :close-on-click-modal="false">
+        <el-form :model="normalForm" label-width="220px">
+          <el-form-item label="推广员ID">
+            <el-input class="memberInput"></el-input>
+          </el-form-item>
+          <el-form-item label="会员卡类型">
+            <el-select v-model="filters.type" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="当前数量">
+            <el-input class="memberInput"></el-input>
+          </el-form-item>
+          <el-form-item label="调整数量为">
+            <el-input class="memberInput"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary">确认调整</el-button>
+            <el-button type="primary" @click.native="addFormVisible = false">取消</el-button>
+          </el-form-item>
+        </el-form>
+
+
+      </el-dialog>
 
     </el-col>
   </el-row>
@@ -66,13 +106,38 @@
         filters: {
           name: ''
         },
-        items: [],
+        items: ["", ""],
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
+        publishVisible: false,
+        publishForm: {},
+        options: [
+          {value: '周卡'},
+          {value: '月卡'},
+          {value: '季卡'},
+        ],
+        addFormVisible: false,
+        normalForm: {},
       }
     },
     methods: {
+      dateTimeFormat(value) {
+        let time = new Date(+value);
+        let rightTwo = (v) => {
+          v = '0' + v;
+          return v.substring(v.length - 2, v.length)
+        };
+        if (time == null) return;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        let hours = time.getHours();
+        let minutes = time.getMinutes();
+        let seconds = time.getSeconds();
+        return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
+      },
+
       handleCurrentChange(val) {
         this.page = val;
         this.seek(this.page);
@@ -81,25 +146,25 @@
       seek() {
         axios({
           method: 'post',
-          url: '/api/',
+          url: '/api/agent/queryclubcardrecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'startTime': new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime': new Date(this.value2).getTime()
+            'agentId': this.filters.id,
+            'startTime': 'NaN' ? '0' : new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
+            'endTime': 'NaN' ? '0' : new Date(this.value2).getTime()
           }
         })
           .then((res) => {
-              this.po = true;//显示表单
               this.loading = false;//隐藏加载条
               this.items = res.data.data.items;
               this.total = res.data.data.pageCount;
               //console.log(res.data.data.items)
               for (let i = 0; i < this.items.length; i++) {
-                this.items[i].date = this.dateTimeFormat(this.items[i].date);
+                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
               }
             },
           ).catch((e) => {
@@ -135,6 +200,15 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
+
+      publishDialog: function (index, row) {
+        this.publishVisible = true;
+        this.publishForm = Object.assign({}, row);
+      },
+
+    },
+    mounted() {
+      this.seek();
     }
   }
 </script>
@@ -142,5 +216,9 @@
 <style scoped>
   .warp-main {
     margin-top: 30px;
+  }
+
+  .memberInput {
+    width: 220px;
   }
 </style>
