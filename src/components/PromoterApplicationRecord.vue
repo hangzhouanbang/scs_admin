@@ -9,6 +9,12 @@
 
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
+        <el-form-item label="推广员ID">
+          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+        </el-form-item>
+        <el-form-item label="推广员昵称">
+          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+        </el-form-item>
         <el-form-item label="注册时间" label-width="68px">
           <el-date-picker
             v-model="filters.startTime"
@@ -16,7 +22,7 @@
             placeholder="选择日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="至" label-width="68px">
+        <el-form-item label="至" label-width="68px" style="margin-left:-44px;">
           <el-date-picker
             v-model="filters.endTime"
             type="date"
@@ -33,42 +39,48 @@
     <el-table :data="record" highlight-current-row style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="memberId" label="微信头像" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.file" label="注册昵称" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.mailType" label="申请时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.number" label="手机号码" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.integral" label="姓名" width="auto" sortable></el-table-column>
-      <el-table-column prop="vipCardName" label="身份证号" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.validTime" label="身份证正反照" width="auto" sortable>
+      <el-table-column prop="headimgurl" label="微信头像" width="auto" sortable></el-table-column>
+      <el-table-column prop="nickname" label="注册昵称" width="auto" sortable></el-table-column>
+      <el-table-column prop="createTime" label="申请时间" width="auto" sortable></el-table-column>
+      <el-table-column prop="phone" label="手机号码" width="auto" sortable></el-table-column>
+      <el-table-column prop="userName" label="姓名" width="auto" sortable></el-table-column>
+      <el-table-column prop="idCard" label="身份证号" width="auto" sortable></el-table-column>
+      <el-table-column prop="" label="身份证正反照" width="auto" sortable>
         <template slot-scope="scope">
-          <el-button type="text">查看</el-button>
+          <el-button type="text" @click="check(scope.$index,scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="systemMail.createtime" label="操作" width="auto" sortable>
+      <el-table-column prop="state" label="操作" width="auto" sortable>
         <template slot-scope="scope">
-          <el-button type="text">通过</el-button>
-          <el-button type="text">拒绝</el-button>
+          <el-button type="button" @click="operation(scope.$index,scope.row)">操作</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog
-      title=""
-      :visible.sync="centerDialogVisible"
-      width="37%"
-      center>
+    <el-dialog title="" :visible.sync="centerDialogVisible" width="37%" center >
       <div class="IMG">
         <div class="leftImg">
           <p>图片1</p>
-          <img src="../assets/images/girl.jpg" alt="">
+          <img :src="frontUrl" alt="">
         </div>
         <div class="rightImg">
           <p>图片2</p>
-          <img src="../assets/images/girl.jpg" alt="">
+          <img :src="reverseUrl" alt="">
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="centerDialogVisible = false" class="sure">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="申请记录" :visible.sync="recordDialogVisible" width="37%" center >
+      <p>申请人：沈淦</p>
+      <p>手机号码：15968824723</p>
+      <p>身份号：321567989456659</p>
+      <p>是否同意申请？</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="centerDialogVisible = false" class="agree">同意</el-button>
+        <el-button type="primary" @click="centerDialogVisible = false">拒绝</el-button>
       </span>
     </el-dialog>
 
@@ -92,17 +104,93 @@
             filters:{},
             record:[],
             total:0,
-            centerDialogVisible:false
+            frontUrl:'',
+            reverseUrl:'',
+            centerDialogVisible:false,
+            recordDialogVisible:false
           }
         },
       methods:{
-        handleSearch(){
-
+        dateTimeFormat(value) {
+          let time = new Date(+value);
+          let rightTwo = (v) => {
+            v = '0' + v;
+            return v.substring(v.length - 2, v.length)
+          };
+          if (time == null) return;
+          let year = time.getFullYear();
+          let month = time.getMonth() + 1;
+          let date = time.getDate();
+          let hours = time.getHours();
+          let minutes = time.getMinutes();
+          let seconds = time.getSeconds();
+          return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
-        handleCurrentChange(){}
+        handleSearch(page){
+          axios({
+            url:'/api/agent/queryapplyrecord',
+            method:'post',
+            params:{
+              startTime:'NaN'? '':new Date(this.filters.startTime).getTime(),
+              endTime:'NaN'? '': new Date(this.filters.endTime).getTime()
+            }
+          }).then((res) => {
+              console.log(res.data)
+              this.record = res.data.data.items;
+              this.total = res.data.data.pageCount;
+              for(let i = 0;i < this.record.length;i++){
+                this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
+                if(this.record[i].state == 'APPLYSUCCESS'){
+                  this.record[i].state1 = true;
+                }
+                if(this.record[i].state == 'APPLYFAIL'){
+                  this.record[i].state2 = true;
+                }
+                if(this.record[i].state == 'APPLYING'){
+                  this.record[i].state3 = true;
+                }
+              }
+            }
+          ).catch((e) => {
+
+          })
+        },
+        handleCurrentChange(){},
+        check:function(index, row){
+          this.centerDialogVisible = true;
+          this.frontUrl = row.frontUrl;
+          this.reverseUrl = row.reverseUrl;
+        },
+        pass:function(index,row){
+          axios({
+            url:'/api/agent/applypass',
+            method:'post',
+            params:{
+              recordId:row.id
+            }
+          }).then((res) => {
+            if(res.data.success){
+              this.handleSearch(1)
+            }
+          })
+        },
+        unpass:function(index,row){
+          axios({
+            url:'/api/agent/applyrefuse',
+            method:'post',
+            params:{
+              recordId:row.id
+            }
+          }).then((res) => {
+            console.log(res.data)
+            if(res.data.success){
+              this.handleSearch(1)
+            }
+          })
+        }
       },
       mounted(){
-
+        this.handleSearch(1)
       }
     }
 </script>
@@ -110,9 +198,6 @@
 <style scoped>
   .toolbar{
     margin-top:30px;
-  }
-  .el-form--inline .el-form-item{
-    margin-right:-32px;
   }
   .el-button--primary{
     margin-left:50px;
@@ -131,8 +216,12 @@
   }
   p{
     text-align: center;
+    /*font-size:18px;*/
   }
   .sure{
     margin:52px;
+  }
+  .agree{
+    margin-left:0;
   }
 </style>
