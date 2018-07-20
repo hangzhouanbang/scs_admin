@@ -31,6 +31,7 @@ import PromoterOperationRecord from '@/components/PromoterOperationRecord.vue'
 import Activity from '@/components/Activity.vue'
 import MallManagement from '@/components/MallManagement.vue'
 import CodeUsageRecord from '@/components/CodeUsageRecord.vue'
+import IntegralRecord from '@/components/IntegralRecord.vue'
 
 Vue.use(Router)
 
@@ -156,8 +157,19 @@ export default new Router({
       children: [
         {path: '/promoterManagement', component: PromoterManagement, name: '推广员管理', menuShow: true},
         {path: '/promoterApplicationRecord', component: PromoterApplicationRecord, name: '推广员申请记录', menuShow: true},
-        {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
-        {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡兑换记录', menuShow: true},
+        {
+          path: '/membershipCardPurchaseRecord',
+          component: MembershipCardPurchaseRecord,
+          name: '会员卡购买记录',
+          menuShow: true
+        },
+        {
+          path: '/membershipCardConsumptionRecord',
+          component: MembershipCardConsumptionRecord,
+          name: '会员卡兑换记录',
+          menuShow: true
+        },
+        {path: '/integralRecord', component: IntegralRecord, name: '积分记录', menuShow: true},
         {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '会员卡记录', menuShow: true},
         {path: '/mallManagement', component: MallManagement, name: '推广员商城管理', menuShow: true},
         {path: '/codeUsageRecord', component: CodeUsageRecord, name: '推广码使用记录', menuShow: true}

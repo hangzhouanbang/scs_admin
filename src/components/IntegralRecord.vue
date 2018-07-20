@@ -1,10 +1,10 @@
-<!--会员卡购买记录-->
+<!--积分记录-->
 <template>
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>推广员中心</b></el-breadcrumb-item>
-        <el-breadcrumb-item>会员卡购买记录</el-breadcrumb-item>
+        <el-breadcrumb-item>积分记录</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -13,12 +13,12 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="推广员ID">
-            <el-input v-model="filters.id" placeholder="请输入推广员ID"></el-input>
+            <el-input v-model="this.filters.id" placeholder="请输入推广员ID"></el-input>
           </el-form-item>
           <el-form-item label="推广员昵称">
-            <el-input v-model="filters.id" placeholder="请输入推广员昵称"></el-input>
+            <el-input v-model="this.filters.id" placeholder="请输入推广员昵称"></el-input>
           </el-form-item>
-          <el-form-item label="购买时间">
+          <el-form-item label="时间">
             <el-date-picker
               v-model="value1"
               type="date"
@@ -36,20 +36,20 @@
         </el-form>
       </el-col>
 
-      <!-- 会员卡流水列表-->
+      <!-- 积分记录列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
-        <el-table-column prop="agentId" label="推广员ID" width="140" sortable></el-table-column>
-        <el-table-column prop="date" label="推广员昵称" width="140" sortable></el-table-column>
-        <el-table-column prop="currentMember" label="会员卡名称" width="120" sortable></el-table-column>
-        <el-table-column prop="accounting" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="summary" label="购买金额" width="120" sortable></el-table-column>
-        <el-table-column prop="accountingTime" label="购买时间" width="160" sortable></el-table-column>
-        <el-table-column prop="summary" label="说明" width="100" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="累积消费" width="100" sortable></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
+        <el-table-column prop="date" label="推广员昵称" width="120" sortable></el-table-column>
+        <el-table-column prop="accounting" label="商品名称" width="100" sortable></el-table-column>
+        <el-table-column prop="summary" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingTime" label="积分变化" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="时间" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="说明" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="剩余积分" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">会员卡调整</el-button>
+            <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">积分调整</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,8 +60,8 @@
         </el-pagination>
       </el-col>
 
-      <!--会员卡调整弹窗-->
-      <el-dialog title="会员卡调整" :visible.sync="publishVisible" :close-on-click-modal="false">
+      <!--积分操作弹窗-->
+      <el-dialog title="积分操作" :visible.sync="publishVisible" :close-on-click-modal="false">
         <el-form :model="publishForm" label-width="220px">
           <el-form-item label="推广员ID">
             <el-input class="memberInput"></el-input>
@@ -82,6 +82,12 @@
           <el-form-item label="调整数量为">
             <el-input class="memberInput"></el-input>
           </el-form-item>
+          <el-form-item label="当前积分">
+            <el-input class="memberInput"></el-input>
+          </el-form-item>
+          <el-form-item label="调整积分为">
+            <el-input class="memberInput"></el-input>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="notarizeVisible = true,publishVisible =false">确认调整</el-button>
             <el-button type="primary" @click.native="publishVisible = false">取消</el-button>
@@ -90,10 +96,10 @@
       </el-dialog>
 
       <!--确认调整弹窗-->
-      <el-dialog title="会员卡调整" :visible.sync="notarizeVisible" :close-on-click-modal="false">
+      <el-dialog title="确认操作" :visible.sync="notarizeVisible" :close-on-click-modal="false">
         <el-form>
           <div align="center">
-            推广员12345678拥有的<br/>周卡：由25调整至20<br/>是否确认调整？
+            推广员12345678拥有的<br/>周卡：由25调整至20<br/>积分：由3500调整到4000
           </div>
           <br/>
           <div align="center">
@@ -111,7 +117,7 @@
   import axios from 'axios'
 
   export default {
-    name: "MembershipCardPurchaseRecord",
+    name: "IntegralRecord",
     data() {
       return {
         loading: false,//隐藏加载条
@@ -122,7 +128,6 @@
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
-        notarize: {},
         options: [
           {value: '周卡'},
           {value: '月卡'},
@@ -131,7 +136,6 @@
         publishVisible: false,
         publishForm: {},
         notarizeVisible: false,
-        normalForm: {},
       }
     },
     methods: {
@@ -159,7 +163,7 @@
       seek() {
         axios({
           method: 'post',
-          url: '/api/agent/queryclubcardrecord',
+          url: '/api/agent/queryscorerecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -213,7 +217,6 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
-
       publishDialog: function (index, row) {
         this.publishVisible = true;
         this.publishForm = Object.assign({}, row);
