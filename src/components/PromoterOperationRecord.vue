@@ -4,7 +4,7 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>推广员管理</b></el-breadcrumb-item>
-        <el-breadcrumb-item>推广员操作记录</el-breadcrumb-item>
+        <el-breadcrumb-item>会员卡记录</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -12,8 +12,14 @@
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
-          <el-form-item label="推广员" label-width="68px">
-            <el-select v-model="filters.type" placeholder="请选择">
+          <el-form-item label="推广员ID" label-width="70px">
+            <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+          </el-form-item>
+          <el-form-item label="推广员昵称" label-width="90px">
+            <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+          </el-form-item>
+          <el-form-item label="类型" label-width="50px">
+            <el-select v-model="filters.mailType" placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -21,6 +27,21 @@
                 :value="item.value">
               </el-option>
             </el-select>
+          </el-form-item>
+          <br>
+          <el-form-item label="注册时间" label-width="68px">
+            <el-date-picker
+              v-model="filters.startTime"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="至" label-width="68px" style="margin-left:-44px;">
+            <el-date-picker
+              v-model="filters.endTime"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
           </el-form-item>
           <el-button type="primary" @click="memberCardBuy">查询</el-button>
         </el-form>
@@ -30,17 +51,15 @@
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column prop="date" label="推广员ID" width="120" sortable></el-table-column>
-        <el-table-column prop="newMember" label="昵称" width="100" sortable></el-table-column>
-        <el-table-column prop="currentMember" label="推广员等级" width="120" sortable></el-table-column>
-        <el-table-column prop="cost" label="注册时间" width="100" sortable></el-table-column>
-        <el-table-column prop="gameNum" label="当前推广员等级" width="160" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="状态" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSecond" label="操作">
-          <template slot-scope="scope">
-            <el-button size="small" @click="publishDialog(scope.$index,scope.row)">操作</el-button>
-            <el-button size="small" @click="Dialog_particulars(scope.$index,scope.row)">详情</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column prop="newMember" label="推广员昵称" width="120" sortable></el-table-column>
+        <el-table-column prop="currentMember" label="商品名称" width="120" sortable></el-table-column>
+        <el-table-column prop="cost" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="gameNum" label="类型" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="使用时间" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="使用对象" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="剩余周卡" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="剩余月卡" width="100" sortable></el-table-column>
+        <el-table-column prop="loginMember" label="剩余季卡" sortable></el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">
@@ -167,8 +186,11 @@
         roles: [],
         total: 0,
         options: [
-          {value: '一级推广员'},
-          {value: '二级推广员'},
+          {value: '充值'},
+          {value: '购买'},
+          {value: '转增下级'},
+          {value: '上级转增'},
+          {value: '积分兑换'},
         ],
         publishVisible: false,
         publishForm: {},
