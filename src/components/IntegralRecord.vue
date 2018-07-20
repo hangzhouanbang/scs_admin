@@ -124,7 +124,7 @@
         filters: {
           name: ''
         },
-        items: ["", ""],
+        items: [],
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
