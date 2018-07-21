@@ -16,7 +16,7 @@
             <el-input v-model="filters.id" placeholder="请输入推广员ID"></el-input>
           </el-form-item>
           <el-form-item label="推广员昵称">
-            <el-input v-model="filters.id" placeholder="请输入推广员昵称"></el-input>
+            <el-input v-model="filters.agent" placeholder="请输入推广员昵称"></el-input>
           </el-form-item>
           <el-form-item label="购买时间">
             <el-date-picker
@@ -39,14 +39,15 @@
       <!-- 会员卡流水列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
+        <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="agentId" label="推广员ID" width="140" sortable></el-table-column>
-        <el-table-column prop="date" label="推广员昵称" width="140" sortable></el-table-column>
-        <el-table-column prop="currentMember" label="会员卡名称" width="120" sortable></el-table-column>
-        <el-table-column prop="accounting" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="summary" label="购买金额" width="120" sortable></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="140" sortable></el-table-column>
+        <el-table-column prop="product" label="会员卡名称" width="120" sortable></el-table-column>
+        <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingAmount" label="购买金额" width="120" sortable></el-table-column>
         <el-table-column prop="accountingTime" label="购买时间" width="160" sortable></el-table-column>
-        <el-table-column prop="summary" label="说明" width="100" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="累积消费" width="100" sortable></el-table-column>
+        <el-table-column prop="summary.text" label="说明" width="100" sortable></el-table-column>
+        <el-table-column prop="cost" label="累积消费" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">会员卡调整</el-button>
@@ -118,7 +119,7 @@
         filters: {
           name: ''
         },
-        items: ["", ""],
+        items: [],
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
@@ -157,58 +158,73 @@
       },
       //搜索
       seek() {
-        axios({
-          method: 'post',
-          url: '/api/agent/queryclubcardrecord',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'size': '15',//每页数量
-            'page': this.page,//当前页
-            'agentId': this.filters.id,
-            'startTime': 'NaN' ? '0' : new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime': 'NaN' ? '0' : new Date(this.value2).getTime()
-          }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.total = res.data.data.pageCount;
-              //console.log(res.data.data.items)
-              for (let i = 0; i < this.items.length; i++) {
-                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-              }
+        if (this.value1 == 'NaN' || this.value1 == '' || this.value2 == 'NaN' || this.value2 == '') {
+          this.$message({
+            showClose: true,
+            message: '请选择购买时间段',
+            type: 'warning'
+          });
+        } else if (new Date(this.value2).getTime() - new Date(this.value1).getTime() <= 0) {
+          this.$message({
+            showClose: true,
+            message: '时间段选择有误',
+            type: 'warning'
+          });
+        } else {
+          axios({
+            method: 'post',
+            url: '/api/agent/queryclubcardrecord',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
             },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
+            params: {
+              'size': '15',//每页数量
+              'page': this.page,//当前页
+              'agentId': this.filters.id,
+              'agent': this.filters.agent,
+              'startTime': new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
+              'endTime': new Date(this.value2).getTime(),
             }
-          }
-        });
+          })
+            .then((res) => {
+                this.loading = false;//隐藏加载条
+                this.items = res.data.data.items;
+                this.total = res.data.data.pageCount;
+                //console.log(res.data.data.items)
+                for (let i = 0; i < this.items.length; i++) {
+                  this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        }
       },
       selsChange: function (sels) {
         this.sels = sels;
