@@ -13,10 +13,10 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="推广员ID">
-            <el-input v-model="this.filters.id" placeholder="请输入推广员ID"></el-input>
+            <el-input v-model="filters.id" placeholder="请输入推广员ID"></el-input>
           </el-form-item>
           <el-form-item label="推广员昵称">
-            <el-input v-model="this.filters.id" placeholder="请输入推广员昵称"></el-input>
+            <el-input v-model="filters.agent" placeholder="请输入推广员昵称"></el-input>
           </el-form-item>
           <el-form-item label="时间">
             <el-date-picker
@@ -38,15 +38,16 @@
 
       <!-- 积分记录列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
+                style="width: 100%;" v-show="po">
+        <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
-        <el-table-column prop="date" label="推广员昵称" width="120" sortable></el-table-column>
-        <el-table-column prop="accounting" label="商品名称" width="100" sortable></el-table-column>
-        <el-table-column prop="summary" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="accountingTime" label="积分变化" width="100" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="时间" width="100" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="说明" width="100" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="剩余积分" width="100" sortable></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
+        <el-table-column prop="product" label="商品名称" width="100" sortable></el-table-column>
+        <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingAmount" label="积分变化" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingTime" label="时间" width="160" sortable></el-table-column>
+        <el-table-column prop="summary.text" label="说明" width="140" sortable></el-table-column>
+        <el-table-column prop="balanceAfter" label="剩余积分" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">积分调整</el-button>
@@ -54,7 +55,7 @@
         </el-table-column>
       </el-table>
       <!--工具条-->
-      <el-col :span="24" class="toolbar">
+      <el-col :span="24" class="toolbar" v-show="po">
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
                        style="float:right;">
         </el-pagination>
@@ -136,6 +137,7 @@
         publishVisible: false,
         publishForm: {},
         notarizeVisible: false,
+        po: false,//隐藏表单
       }
     },
     methods: {
@@ -161,58 +163,74 @@
       },
       //搜索
       seek() {
-        axios({
-          method: 'post',
-          url: '/api/agent/queryscorerecord',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'size': '15',//每页数量
-            'page': this.page,//当前页
-            'agentId': this.filters.id,
-            'startTime': 'NaN' ? '0' : new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime': 'NaN' ? '0' : new Date(this.value2).getTime()
-          }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.total = res.data.data.pageCount;
-              //console.log(res.data.data.items)
-              for (let i = 0; i < this.items.length; i++) {
-                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-              }
+        if (this.value1 == 'NaN' || this.value1 == '' || this.value2 == 'NaN' || this.value2 == '') {
+          this.$message({
+            showClose: true,
+            message: '请选择购买时间段',
+            type: 'warning'
+          });
+        } else if (new Date(this.value2).getTime() - new Date(this.value1).getTime() <= 0) {
+          this.$message({
+            showClose: true,
+            message: '时间段选择有误',
+            type: 'warning'
+          });
+        } else {
+          axios({
+            method: 'post',
+            url: '/api/agent/queryscorerecord',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
             },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
+            params: {
+              'size': '15',//每页数量
+              'page': this.page,//当前页
+              'agentId': this.filters.id,
+              'agent': this.filters.agent,
+              'startTime': new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
+              'endTime': new Date(this.value2).getTime()
             }
-          }
-        });
+          })
+            .then((res) => {
+                this.po = true;//显示表单
+                this.loading = false;//隐藏加载条
+                this.items = res.data.data.items;
+                this.total = res.data.data.pageCount;
+                //console.log(res.data.data.items)
+                for (let i = 0; i < this.items.length; i++) {
+                  this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        }
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -223,7 +241,7 @@
       },
     },
     mounted() {
-      this.seek();
+     
     }
   }
 </script>

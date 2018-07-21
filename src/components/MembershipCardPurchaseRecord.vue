@@ -38,7 +38,7 @@
 
       <!-- 会员卡流水列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
+                style="width: 100%;" v-show="po">
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="agentId" label="推广员ID" width="140" sortable></el-table-column>
         <el-table-column prop="agent" label="推广员昵称" width="140" sortable></el-table-column>
@@ -55,7 +55,7 @@
         </el-table-column>
       </el-table>
       <!--工具条-->
-      <el-col :span="24" class="toolbar">
+      <el-col :span="24" class="toolbar" v-show="po">
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
                        style="float:right;">
         </el-pagination>
@@ -65,7 +65,7 @@
       <el-dialog title="会员卡调整" :visible.sync="publishVisible" :close-on-click-modal="false">
         <el-form :model="publishForm" label-width="220px">
           <el-form-item label="推广员ID">
-            <el-input class="memberInput"></el-input>
+            <el-input class="memberInput" v-model="publishForm.agentId" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="会员卡类型">
             <el-select v-model="filters.type" placeholder="请选择">
@@ -78,7 +78,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="当前数量">
-            <el-input class="memberInput"></el-input>
+            <el-input class="memberInput" v-model="publishForm.number" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="调整数量为">
             <el-input class="memberInput"></el-input>
@@ -133,6 +133,7 @@
         publishForm: {},
         notarizeVisible: false,
         normalForm: {},
+        po: false,//隐藏表单
       }
     },
     methods: {
@@ -187,6 +188,7 @@
             }
           })
             .then((res) => {
+                this.po = true;//显示表单
                 this.loading = false;//隐藏加载条
                 this.items = res.data.data.items;
                 this.total = res.data.data.pageCount;
@@ -236,7 +238,7 @@
       },
     },
     mounted() {
-      this.seek();
+
     }
   }
 </script>
