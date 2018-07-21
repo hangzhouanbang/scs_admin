@@ -299,7 +299,6 @@
   .warp-main {
     margin-top: 20px;
   }
-
   img {
     width: 180px;
     height: 120px;

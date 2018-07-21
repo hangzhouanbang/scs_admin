@@ -52,7 +52,9 @@
       </el-table-column>
       <el-table-column prop="state" label="操作" width="auto" sortable>
         <template slot-scope="scope">
-          <el-button type="button" @click="operation(scope.$index,scope.row)">操作</el-button>
+          <el-button type="button" @click="operation(scope.$index,scope.row)" v-if="scope.row.state3">操作</el-button>
+          <el-button type="text" v-if="scope.row.state1">已同意</el-button>
+          <el-button type="text" v-if="scope.row.state2">已拒绝</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -73,14 +75,14 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="申请记录" :visible.sync="recordDialogVisible" width="37%" center >
+    <el-dialog title="申请记录" :visible.sync="recordDialogVisible" width="37%" center v-model="applicationRecord">
       <p>申请人：沈淦</p>
       <p>手机号码：15968824723</p>
       <p>身份号：321567989456659</p>
       <p>是否同意申请？</p>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="centerDialogVisible = false" class="agree">同意</el-button>
-        <el-button type="primary" @click="centerDialogVisible = false">拒绝</el-button>
+        <el-button type="primary" @click="pass()" class="agree">同意</el-button>
+        <el-button type="primary" @click="unpass()">拒绝</el-button>
       </span>
     </el-dialog>
 
@@ -107,7 +109,10 @@
             frontUrl:'',
             reverseUrl:'',
             centerDialogVisible:false,
-            recordDialogVisible:false
+            recordDialogVisible:false,
+            applicationRecord:{},
+            AGRDAgreed:false,
+            operator:true
           }
         },
       methods:{
@@ -161,20 +166,26 @@
           this.frontUrl = row.frontUrl;
           this.reverseUrl = row.reverseUrl;
         },
-        pass:function(index,row){
+        operation:function(index, row){
+          this.recordDialogVisible = true;
+          this.applicationRecord = Object.assign({}, row);
+        },
+        pass:function(){
+          console.log(this.applicationRecord.id)
           axios({
             url:'/api/agent/applypass',
             method:'post',
             params:{
-              recordId:row.id
+              recordId:this.applicationRecord.id
             }
           }).then((res) => {
             if(res.data.success){
+              this.recordDialogVisible = false;
               this.handleSearch(1)
             }
           })
         },
-        unpass:function(index,row){
+        unpass:function(){
           axios({
             url:'/api/agent/applyrefuse',
             method:'post',
@@ -184,6 +195,7 @@
           }).then((res) => {
             console.log(res.data)
             if(res.data.success){
+              this.recordDialogVisible = false;
               this.handleSearch(1)
             }
           })

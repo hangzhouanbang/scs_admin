@@ -21,7 +21,6 @@
         <el-form-item label="姓名">
           <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
-        <br>
         <el-form-item label="注册时间" label-width="68px">
           <el-date-picker
             v-model="filters.startTime"

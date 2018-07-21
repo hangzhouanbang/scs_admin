@@ -19,25 +19,32 @@
 
       <el-table :data="list" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
-        <el-table-column prop="title" label="商品类型" width="100" sortable></el-table-column>
-        <el-table-column prop="file" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="库存数量" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="剩余数量" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="价格" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="ICON图" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="支付方式" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="是否可用" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="排序" width="100" sortable></el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="index" width="60"></el-table-column>
+        <el-table-column prop="product" label="商品类型" width="100" sortable></el-table-column>
+        <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="repertory" label="库存数量" width="100" sortable></el-table-column>
+        <el-table-column prop="remain" label="剩余数量" width="100" sortable></el-table-column>
+        <el-table-column prop="price" label="价格" width="100" sortable></el-table-column>
+        <el-table-column prop="productPic" label="ICON图" width="100" sortable>
+          <template slot-scope="scope">
+            <img :src="scope.row.productPic" alt="" style="width: 50px;height: 50px;">
+          </template>
+        </el-table-column>
+        <el-table-column prop="payType" label="支付方式" width="100" sortable></el-table-column>
+        <el-table-column prop="sale" label="是否可用" width="100" sortable></el-table-column>
+        <el-table-column prop="weight" label="排序" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
-            <el-button size="small" @click="publishDialog(scope.$index,scope.row)">删除</el-button>
-            <el-button size="small" @click="publishDialog(scope.$index,scope.row)">调整</el-button>
+            <el-button size="small" @click="deleteDialog(scope.$index,scope.row)">删除</el-button>
+            <el-button size="small" @click="adjustDialog(scope.$index,scope.row)">调整</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!--工具条-->
       <el-col :span="24" class="toolbar">
+        <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button>
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
                        style="float:right;">
         </el-pagination>
@@ -46,8 +53,8 @@
       <!--添加商品-->
       <el-dialog title="添加商品" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-        <el-form-item label="商品类型" prop="title">
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="商品类型" prop="product">
+          <el-select v-model="normalForm.product" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -56,14 +63,14 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品数量" prop="title" style="width:317px;">
-          <el-input v-model="normalForm.title" auto-complete="off"></el-input>
+        <el-form-item label="商品数量" prop="number" style="width:317px;">
+          <el-input v-model="normalForm.number" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="库存数量" prop="title" style="width:317px;">
-          <el-input v-model="normalForm.title" auto-complete="off"></el-input>
+        <el-form-item label="库存数量" prop="repertory" style="width:317px;">
+          <el-input v-model="normalForm.repertory" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="支付方式" prop="title">
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="支付方式" prop="payType">
+          <el-select v-model="normalForm.payType" placeholder="请选择">
             <el-option
               v-for="item in payment"
               :key="item.value"
@@ -72,10 +79,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="价格" prop="address">
-          <el-input v-model="normalForm.address" auto-complete="off" style="width:217px;"></el-input> 元/积分
+        <el-form-item label="价格" prop="price">
+          <el-input v-model="normalForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
         </el-form-item>
-        <el-form-item label="ICON图" prop="file">
+        <el-form-item label="ICON图" prop="productPic">
           <div class="upload">
             <el-upload
               class="avatar-uploader"
@@ -89,7 +96,7 @@
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="issue">确认添加</el-button>
+          <el-button type="primary" @click="issue()">确认添加</el-button>
           <el-button type="primary" @click.native="addFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -97,9 +104,9 @@
 
       <!--调整-->
       <el-dialog title="调整商品" :visible.sync="adjustmentVisible" :close-on-click-modal="false">
-        <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="商品类型" prop="title">
-            <el-select v-model="value" placeholder="请选择">
+        <el-form :model="adjustForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+          <el-form-item label="商品类型" prop="product">
+            <el-select v-model="adjustForm.product" placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -108,14 +115,14 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="商品数量" prop="title" style="width:317px;">
-            <el-input v-model="normalForm.title" auto-complete="off"></el-input>
+          <el-form-item label="商品数量" prop="number" style="width:317px;">
+            <el-input v-model="adjustForm.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="库存数量" prop="title" style="width:317px;">
-            <el-input v-model="normalForm.title" auto-complete="off"></el-input>
+          <el-form-item label="库存数量" prop="repertory" style="width:317px;">
+            <el-input v-model="adjustForm.repertory" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="支付方式" prop="title">
-            <el-select v-model="value" placeholder="请选择">
+          <el-form-item label="支付方式" prop="payType">
+            <el-select v-model="adjustForm.payType" placeholder="请选择">
               <el-option
                 v-for="item in payment"
                 :key="item.value"
@@ -124,14 +131,14 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="价格" prop="address">
-            <el-input v-model="normalForm.address" auto-complete="off" style="width:217px;"></el-input> 元/积分
+          <el-form-item label="价格" prop="price">
+            <el-input v-model="adjustForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
           </el-form-item>
-          <el-form-item label="是否可用" prop="address">
-            <el-radio v-model="radio" label="1">是</el-radio>
-            <el-radio v-model="radio" label="2">否</el-radio>
+          <el-form-item label="是否可用">
+            <el-radio v-model="radioData" label="true">是</el-radio>
+            <el-radio v-model="radioData" label="false">否</el-radio>
           </el-form-item>
-          <el-form-item label="ICON图" prop="file">
+          <el-form-item label="ICON图" prop="productPic">
             <div class="upload">
               <el-upload
                 class="avatar-uploader"
@@ -145,8 +152,8 @@
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="issue">确认添加</el-button>
-            <el-button type="primary" @click.native="addFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="Adjust()">确认添加</el-button>
+            <el-button type="primary" @click.native="adjustmentVisible = false">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -176,10 +183,11 @@
             RemoveItemVisible:false,
             total:0,
             list:[],
+            img:true,
             normalForm:{},
-            filters: {
-              name: ''
-            },
+            adjustForm:{},
+            filters: {},
+            radioData:'',
             // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
             domain: 'http://up.qiniu.com',
             // 这是七牛云空间的外链默认域名
@@ -204,7 +212,8 @@
             payment:[
               {value:'微信支付'},
               {value:'积分兑换'}
-            ]
+            ],
+            sels: [],
           }
       },
       methods:{
@@ -242,7 +251,8 @@
             // 获取到凭证之后再将文件上传到七牛云空间
             axios.post(this.domain, formdata, config).then(res => {
               this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
-              //console.log(this.imageUrl)
+              this.img = false;
+              console.log(this.imageUrl)
             })
           })
         },
@@ -258,13 +268,220 @@
           }
           return isJPG && isLt2M
         },
-        handleSearch(){
+        handleSearch(page){
           axios({
-            url:'/api/'
+            url:'/api/agent/queryagentclubcard',
+            method:'post',
+            params:{
+              page:page,
+              size:10
+            }
+          }).then((res) => {
+            console.log(res.data.data.items)
+            this.list = res.data.data.items;
+            this.total = res.data.data.pageCount;
+            for(let i = 0;i < this.list.length;i++){
+              if(this.list[i].sale == true){
+                this.list[i].sale = '是'
+              }else{
+                this.list[i].sale = '否'
+              }
+            }
+          }).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
           })
         },
         showAddDialog:function(){
           this.addFormVisible = true;
+        },
+        issue:function() {
+          axios({
+            method: 'post',
+            url: '/api/agent/addagentclubcard',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              product:this.normalForm.product,
+              number:this.normalForm.number,
+              price:this.normalForm.price,
+              repertory:this.normalForm.repertory,
+              payType:this.normalForm.payType,
+              productPic:this.imageUrl,
+              weight:Math.floor(Math.random()*10)
+            }
+          })
+            .then((res) => {
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '添加失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '添加成功',
+                    type: 'success'
+                  });
+                  this.addFormVisible = false;//关闭弹窗
+                  this.handleSearch(1);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        },
+        selsChange: function (sels) {
+          this.sels = sels;
+        },
+        handleCurrentChange(val) {
+          this.page = val;
+          this.handleSearch(this.page);
+        },
+        adjustDialog:function(index,row){
+          this.imageUrl = '';
+          this.adjustmentVisible = true;
+          this.adjustForm = Object.assign({}, row);
+          console.log(this.adjustForm)
+          if(this.adjustForm.sale == '是'){
+            this.radioData = 'true';
+          }
+          if(this.adjustForm.sale == '否'){
+            this.radioData = 'false';
+          }
+          if(this.imageUrl == ''){
+            this.imageUrl = this.adjustForm.productPic;
+          }
+        },
+        Adjust:function(){
+            this.loading = true;
+            axios({
+              method: 'post',
+              url: '/api/agent/updateagentclubcard',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                id:this.adjustForm.id,
+                product:this.adjustForm.product,
+                number:this.adjustForm.number,
+                price:this.adjustForm.price,
+                repertory:this.adjustForm.repertory,
+                payType:this.adjustForm.payType,
+                productPic:this.imageUrl,
+                sale:this.radioData,
+                weight:Math.floor(Math.random()*10)
+              }
+            })
+              .then((res) => {
+                  this.loading = false;
+                  if (res.data.success == true) {
+                    this.adjustmentVisible = false;
+                    this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+                    this.handleSearch(1);
+                  } else {
+                    this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((e) => {
+              this.loading = false;
+              console.log(e);
+              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            });
+          },
+        deleteDialog:function(index,row){
+          this.loading = true;
+          axios({
+            method: 'post',
+            url: '/api/agent/deleteagentclubcard',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'cardId': row.id
+            }
+          }).then((res) => {
+              this.loading = false;
+              if (res.data.success == true) {
+                this.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                this.handleSearch(1);
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            },
+          ).catch((e) => {
+            that.loading = false;
+            console.log(error);
+            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          });
+        },
+        batchDeleteBook:function(){
+          let ids = this.sels.map(item => item.id).toString();
+          let that = this;
+          this.$confirm('确认删除选中记录吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            that.loading = true;
+            axios({
+              method: 'post',
+              url: '/api/agent/deleteagentclubcard',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'cardId': ids
+              }
+            })
+              .then((res) => {
+                  that.loading = false;
+                  if (res.data.success == true) {
+                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                    that.handleSearch(1);
+                  } else {
+                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((e) => {
+              that.loading = false;
+              console.log(error);
+              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            });
+          });
         }
       },
       mounted(){
@@ -281,7 +498,8 @@
     text-align: center;
     font-size:18px;
   }
-  img{
-    margin-left:160px;
+  .avatar{
+    width:100px;
+    height:100px;
   }
 </style>
