@@ -20,14 +20,14 @@
           </el-form-item>
           <el-form-item label="时间">
             <el-date-picker
-              v-model="value1"
+              v-model="filters.startTime"
               type="date"
               placeholder="时间选择">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="至">
             <el-date-picker
-              v-model="value2"
+              v-model="filters.endTime"
               type="date"
               placeholder="时间选择">
             </el-date-picker>
@@ -38,7 +38,7 @@
 
       <!-- 积分记录列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;" v-show="po">
+                style="width: 100%;">
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
         <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
@@ -55,7 +55,7 @@
         </el-table-column>
       </el-table>
       <!--工具条-->
-      <el-col :span="24" class="toolbar" v-show="po">
+      <el-col :span="24" class="toolbar">
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
                        style="float:right;">
         </el-pagination>
@@ -65,10 +65,10 @@
       <el-dialog title="积分操作" :visible.sync="publishVisible" :close-on-click-modal="false">
         <el-form :model="publishForm" label-width="220px">
           <el-form-item label="推广员ID">
-            <el-input class="memberInput"></el-input>
+            <el-input class="memberInput" v-model="publishForm.agentId" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="会员卡类型">
-            <el-select v-model="filters.type" placeholder="请选择">
+            <el-select v-model="publishForm.product" placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -78,16 +78,16 @@
             </el-select>
           </el-form-item>
           <el-form-item label="当前数量">
-            <el-input class="memberInput"></el-input>
+            <el-input class="memberInput" v-model="publishForm.number" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="调整数量为">
-            <el-input class="memberInput"></el-input>
+            <el-input class="memberInput" v-model="publishForm.afternumber"></el-input>
           </el-form-item>
           <el-form-item label="当前积分">
-            <el-input class="memberInput"></el-input>
+            <el-input class="memberInput" v-model="publishForm.accountingAmount" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="调整积分为">
-            <el-input class="memberInput"></el-input>
+            <el-input class="memberInput" v-model="publishForm.afterAmount"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="notarizeVisible = true,publishVisible =false">确认调整</el-button>
@@ -100,11 +100,12 @@
       <el-dialog title="确认操作" :visible.sync="notarizeVisible" :close-on-click-modal="false">
         <el-form>
           <div align="center">
-            推广员12345678拥有的<br/>周卡：由25调整至20<br/>积分：由3500调整到4000
+            推广员{{publishForm.agentId}}拥有的<br/>{{publishForm.product}}：由{{publishForm.number}}调整至{{publishForm.afternumber}}<br/>
+            积分：由{{publishForm.accountingAmount}}调整到{{publishForm.afterAmount}}
           </div>
           <br/>
           <div align="center">
-            <el-button type="primary" @click="notarizeVisible = false">确认调整</el-button>
+            <el-button type="primary" @click="sure">确认调整</el-button>
             <el-button type="primary" @click.native="notarizeVisible = false,publishVisible = true">返回修改</el-button>
           </div>
         </el-form>
@@ -137,7 +138,7 @@
         publishVisible: false,
         publishForm: {},
         notarizeVisible: false,
-        po: false,//隐藏表单
+        state: []
       }
     },
     methods: {
@@ -163,74 +164,77 @@
       },
       //搜索
       seek() {
-        if (this.value1 == 'NaN' || this.value1 == '' || this.value2 == 'NaN' || this.value2 == '') {
-          this.$message({
-            showClose: true,
-            message: '请选择购买时间段',
-            type: 'warning'
-          });
-        } else if (new Date(this.value2).getTime() - new Date(this.value1).getTime() <= 0) {
+        if (this.filters.startTime) {
+          let date = new Date(this.filters.startTime);
+          this.state.startTime = date.getTime();
+        }
+        if (this.filters.endTime) {
+          let date = new Date(this.filters.endTime);
+          this.state.endTime = date.getTime();
+        }
+        if (this.filters.startTime &&
+          this.filters.endTime &&
+          this.state.endTime - this.state.startTime <= 0) {
           this.$message({
             showClose: true,
             message: '时间段选择有误',
             type: 'warning'
           });
-        } else {
-          axios({
-            method: 'post',
-            url: '/api/agent/queryscorerecord',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              'size': '15',//每页数量
-              'page': this.page,//当前页
-              'agentId': this.filters.id,
-              'agent': this.filters.agent,
-              'startTime': new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
-              'endTime': new Date(this.value2).getTime()
-            }
-          })
-            .then((res) => {
-                this.po = true;//显示表单
-                this.loading = false;//隐藏加载条
-                this.items = res.data.data.items;
-                this.total = res.data.data.pageCount;
-                //console.log(res.data.data.items)
-                for (let i = 0; i < this.items.length; i++) {
-                  this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-                }
-              },
-            ).catch((e) => {
-            if (e && e.response) {
-              switch (e.response.status) {
-                case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
-                  break
-              }
-            }
-          });
+          return;
         }
+        axios({
+          method: 'post',
+          url: '/api/agent/queryscorerecord',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+            'agentId': this.filters.id,
+            'agent': this.filters.agent,
+            'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
+            'endTime': this.state.endTime
+          }
+        })
+          .then((res) => {
+              this.loading = false;//隐藏加载条
+              this.items = res.data.data.items;
+              this.total = res.data.data.pageCount;
+              //console.log(res.data.data.items)
+              for (let i = 0; i < this.items.length; i++) {
+                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+              }
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -239,9 +243,73 @@
         this.publishVisible = true;
         this.publishForm = Object.assign({}, row);
       },
+
+      //确认调整会员卡
+      sure() {
+        axios({
+          method: 'post',
+          url: '/api/agent/scoremanager',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'agentId': this.publishForm.agentId,
+            'card': this.publishForm.product,
+            'cardAmount': this.publishForm.afternumber,
+            'scoreAmount': this.publishForm.afterAmount,
+          }
+        })
+          .then((res) => {
+              //console.log(res.data.success)
+              if (res.data.success == false) {
+                this.$message({
+                  showClose: true,
+                  message: '调整失败',
+                  type: 'warning'
+                });
+              } else if (res.data.success == true) {
+                this.$message({
+                  showClose: true,
+                  message: '调整成功',
+                  type: 'success'
+                });
+                this.notarizeVisible = false;
+                this.seek();
+              }
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      }
     },
     mounted() {
-     
+      this.seek();
     }
   }
 </script>
