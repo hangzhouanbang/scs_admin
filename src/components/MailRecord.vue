@@ -61,8 +61,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="systemMail.mailType" label="类型" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.number" label="金币" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.integral" label="积分" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.number" label="玉石" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.integral" label="礼券" width="auto" sortable></el-table-column>
       <el-table-column prop="vipCardName" label="会员卡" width="auto" sortable></el-table-column>
       <el-table-column prop="systemMail.validTime" label="有效时间" width="auto" sortable></el-table-column>
       <el-table-column prop="systemMail.createtime" label="发送时间" width="auto" sortable></el-table-column>
@@ -102,8 +102,9 @@
         filters: {},
         items: [],
         options: [
-          {value: '',
-            label:'所有'
+          {
+            value: '',
+            label: '所有'
           },
           {value: '活动奖励'},
           {value: '系统通知'},
@@ -145,8 +146,8 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'startTime':'NaN'? '0':new Date(this.filters.startTime).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime':'NaN'? '0': new Date(this.filters.endTime).getTime(),
+            'startTime': 'NaN' ? '0' : new Date(this.filters.startTime).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
+            'endTime': 'NaN' ? '0' : new Date(this.filters.endTime).getTime(),
             'mailType': this.filters.mailType,
             'adminName': this.nickname
           }
@@ -199,68 +200,6 @@
           }
         });
       },
-
-     /* handleSearch2() {
-        axios({
-          method: 'post',
-          url: '/api/mailctrl/find_mail_record',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'size': '15',//每页数量
-            'page': this.page,//当前页
-          }
-        })
-          .then((res) => {
-              if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '数据读取失败',
-                  type: 'warning'
-                });
-              } else if (res.data.success == true) {
-                this.lists = res.data.data.lists;
-                this.total = res.data.data.pageCount;//总页数
-                //console.log(this.data)
-                for (let i = 0; i < this.lists.length; i++) {
-                  this.lists[i].systemMail.validTime = this.dateTimeFormat(this.lists[i].systemMail.validTime);
-                  this.lists[i].systemMail.createtime = this.dateTimeFormat(this.lists[i].systemMail.createtime);
-                  this.lists[i].rewardTime = this.dateTimeFormat(this.lists[i].rewardTime);
-                }
-              }
-            },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
-            }
-          }
-        });
-      }*/
-
     },
     mounted() {
       this.handleSearch();

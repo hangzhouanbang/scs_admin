@@ -35,8 +35,8 @@
             <img :src="scope.row.file" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="金币数量" width="140" sortable></el-table-column>
-        <el-table-column prop="integral" label="积分数量" width="140" sortable></el-table-column>
+        <el-table-column prop="number" label="玉石数量" width="140" sortable></el-table-column>
+        <el-table-column prop="integral" label="礼券数量" width="140" sortable></el-table-column>
         <el-table-column prop="vipcard" label="会员卡体验时间(天)"></el-table-column>
       </el-table>
 

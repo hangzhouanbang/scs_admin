@@ -35,8 +35,8 @@
             <img :src="scope.row.file" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="金币数量" width="140" sortable></el-table-column>
-        <el-table-column prop="integral" label="积分数量" width="140" sortable></el-table-column>
+        <el-table-column prop="number" label="玉石数量" width="140" sortable></el-table-column>
+        <el-table-column prop="integral" label="礼券数量" width="140" sortable></el-table-column>
         <el-table-column prop="vipcard" label="会员卡体验时间(天)"></el-table-column>
       </el-table>
 
@@ -75,11 +75,11 @@
                 :value="item.value">
               </el-option>
             </el-select>
-            <el-form-item label="金币数量" prop="number" class="memberCard" v-show="memberDisplay">
+            <el-form-item label="玉石数量" prop="number" class="memberCard" v-show="memberDisplay">
               <el-input type="number" min="0" class="memberInput" v-model="normalForm.number"
                         placeholder="请输入正整数"></el-input>
             </el-form-item>
-            <el-form-item label="积分数量" prop="integral" class="memberCard" v-show="memberDisplay">
+            <el-form-item label="礼券数量" prop="integral" class="memberCard" v-show="memberDisplay">
               <el-input type="number" min="0" class="memberInput" v-model="normalForm.integral"
                         placeholder="请输入正整数"></el-input>
             </el-form-item>

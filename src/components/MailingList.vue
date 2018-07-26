@@ -39,8 +39,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="systemMail.mailType" label="类型" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.number" label="金币" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.integral" label="积分" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.number" label="玉石" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.integral" label="礼券" width="auto" sortable></el-table-column>
       <el-table-column prop="systemMail.vipcard" label="会员卡" width="auto" sortable></el-table-column>
       <el-table-column prop="systemMail.validTime" label="有效时间" width="auto" sortable></el-table-column>
       <el-table-column prop="systemMail.createtime" label="发送时间" width="auto" sortable></el-table-column>

@@ -35,8 +35,8 @@
         <el-table-column prop="id" label="用户ID" width="100" sortable></el-table-column>
         <el-table-column prop="nickname" label="用户昵称" width="100" sortable></el-table-column>
         <el-table-column prop="gender" label="消费金额（元）" width="160" sortable></el-table-column>
-        <el-table-column prop="phone" label="金币" width="100" sortable></el-table-column>
-        <el-table-column prop="createTime" label="积分" width="100" sortable></el-table-column>
+        <el-table-column prop="phone" label="玉石" width="100" sortable></el-table-column>
+        <el-table-column prop="createTime" label="礼券" width="100" sortable></el-table-column>
         <el-table-column prop="vipEndTime" label="会员级别" width="100" sortable></el-table-column>
         <el-table-column prop="vipEndTime" label="所在房间" width="100" sortable></el-table-column>
         <el-table-column prop="vipEndTime" label="房间号"></el-table-column>

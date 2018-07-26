@@ -16,10 +16,10 @@
     </el-select>
     <!--普通用户-->
     <el-form :model="normalForm" :rules="rules" ref="normalForm" label-width="250px" class="demo-ruleForm" v-show="normalshow">
-      <el-form-item label="新用户注册赠送的金币数量" prop="goldForNewNember ">
+      <el-form-item label="新用户注册赠送的玉石数量" prop="goldForNewNember ">
         <el-input v-model="normalForm.goldForNewNember "></el-input>
       </el-form-item>
-      <el-form-item label="签到得金币数量" prop="signGoldNumber ">
+      <el-form-item label="签到得玉石数量" prop="signGoldNumber ">
         <el-input v-model="normalForm.signGoldNumber "></el-input>
       </el-form-item>
       <!--<el-form-item label="分享得积分数量" prop="shareIntegralNumber">-->
@@ -28,16 +28,16 @@
       <!--<el-form-item label="分享得金币数量" prop="shareGoldNumber">-->
         <!--<el-input v-model="normalForm.shareGoldNumber"></el-input>-->
       <!--</el-form-item>-->
-      <el-form-item label="邀请得积分数量" prop="inviteIntegralNumber">
+      <el-form-item label="邀请得礼券数量" prop="inviteIntegralNumber">
         <el-input v-model="normalForm.inviteIntegralNumber"></el-input>
       </el-form-item>
-      <el-form-item label="积分增长速度" prop="planGrowIntegralSpeed">
+      <el-form-item label="礼券增长速度" prop="planGrowIntegralSpeed">
         <el-input v-model="normalForm.planGrowIntegralSpeed"></el-input>
       </el-form-item>
-      <el-form-item label="创建会员玩法房间的金币价格" prop="planMemberCreateRoomDailyGoldPrice">
+      <el-form-item label="创建会员玩法房间的玉石价格" prop="planMemberCreateRoomDailyGoldPrice">
         <el-input v-model="normalForm.planMemberCreateRoomDailyGoldPrice"></el-input>
       </el-form-item>
-      <el-form-item label="加入会员玩法房间的金币价格" prop="planMemberaddRoomDailyGoldPrice">
+      <el-form-item label="加入会员玩法房间的玉石价格" prop="planMemberaddRoomDailyGoldPrice">
         <el-input v-model="normalForm.planMemberaddRoomDailyGoldPrice"></el-input>
       </el-form-item>
       <el-form-item label="加入会员玩法每天可开的房间数量" prop="planMemberMaxCreateRoomDaily">
@@ -59,7 +59,7 @@
     </el-form>
     <!--会员用户-->
     <el-form :model="memberForm" :rules="rules" ref="memberForm" label-width="150px" class="demo-ruleForm" v-show="membershow">
-      <el-form-item label="签到得金币数量" prop="signGoldNumber ">
+      <el-form-item label="签到得玉石数量" prop="signGoldNumber ">
         <el-input v-model="memberForm.signGoldNumber "></el-input>
       </el-form-item>
       <!--<el-form-item label="分享得积分数量" prop="shareIntegralNumber">-->
@@ -68,10 +68,10 @@
       <!--<el-form-item label="分享得金币数量" prop="shareGoldNumber">-->
         <!--<el-input v-model="memberForm.shareGoldNumber"></el-input>-->
       <!--</el-form-item>-->
-      <el-form-item label="邀请得积分数量" prop="inviteIntegralNumber">
+      <el-form-item label="邀请得礼券数量" prop="inviteIntegralNumber">
         <el-input v-model="memberForm.inviteIntegralNumber"></el-input>
       </el-form-item>
-      <el-form-item label="积分增长速度" prop="vipGrowIntegralSpeed">
+      <el-form-item label="礼券增长速度" prop="vipGrowIntegralSpeed">
         <el-input v-model="memberForm.vipGrowIntegralSpeed"></el-input>
       </el-form-item>
       <el-form-item label="等级增长速度" prop="vipGrowGradeSpeed">
@@ -126,10 +126,10 @@
           memberForm: {},
           rules: {
             newnumber: [
-              {required: true, message: '请输入金币数量', trigger: 'blur'}
+              {required: true, message: '请输入玉石数量', trigger: 'blur'}
             ],
             number1: [
-              { required: true, message: '请输入金币数量', trigger: 'blur' }
+              { required: true, message: '请输入玉石数量', trigger: 'blur' }
             ],
             // number2: [
             //   { required: true, message: '请输入积分数量', trigger: 'blur' }
@@ -138,16 +138,16 @@
             //   { required: true, message: '请输入金币数量', trigger: 'blur' }
             // ],
             number4: [
-              { required: true, message: '请输入积分数量', trigger: 'blur' }
+              { required: true, message: '请输入礼券数量', trigger: 'blur' }
             ],
             speed: [
               { required: true, message: '请输入增长速度', trigger: 'blur' }
             ],
             createprice: [
-              { required: true, message: '请输入金币价格', trigger: 'blur' }
+              { required: true, message: '请输入玉石价格', trigger: 'blur' }
             ],
             price: [
-              { required: true, message: '请输入金币价格', trigger: 'blur' }
+              { required: true, message: '请输入玉石价格', trigger: 'blur' }
             ],
             rooms: [
               { required: true, message: '请输入房间数量', trigger: 'blur' }
@@ -168,10 +168,10 @@
               { required: true, message: '请输入金额', trigger: 'blur' }
             ],
             integral: [
-              { required: true, message: '请输入积分数量', trigger: 'blur' }
+              { required: true, message: '请输入礼券数量', trigger: 'blur' }
             ],
             gold: [
-              { required: true, message: '请输入金币数量', trigger: 'blur' }
+              { required: true, message: '请输入玉石数量', trigger: 'blur' }
             ]
           },
         }

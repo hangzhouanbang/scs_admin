@@ -43,10 +43,10 @@
               v-model="filters.ids">
             </el-input>
           </el-form-item>
-          <el-form-item label="金币" prop="number">
+          <el-form-item label="玉石" prop="number">
             <el-input type="number" min="0" placeholder="数目" v-model="filters.number"></el-input>
           </el-form-item>
-          <el-form-item label="积分" prop="integral">
+          <el-form-item label="礼券" prop="integral">
             <el-input type="number" min="0" placeholder="数目" v-model="filters.integral"></el-input>
           </el-form-item>
           <el-form-item label="物品" prop="number">

@@ -15,7 +15,7 @@
       <el-table-column prop="name" label="会员卡名称" width="auto" sortable></el-table-column>
       <el-table-column prop="price" label="会员卡价格" width="auto" sortable></el-table-column>
       <el-table-column prop="score" label="购买获得积分数" width="auto" sortable></el-table-column>
-      <el-table-column prop="gold" label="购买获得金币数" width="auto" sortable></el-table-column>
+      <el-table-column prop="gold" label="购买获得玉石数" width="auto" sortable></el-table-column>
       <el-table-column prop="time" label="延长的会员时间" width="auto" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -34,10 +34,10 @@
         <el-form-item label="会员卡价格" prop="price">
           <el-input v-model="addCard.price" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="购买赠送的金币数" prop="gold">
+        <el-form-item label="购买赠送的玉石数" prop="gold">
           <el-input v-model="addCard.gold" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="购买赠送的积分数" prop="score">
+        <el-form-item label="购买赠送的礼券数" prop="score">
           <el-input v-model="addCard.score" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="延长的会员时间" prop="time">
@@ -59,10 +59,10 @@
         <el-form-item label="会员卡价格" prop="price">
           <el-input v-model="editCard.price" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="购买赠送金币数" prop="gold">
+        <el-form-item label="购买赠送玉石数" prop="gold">
           <el-input v-model="editCard.gold" :rows="8"></el-input>
         </el-form-item>
-        <el-form-item label="购买赠送积分数" prop="score">
+        <el-form-item label="购买赠送礼券数" prop="score">
           <el-input v-model="editCard.score" :rows="8"></el-input>
         </el-form-item>
         <el-form-item label="延长的会员时间" prop="time">
@@ -105,10 +105,10 @@
             {required: true, message: '请输入会员卡价格', trigger: 'blur'}
           ],
           gold: [
-            {required: true, message: '请输入金币数', trigger: 'blur'}
+            {required: true, message: '请输入玉石数', trigger: 'blur'}
           ],
           score: [
-            {required: true, message: '请输入积分数', trigger: 'blur'}
+            {required: true, message: '请输入礼券数', trigger: 'blur'}
           ],
           time: [
             {required: true, message: '请输入会员时间', trigger: 'blur'}

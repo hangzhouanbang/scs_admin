@@ -44,10 +44,10 @@
         <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
         <el-table-column prop="product" label="商品名称" width="100" sortable></el-table-column>
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="accountingAmount" label="积分变化" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingAmount" label="礼券变化" width="100" sortable></el-table-column>
         <el-table-column prop="accountingTime" label="时间" width="160" sortable></el-table-column>
         <el-table-column prop="summary.text" label="说明" width="140" sortable></el-table-column>
-        <el-table-column prop="balanceAfter" label="剩余积分" width="100" sortable></el-table-column>
+        <el-table-column prop="balanceAfter" label="剩余礼券" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">积分调整</el-button>

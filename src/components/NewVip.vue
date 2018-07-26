@@ -28,8 +28,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-button type="primary" @click="showgold">赠送金币</el-button>
-          <el-button type="primary" @click="showintegral">赠送积分</el-button>
+          <el-button type="primary" @click="showgold">赠送玉石</el-button>
+          <el-button type="primary" @click="showintegral">赠送礼券</el-button>
         </el-form>
       </el-col>
 
@@ -63,10 +63,10 @@
         </el-pagination>
       </el-col>
 
-      <!--赠送金币弹窗-->
-      <el-dialog title="赠送金币" :visible.sync="giveFormVisible" :close-on-click-modal="false">
+      <!--赠送玉石弹窗-->
+      <el-dialog title="赠送玉石" :visible.sync="giveFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="金币数量" prop="gold">
+          <el-form-item label="玉石数量" prop="gold">
             <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.gold"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -77,10 +77,10 @@
         </el-form>
       </el-dialog>
 
-      <!--赠送积分弹窗-->
-      <el-dialog title="赠送积分" :visible.sync="givefromintegral" :close-on-click-modal="false">
+      <!--赠送礼券弹窗-->
+      <el-dialog title="赠送礼券" :visible.sync="givefromintegral" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
-          <el-form-item label="积分数量" prop="score">
+          <el-form-item label="礼券数量" prop="score">
             <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.score"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -102,10 +102,10 @@
               <el-table-column type="expand">
                 <template slot-scope="props">
                   <el-form label-position="left" inline class="demo-table-expand">
-                    <el-form-item label="积分">
+                    <el-form-item label="礼券">
                       <span>{{ props.row.score }}</span>
                     </el-form-item>
-                    <el-form-item label="金币">
+                    <el-form-item label="玉石">
                       <span>{{ props.row.gold }}</span>
                     </el-form-item>
                     <el-form-item label="消费金额">
@@ -130,7 +130,7 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="金币积分流水" name="second">
+          <el-tab-pane label="玉石礼券流水" name="second">
             <el-table :data="items" highlight-current-row @selection-change="selsChange"
                       style="width: 100%;">
               <el-table-column type="index" width="60"></el-table-column>
@@ -146,8 +146,8 @@
                              style="float:right;">
               </el-pagination>
             </el-col>
-            <el-button type="primary" v-on:click="goldwathercourse">金币</el-button>
-            <el-button type="primary" @click="integral">积分</el-button>
+            <el-button type="primary" v-on:click="goldwathercourse">玉石</el-button>
+            <el-button type="primary" @click="integral">礼券</el-button>
           </el-tab-pane>
         </el-tabs>
       </el-dialog>
