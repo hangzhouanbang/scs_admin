@@ -14,14 +14,14 @@
         <el-form :inline="true" :model="filters">
           <el-form-item label="开始时间">
             <el-date-picker
-              v-model="value1"
+              v-model="filters.startTime"
               type="date"
               placeholder="开始时间">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="结束时间">
             <el-date-picker
-              v-model="value2"
+              v-model="filters.endTime"
               type="date"
               placeholder="结束时间">
             </el-date-picker>
@@ -72,6 +72,7 @@
         value1: '',//开始时间
         value2: '',//结束时间
         po: false,//隐藏表单
+        state: []
       }
     },
     methods: {
@@ -93,19 +94,24 @@
       },
       //搜索
       seek() {
-        if (this.value1 == '' || this.value2 == '') {
-          this.$message({
-            showClose: true,
-            message: '请选择购买时间段',
-            type: 'warning'
-          });
-        } else if (new Date(this.value2).getTime() - new Date(this.value1).getTime() <= 0) {
+        if (this.filters.startTime) {
+          let date = new Date(this.filters.startTime);
+          this.state.startTime = date.getTime();
+        }
+        if (this.filters.endTime) {
+          let date = new Date(this.filters.endTime);
+          this.state.endTime = date.getTime();
+        }
+        if (this.filters.startTime &&
+          this.filters.endTime &&
+          this.state.endTime - this.state.startTime <= 0) {
           this.$message({
             showClose: true,
             message: '时间段选择有误',
             type: 'warning'
           });
-        } else {
+          return;
+        }
           axios({
             method: 'post',
             url: '/api/datareport/platformreport',
@@ -115,8 +121,8 @@
             params: {
               'size': '15',//每页数量
               'page': this.page,//当前页
-              'startTime': new Date(this.value1).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
-              'endTime': new Date(this.value2).getTime()
+              'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
+              'endTime': this.state.endTime,
             }
           })
             .then((res) => {
@@ -158,7 +164,6 @@
               }
             }
           });
-        }
       },
       selsChange: function (sels) {
         this.sels = sels;

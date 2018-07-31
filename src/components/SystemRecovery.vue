@@ -109,7 +109,7 @@
         // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
         domain: 'http://up.qiniu.com',
         // 这是七牛云空间的外链默认域名
-        qiniuaddr: 'paly4iump.bkt.clouddn.com',
+        qiniuaddr: 'qiniu.3cscy.com',
         memberDisplay: false,
         options: [{
           value: '选项1',
