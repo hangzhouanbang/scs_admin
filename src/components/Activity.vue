@@ -140,11 +140,6 @@
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
-          params: {
-            'accessKey': 'qQj7mRKyvE7dOOjObMC8W58i6Yn3penfr7-_fg4d',
-            'secretKey': '9f70kmAddF1maP1U0jy0vRNAhwWNv_huR1xDSH_s',
-            'bucket': 'anbang'
-          }
         }).then(res => {
           const formdata = new FormData()
           formdata.append('file', req.file)
