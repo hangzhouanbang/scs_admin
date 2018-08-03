@@ -39,7 +39,11 @@
     <el-table :data="record" highlight-current-row style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="headimgurl" label="微信头像" width="auto" sortable></el-table-column>
+      <el-table-column prop="headimgurl" label="微信头像" width="auto" sortable>
+        <template slot-scope="scope">
+          <img :src="scope.row.headimgurl" alt="" style="width:50px;height:50px;">
+        </template>
+      </el-table-column>
       <el-table-column prop="nickname" label="注册昵称" width="auto" sortable></el-table-column>
       <el-table-column prop="createTime" label="申请时间" width="auto" sortable></el-table-column>
       <el-table-column prop="phone" label="手机号码" width="auto" sortable></el-table-column>
@@ -76,9 +80,9 @@
     </el-dialog>
 
     <el-dialog title="申请记录" :visible.sync="recordDialogVisible" width="37%" center v-model="applicationRecord">
-      <p>申请人：沈淦</p>
-      <p>手机号码：15968824723</p>
-      <p>身份号：321567989456659</p>
+      <p>申请人：{{nickname}}</p>
+      <p>手机号码：{{phone}}</p>
+      <p>身份证号：{{idCard}}</p>
       <p>是否同意申请？</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="pass()" class="agree">同意</el-button>
@@ -106,8 +110,12 @@
             filters:{},
             record:[],
             total:0,
+            tip:{},
             frontUrl:'',
             reverseUrl:'',
+            nickname:'',
+            phone:'',
+            idCard:'',
             centerDialogVisible:false,
             recordDialogVisible:false,
             applicationRecord:{},
@@ -115,95 +123,100 @@
             operator:true
           }
         },
-      methods:{
-        dateTimeFormat(value) {
-          let time = new Date(+value);
-          let rightTwo = (v) => {
-            v = '0' + v;
-            return v.substring(v.length - 2, v.length)
-          };
-          if (time == null) return;
-          let year = time.getFullYear();
-          let month = time.getMonth() + 1;
-          let date = time.getDate();
-          let hours = time.getHours();
-          let minutes = time.getMinutes();
-          let seconds = time.getSeconds();
-          return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
-        },
-        handleSearch(page){
-          axios({
-            url:'/api/agent/queryapplyrecord',
-            method:'post',
-            params:{
-              startTime:'NaN'? '':new Date(this.filters.startTime).getTime(),
-              endTime:'NaN'? '': new Date(this.filters.endTime).getTime()
-            }
-          }).then((res) => {
-              console.log(res.data)
-              this.record = res.data.data.items;
-              this.total = res.data.data.pageCount;
-              for(let i = 0;i < this.record.length;i++){
-                this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
-                if(this.record[i].state == 'APPLYSUCCESS'){
-                  this.record[i].state1 = true;
-                }
-                if(this.record[i].state == 'APPLYFAIL'){
-                  this.record[i].state2 = true;
-                }
-                if(this.record[i].state == 'APPLYING'){
-                  this.record[i].state3 = true;
+        methods:{
+          dateTimeFormat(value) {
+            let time = new Date(+value);
+            let rightTwo = (v) => {
+              v = '0' + v;
+              return v.substring(v.length - 2, v.length)
+            };
+            if (time == null) return;
+            let year = time.getFullYear();
+            let month = time.getMonth() + 1;
+            let date = time.getDate();
+            let hours = time.getHours();
+            let minutes = time.getMinutes();
+            let seconds = time.getSeconds();
+            return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
+          },
+          handleSearch(page){
+            axios({
+              url:'/api/agent/queryapplyrecord',
+              method:'post',
+              params:{
+                startTime:'NaN'? '':new Date(this.filters.startTime).getTime(),
+                endTime:'NaN'? '': new Date(this.filters.endTime).getTime()
+              }
+            }).then((res) => {
+                console.log(res.data)
+                this.record = res.data.data.items;
+                this.total = res.data.data.pageCount;
+                for(let i = 0;i < this.record.length;i++){
+                  this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
+                  if(this.record[i].state == 'APPLYSUCCESS'){
+                    this.record[i].state1 = true;
+                  }
+                  if(this.record[i].state == 'APPLYFAIL'){
+                    this.record[i].state2 = true;
+                  }
+                  if(this.record[i].state == 'APPLYING'){
+                    this.record[i].state3 = true;
+                  }
                 }
               }
-            }
-          ).catch((e) => {
-
-          })
+            ).catch((e) => {
+            })
+          },
+          handleCurrentChange(val){
+            this.page = val;
+            this.handleSearch(this.page);
+          },
+          check:function(index, row){
+            this.centerDialogVisible = true;
+            this.frontUrl = row.frontUrl;
+            this.reverseUrl = row.reverseUrl;
+          },
+          operation:function(index, row){
+            this.recordDialogVisible = true;
+            this.applicationRecord = Object.assign({}, row);
+            this.nickname = row.nickname;
+            this.phone = row.phone;
+            this.idCard = row.idCard;
+          },
+          pass:function(){
+            console.log(this.applicationRecord.id)
+            axios({
+              url:'/api/agent/applypass',
+              method:'post',
+              params:{
+                recordId:this.applicationRecord.id
+              }
+            }).then((res) => {
+              if(res.data.success){
+                this.recordDialogVisible = false;
+                this.handleSearch(1)
+              }
+            })
+          },
+          unpass:function(){
+            axios({
+              url:'/api/agent/applyrefuse',
+              method:'post',
+              params:{
+                recordId:row.id
+              }
+            }).then((res) => {
+              console.log(res.data)
+              if(res.data.success){
+                this.recordDialogVisible = false;
+                this.handleSearch(1)
+              }
+            })
+          }
         },
-        handleCurrentChange(){},
-        check:function(index, row){
-          this.centerDialogVisible = true;
-          this.frontUrl = row.frontUrl;
-          this.reverseUrl = row.reverseUrl;
-        },
-        operation:function(index, row){
-          this.recordDialogVisible = true;
-          this.applicationRecord = Object.assign({}, row);
-        },
-        pass:function(){
-          console.log(this.applicationRecord.id)
-          axios({
-            url:'/api/agent/applypass',
-            method:'post',
-            params:{
-              recordId:this.applicationRecord.id
-            }
-          }).then((res) => {
-            if(res.data.success){
-              this.recordDialogVisible = false;
-              this.handleSearch(1)
-            }
-          })
-        },
-        unpass:function(){
-          axios({
-            url:'/api/agent/applyrefuse',
-            method:'post',
-            params:{
-              recordId:row.id
-            }
-          }).then((res) => {
-            console.log(res.data)
-            if(res.data.success){
-              this.recordDialogVisible = false;
-              this.handleSearch(1)
-            }
-          })
+        mounted(){
+          this.handleSearch(1)
         }
-      },
-      mounted(){
-        this.handleSearch(1)
-      }
     }
 </script>
 
@@ -228,12 +241,14 @@
   }
   p{
     text-align: center;
-    /*font-size:18px;*/
   }
   .sure{
     margin:52px;
   }
   .agree{
     margin-left:0;
+  }
+  .IMG{
+    overflow: hidden;
   }
 </style>

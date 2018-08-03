@@ -110,7 +110,7 @@
     methods: {
       // 上传文件到七牛云
       upqiniu(req) {
-        //console.log(req)
+        console.log(req)
         const config = {
           headers: {'Content-Type': 'multipart/form-data'}
         }

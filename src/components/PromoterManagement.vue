@@ -61,8 +61,8 @@
       <el-table-column prop="createTime" label="注册时间" width="auto" sortable></el-table-column>
       <el-table-column prop="bossId" label="上级推广员ID" width="auto" sortable></el-table-column>
       <el-table-column prop="bossName" label="上级推广员昵称" width="auto" sortable></el-table-column>
-      <el-table-column prop="bossName" label="手机号码" width="auto" sortable></el-table-column>
-      <el-table-column prop="bossName" label="姓名" width="auto" sortable></el-table-column>
+      <el-table-column prop="phone" label="手机号码" width="auto" sortable></el-table-column>
+      <el-table-column prop="userName" label="姓名" width="auto" sortable></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto" sortable>
         <template slot-scope="scope">
           <el-button type="text" @click="particulars(scope.$index,scope.row)">详情</el-button>
@@ -73,32 +73,35 @@
 
     <!--详情-->
     <el-dialog title="" :visible.sync="centerDialogVisible" :close-on-click-modal="false">
-      <div class="img">
-        <img src="../assets/images/girl.jpg" alt="">
-      </div>
-      <el-table :data="roles" highlight-current-row style="width: 62%;">
-        <el-table-column label="游戏昵称" prop="role"></el-table-column>
-        <el-table-column label="游戏ID" prop="role"></el-table-column>
-        <el-table-column label="会员" prop="role"></el-table-column>
-        <el-table-column label="会员时间" prop="role"></el-table-column>
-        <el-table-column label="注册时间" prop="role"></el-table-column>
+      <el-table :data="roles" style="width: 100%;">
+        <el-table-column label="头像">
+          <template slot-scope="scope">
+            <img :src="scope.row.headimgurl" alt="" class="pic">
+          </template>
+        </el-table-column>
+        <el-table-column label="昵称" prop="nickname" sortable></el-table-column>
+        <el-table-column label="ID" prop="id" sortable></el-table-column>
+        <el-table-column label="性别" prop="gender" sortable></el-table-column>
+        <el-table-column label="状态" prop="state" sortable></el-table-column>
+        <el-table-column label="注册时间" prop="createTime" sortable></el-table-column>
       </el-table>
-      <el-table :data="roles" highlight-current-row style="width: 62%;">
-        <el-table-column label="推广员等级" prop="role"></el-table-column>
-        <el-table-column label="周卡剩余" prop="role"></el-table-column>
-        <el-table-column label="月卡剩余" prop="role"></el-table-column>
-        <el-table-column label="季卡剩余" prop="role"></el-table-column>
-        <el-table-column label="充值金额" prop="role"></el-table-column>
-      </el-table>
+      <el-table :data="roles" style="width: 100%;">
+          <el-table-column label="推广员等级" prop="level" sortable></el-table-column>
+          <el-table-column label="周卡剩余" prop="clubCardZhou" sortable></el-table-column>
+          <el-table-column label="月卡剩余" prop="clubCardYue" sortable></el-table-column>
+          <el-table-column label="季卡剩余" prop="clubCardJi" sortable></el-table-column>
+          <el-table-column label="充值金额" prop="cost" sortable></el-table-column>
+          <el-table-column label="邀请码" prop="invitationCode" sortable></el-table-column>
+        </el-table>
       <div slot="footer" class="dialog-footer">
         <router-link :to="{path:'/membershipCardPurchaseRecord'}">
           <el-button>会员卡购买记录</el-button>
         </router-link>
         <router-link :to="{path:'/membershipCardConsumptionRecord'}">
-          <el-button>会员卡消费记录</el-button>
+          <el-button>会员卡兑换记录</el-button>
         </router-link>
-        <el-button @click.native="CancelSubmit" :visible.sync="relieveDialogVisible">取消推广员资格</el-button>
-        <el-button @click.native="relieveSubmit" :visible.sync="centerDialogVisible">解除封停状态</el-button>
+        <el-button @click.native="CancelSubmit" v-if="disqualifyDialogVisible">取消推广员资格</el-button>
+        <el-button @click.native="relieveSubmit" v-if="unlockingDialogVisible">解除封停状态</el-button>
       </div>
     </el-dialog>
     <!--操作-->
@@ -127,7 +130,15 @@
           <el-input v-model="form.level"></el-input>
         </el-form-item>
         <el-form-item label="调整等级">
-          <el-input v-model="form.upgrade"></el-input>
+          <!--<el-input v-model="form.upgrade"></el-input>-->
+          <el-select v-model="form.upgrade" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button @click="makeSure()">确认修改</el-button>
@@ -153,7 +164,7 @@
             filters:{},
             record:[],
             form:{},
-            roles:{},
+            roles:[],
             total:0,
             upgrade:'',
             options: [
@@ -164,7 +175,9 @@
             relieveDialogVisible:false,
             LevelUpVisible:false,
             boundVisible:false,
-            operateVisible:false
+            operateVisible:false,
+            disqualifyDialogVisible:true,
+            unlockingDialogVisible:false
           }
         },
       methods:{
@@ -215,7 +228,22 @@
         //详情
         particulars:function(index,row){
           this.centerDialogVisible = true;
-          this.roles = row;
+          // console.log(row)
+          axios({
+            url:'/api/agent/agentdetail',
+            method:'post',
+            params:{
+              agentId:row.id
+            }
+          }).then((res) => {
+              row.clubCardYue = res.data.data.clubCardYue;
+              row.clubCardJi = res.data.data.clubCardJi;
+              row.clubCardZhou = res.data.data.clubCardZhou;
+              row.score = res.data.data.score;
+              this.roles = [Object.assign({}, row)];
+          }).catch((e) => {
+              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
         },
         //操作
         operation:function(index,row){
@@ -226,9 +254,6 @@
         },
         //绑定
         bound:function(){
-          // if(this.form.level == 1){
-          //   this.form.bossId = this.form.id;
-          // }
           axios({
             url:'/api/agent/setboss',
             method:'post',
@@ -300,6 +325,7 @@
             if(res.data.success){
               this.$message.success({showClose: true, message: '等级修改成功', duration: 1500});
               this.operateVisible = false;
+              // this.relieveDialogVisible = false;
               this.handleSearch(1)
             }else{
               this.$message.error({showClose: true, message: err.toString(), duration: 2000});
@@ -309,12 +335,46 @@
           })
         },
         CancelSubmit:function(){
-          this.centerDialogVisible = true;
-          this.relieveDialogVisible = false;
+          axios({
+            url:'/api/agent/ban',
+            method:'post',
+            params:{
+              agentId:this.roles[0].id
+            }
+          }).then((res) => {
+            console.log(res.data)
+            if(res.data.success){
+              this.unlockingDialogVisible = true;
+              this.disqualifyDialogVisible = false;
+              this.roles[0].state = res.data.data
+              this.handleSearch(1)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
         },
         relieveSubmit:function(){
-          this.centerDialogVisible = false;
-          this.relieveDialogVisible = true;
+          axios({
+            url:'/api/agent/liberate',
+            method:'post',
+            params:{
+              agentId:this.roles[0].id
+            }
+          }).then((res) => {
+            console.log(res.data)
+            if(res.data.success){
+              this.unlockingDialogVisible = false;
+              this.disqualifyDialogVisible = true;
+              this.roles[0].state = res.data.data
+              this.handleSearch(1)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
         },
         handleCurrentChange:function(){}
       },
@@ -353,5 +413,9 @@
   a{
     text-decoration: none;
     color:#fff;
+  }
+  .pic{
+    width:50px;
+    height:50px;
   }
 </style>

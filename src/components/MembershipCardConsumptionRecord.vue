@@ -46,7 +46,7 @@
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
         <el-table-column prop="accountingAmount" label="兑换消耗" width="100" sortable></el-table-column>
         <el-table-column prop="accountingTime" label="兑换时间" width="160" sortable></el-table-column>
-        <el-table-column prop="balanceAfter" label="剩余积分" width="100" sortable></el-table-column>
+        <el-table-column prop="balanceAfter" label="剩余积分" width="auto" sortable></el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">
