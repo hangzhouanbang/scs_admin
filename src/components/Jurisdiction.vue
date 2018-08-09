@@ -126,6 +126,11 @@
         this.page = val;
         this.handleSearch(this.page);
       },
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleSearch() {
         axios({
           method: 'post',
@@ -136,7 +141,7 @@
           params: {
             'page': this.page,
             'size': '10',
-            'privilege': this.filters.privilege
+            'privilege': this.trim(this.filters.privilege)
           }
         })
           .then((res) => {
@@ -242,8 +247,8 @@
       addSubmit: function () {
         let privileges = [
           {
-            'privilege': this.addprivilege.privilege,
-            'uri': this.addprivilege.uri
+            'privilege': this.trim(this.addprivilege.privilege),
+            'uri': this.trim(this.addprivilege.uri)
           }
         ]
         let params = JSON.stringify(privileges)
@@ -312,9 +317,9 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'id': this.editPrivilege.id,
-                'privilege': this.editPrivilege.privilege,
-                'uri': this.editPrivilege.uri
+                'id': this.trim(this.editPrivilege.id),
+                'privilege': this.trim(this.editPrivilege.privilege),
+                'uri': this.trim(this.editPrivilege.uri)
               }
             })
               .then((res) => {

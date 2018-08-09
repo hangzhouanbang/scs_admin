@@ -122,6 +122,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -247,10 +252,10 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params:{
-            'name':this.addCard.name,
-            'price':this.addCard.price,
-            'gold':this.addCard.gold,
-            'score':this.addCard.score,
+            'name':this.trim(this.addCard.name),
+            'price':this.trim(this.addCard.price),
+            'gold':this.trim(this.addCard.gold),
+            'score':this.trim(this.addCard.score),
             'time':this.addCard.time * 24 * 60 * 60 * 1000
           }
         })
@@ -310,12 +315,12 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'id':this.editCard.id,
-                'name':this.editCard.name,
-                'price':this.editCard.price,
-                'gold':this.editCard.gold,
-                'score':this.editCard.score,
-                'time':this.editCard.time
+                'id':this.trim(this.editCard.id),
+                'name':this.trim(this.editCard.name),
+                'price':this.trim(this.editCard.price),
+                'gold':this.trim(this.editCard.gold),
+                'score':this.trim(this.editCard.score),
+                'time':this.trim(this.editCard.time)
               }
             })
               .then((res) => {

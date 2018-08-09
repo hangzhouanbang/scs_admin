@@ -149,6 +149,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -163,7 +168,7 @@
           params: {
             'page': this.page,
             'size': '15',
-            'role': this.filters.role
+            'role': this.trim(this.filters.role)
           }
         })
           .then((res) => {
@@ -240,8 +245,8 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'id': this.editForm.id,
-            'role': this.editForm.role,
+            'id': this.trim(this.editForm.id),
+            'role': this.trim(this.editForm.role)
           }
         })
           .then((res) => {
@@ -344,7 +349,7 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'roleId': this.editForm.id,//角色id
+              'roleId': this.trim(this.editForm.id),//角色id
               'privilegeId': ids//权限id数组
             }
           })
@@ -378,7 +383,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'role': this.addForm.role,//角色名称
+            'role': this.trim(this.addForm.role)//角色名称
           }
         })
           .then((res) => {

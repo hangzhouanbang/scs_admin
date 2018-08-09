@@ -22,12 +22,6 @@
       <el-form-item label="签到得玉石数量" prop="signGoldNumber ">
         <el-input v-model="normalForm.signGoldNumber "></el-input>
       </el-form-item>
-      <!--<el-form-item label="分享得积分数量" prop="shareIntegralNumber">-->
-        <!--<el-input v-model="normalForm.shareIntegralNumber"></el-input>-->
-      <!--</el-form-item>-->
-      <!--<el-form-item label="分享得金币数量" prop="shareGoldNumber">-->
-        <!--<el-input v-model="normalForm.shareGoldNumber"></el-input>-->
-      <!--</el-form-item>-->
       <el-form-item label="邀请得礼券数量" prop="inviteIntegralNumber">
         <el-input v-model="normalForm.inviteIntegralNumber"></el-input>
       </el-form-item>
@@ -49,9 +43,6 @@
       <el-form-item label="房间存活小时数" prop="planMemberRoomsAliveHours">
         <el-input v-model="normalForm.planMemberRoomsAliveHours"></el-input>
       </el-form-item>
-      <!--<el-form-item label="经验值" prop="exp">-->
-        <!--<el-input v-model="normalForm.exp"></el-input>-->
-      <!--</el-form-item>-->
       <el-form-item>
         <el-button type="primary" @click="submitForm('normalForm')">立即设置</el-button>
         <el-button @click="resetForm('normalForm')">重置</el-button>
@@ -62,12 +53,6 @@
       <el-form-item label="签到得玉石数量" prop="signGoldNumber ">
         <el-input v-model="memberForm.signGoldNumber "></el-input>
       </el-form-item>
-      <!--<el-form-item label="分享得积分数量" prop="shareIntegralNumber">-->
-        <!--<el-input v-model="memberForm.shareIntegralNumber"></el-input>-->
-      <!--</el-form-item>-->
-      <!--<el-form-item label="分享得金币数量" prop="shareGoldNumber">-->
-        <!--<el-input v-model="memberForm.shareGoldNumber"></el-input>-->
-      <!--</el-form-item>-->
       <el-form-item label="邀请得礼券数量" prop="inviteIntegralNumber">
         <el-input v-model="memberForm.inviteIntegralNumber"></el-input>
       </el-form-item>
@@ -83,9 +68,6 @@
       <el-form-item label="房间存活小时数" prop="vipMemberRoomsAliveHours">
         <el-input v-model="memberForm.vipMemberRoomsAliveHours"></el-input>
       </el-form-item>
-      <!--<el-form-item label="经验值" prop="exp">-->
-        <!--<el-input v-model="memberForm.exp"></el-input>-->
-      <!--</el-form-item>-->
       <el-form-item>
         <el-button type="primary" @click="submitmemberForm('memberForm')">立即设置</el-button>
         <el-button @click="resetForm('memberForm')">重置</el-button>
@@ -131,12 +113,6 @@
             number1: [
               { required: true, message: '请输入玉石数量', trigger: 'blur' }
             ],
-            // number2: [
-            //   { required: true, message: '请输入积分数量', trigger: 'blur' }
-            // ],
-            // number3: [
-            //   { required: true, message: '请输入金币数量', trigger: 'blur' }
-            // ],
             number4: [
               { required: true, message: '请输入礼券数量', trigger: 'blur' }
             ],
@@ -152,9 +128,6 @@
             rooms: [
               { required: true, message: '请输入房间数量', trigger: 'blur' }
             ],
-            // exp: [
-            //   { required: true, message: '请输入经验值', trigger: 'blur' }
-            // ],
             number: [
               { required: true, message: '请输入房间数量', trigger: 'blur' }
             ],
@@ -177,6 +150,11 @@
         }
       },
       methods: {
+        trim(str) {
+          if(str != null){
+            return str.replace(/(^\s+)|(\s+$)/g, "");
+          }
+        },
           change(value8){
             if(this.value8 == '普通用户'){
               this.normalshow = true;
@@ -220,17 +198,17 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params:{
-              signGoldNumber:this.normalForm.signGoldNumber,
-              shareIntegralNumber:this.normalForm.shareIntegralNumber,
-              goldForNewNember:this.normalForm.goldForNewNember,
-              shareGoldNumber:this.normalForm.shareGoldNumber,
-              inviteIntegralNumber:this.normalForm.inviteIntegralNumber,
-              planGrowIntegralSpeed:this.normalForm.planGrowIntegralSpeed,
-              planMemberCreateRoomDailyGoldPrice:this.normalForm.planMemberCreateRoomDailyGoldPrice,
-              planMemberaddRoomDailyGoldPrice:this.normalForm.planMemberaddRoomDailyGoldPrice,
-              planMemberRoomsCount:this.normalForm.planMemberRoomsCount,
-              planMemberMaxCreateRoomDaily:this.normalForm.planMemberMaxCreateRoomDaily,
-              planMemberRoomsAliveHours:this.normalForm.planMemberRoomsAliveHours
+              signGoldNumber:this.trim(this.normalForm.signGoldNumber),
+              shareIntegralNumber:this.trim(this.normalForm.shareIntegralNumber),
+              goldForNewNember:this.trim(this.normalForm.goldForNewNember),
+              shareGoldNumber:this.trim(this.normalForm.shareGoldNumber),
+              inviteIntegralNumber:this.trim(this.normalForm.inviteIntegralNumber),
+              planGrowIntegralSpeed:this.trim(this.normalForm.planGrowIntegralSpeed),
+              planMemberCreateRoomDailyGoldPrice:this.trim(this.normalForm.planMemberCreateRoomDailyGoldPrice),
+              planMemberaddRoomDailyGoldPrice:this.trim(this.normalForm.planMemberaddRoomDailyGoldPrice),
+              planMemberRoomsCount:this.trim(this.normalForm.planMemberRoomsCount),
+              planMemberMaxCreateRoomDaily:this.trim(this.normalForm.planMemberMaxCreateRoomDaily),
+              planMemberRoomsAliveHours:this.trim(this.normalForm.planMemberRoomsAliveHours)
             }
           })
             .then((res) => {
@@ -280,14 +258,14 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params:{
-              signGoldNumber:this.memberForm.signGoldNumber,
-              shareIntegralNumber:this.memberForm.shareIntegralNumber,
-              shareGoldNumber:this.memberForm.shareGoldNumber,
-              inviteIntegralNumber:this.memberForm.inviteIntegralNumber,
-              vipGrowIntegralSpeed:this.memberForm.vipGrowIntegralSpeed,
-              vipGrowGradeSpeed:this.memberForm.vipGrowGradeSpeed,
-              vipMemberRoomsCount:this.memberForm.vipMemberRoomsCount,
-              vipMemberRoomsAliveHours:this.memberForm.vipMemberRoomsAliveHours
+              signGoldNumber:this.trim(this.memberForm.signGoldNumber),
+              shareIntegralNumber:this.trim(this.memberForm.shareIntegralNumber),
+              shareGoldNumber:this.trim(this.memberForm.shareGoldNumber),
+              inviteIntegralNumber:this.trim(this.memberForm.inviteIntegralNumber),
+              vipGrowIntegralSpeed:this.trim(this.memberForm.vipGrowIntegralSpeed),
+              vipGrowGradeSpeed:this.trim(this.memberForm.vipGrowGradeSpeed),
+              vipMemberRoomsCount:this.trim(this.memberForm.vipMemberRoomsCount),
+              vipMemberRoomsAliveHours:this.trim(this.memberForm.vipMemberRoomsAliveHours)
             }
           })
             .then((res) => {

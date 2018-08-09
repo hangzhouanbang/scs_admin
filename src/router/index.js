@@ -32,6 +32,8 @@ import Activity from '@/components/Activity.vue'
 import MallManagement from '@/components/MallManagement.vue'
 import CodeUsageRecord from '@/components/CodeUsageRecord.vue'
 import IntegralRecord from '@/components/IntegralRecord.vue'
+import GamePlay from '@/components/GamePlay.vue'
+import PlayTheMutex from '@/components/PlayTheMutex.vue'
 
 Vue.use(Router)
 
@@ -180,9 +182,20 @@ export default new Router({
       component: Home,
       menuShow: true,
       leaf: true,
-      iconCls: 'iconfont icon-yewurenyuanxinxiguanli',
+      iconCls: 'iconfont icon-huodongguanli',
       children: [
         {path: '/activity', component: Activity, name: '活动管理', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '玩法管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-wanfa',
+      children: [
+        {path: '/gamePlay', component: GamePlay, name: '玩法', menuShow: true},
+        {path: '/playTheMutex', component: PlayTheMutex, name: '玩法互斥', menuShow: true},
       ]
     },
   ]

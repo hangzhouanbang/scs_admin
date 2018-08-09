@@ -106,6 +106,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -133,7 +138,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'game':this.filters.game
+            'game':this.trim(this.filters.game)
           }
         })
           .then((res) => {
@@ -212,11 +217,11 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params:{
-            'game':this.addonline.game, //游戏
-            'name':this.addonline.name, //服务器名称
-            'domainForHttp':this.addonline.domainForHttp, //http接口域名
-            'portForHttp':this.addonline.portForHttp, //http接口端口
-            'wsUrl':this.addonline.wsUrl, //websocket URL
+            'game':this.trim(this.addonline.game), //游戏
+            'name':this.trim(this.addonline.name), //服务器名称
+            'domainForHttp':this.trim(this.addonline.domainForHttp), //http接口域名
+            'portForHttp':this.trim(this.addonline.portForHttp), //http接口端口
+            'wsUrl':this.trim(this.addonline.wsUrl) //websocket URL
           }
         })
           .then((res) => {

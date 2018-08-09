@@ -66,6 +66,11 @@
           }
         },
       methods: {
+        trim(str) {
+          if(str != null){
+            return str.replace(/(^\s+)|(\s+$)/g, "");
+          }
+        },
         setLevel(){
           axios({
             method: 'post',
@@ -89,11 +94,11 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              vip1:this.addCard.vip1,
-              vip2:this.addCard.vip2,
-              vip3:this.addCard.vip3,
-              vip4:this.addCard.vip4,
-              vip5:this.addCard.vip5
+              vip1:this.trim(this.addCard.vip1),
+              vip2:this.trim(this.addCard.vip2),
+              vip3:this.trim(this.addCard.vip3),
+              vip4:this.trim(this.addCard.vip4),
+              vip5:this.trim(this.addCard.vip5)
             }
           })
             .then((res) => {

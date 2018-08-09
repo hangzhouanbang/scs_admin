@@ -218,6 +218,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleClick(tab, event) {
         if (tab.index == "0") {
           axios({
@@ -354,7 +359,7 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'gold': this.normalForm.gold,
+                'gold': this.trim(this.normalForm.gold),
                 'id': ids
               }
             })
@@ -447,7 +452,7 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'score': this.normalForm.score,
+                'score': this.trim(this.normalForm.score),
                 'id': ids
               }
             })
@@ -523,8 +528,8 @@
             params: {
               'size': '15',//每页数量
               'page': this.page,//当前页
-              'id': this.filters.id,
-              'nickname': this.filters.nickname,
+              'id': this.trim(this.filters.id),
+              'nickname': this.trim(this.filters.nickname),
               'vip': true
             }
           })
@@ -577,8 +582,8 @@
             params: {
               'size': '15',//每页数量
               'page': this.page,//当前页
-              'id': this.filters.id,
-              'nickname': this.filters.nickname,
+              'id': this.trim(this.filters.id),
+              'nickname': this.trim(this.filters.nickname),
               'vip': false
             }
           })

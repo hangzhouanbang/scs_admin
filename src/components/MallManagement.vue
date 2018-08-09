@@ -217,6 +217,11 @@
           }
       },
       methods:{
+        trim(str) {
+          if(str != null){
+            return str.replace(/(^\s+)|(\s+$)/g, "");
+          }
+        },
         // 上传文件到七牛云
         upqiniu(req) {
           console.log(req)
@@ -315,9 +320,9 @@
             },
             params: {
               product:this.normalForm.product,
-              number:this.normalForm.number,
-              price:this.normalForm.price,
-              repertory:this.normalForm.repertory,
+              number:this.trim(this.normalForm.number),
+              price:this.trim(this.normalForm.price),
+              repertory:this.trim(this.normalForm.repertory),
               payType:this.normalForm.payType,
               productPic:this.imageUrl,
               weight:Math.floor(Math.random()*10)
@@ -392,11 +397,11 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                id:this.adjustForm.id,
+                id:this.trim(this.adjustForm.id),
                 product:this.adjustForm.product,
-                number:this.adjustForm.number,
-                price:this.adjustForm.price,
-                repertory:this.adjustForm.repertory,
+                number:this.trim(this.adjustForm.number),
+                price:this.trim(this.adjustForm.price),
+                repertory:this.trim(this.adjustForm.repertory),
                 payType:this.adjustForm.payType,
                 productPic:this.imageUrl,
                 sale:this.radioData,

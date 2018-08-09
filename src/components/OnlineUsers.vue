@@ -75,6 +75,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       change() {
         if (this.value == '选项1') {//查询会员用户
 

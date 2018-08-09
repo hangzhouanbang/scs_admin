@@ -119,6 +119,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       // 上传文件到七牛云
       upqiniu(req) {
         //console.log(req)
@@ -169,7 +174,7 @@
       issue(req) {
         if (this.normalForm.title == undefined || this.normalForm.title == "") {
           this.$message({
-            showClose: true,
+             showClose: true,
             message: '标题和图片不能为空',
             type: 'warning'
           });
@@ -181,9 +186,9 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'theme': this.normalForm.title,
+              'theme': this.trim(this.normalForm.title),
               'content': this.imageUrl,
-              'url': this.normalForm.address,
+              'url': this.trim(this.normalForm.address),
               'promulgator': sessionStorage.getItem('nickname')
             }
           })
@@ -261,7 +266,7 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'promulgator': this.filters.promulgator,//发布人
+            'promulgator': this.trim(this.filters.promulgator),//发布人
             'state': 'START'//活动状态
           }
         })

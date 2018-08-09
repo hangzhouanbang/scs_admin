@@ -89,6 +89,11 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -117,8 +122,8 @@
           params: {
             'size': '10',//每页数量
             'page': page,//当前页
-            'agentId':this.filters.id,
-            'agent':this.filters.nickname,
+            'agentId':this.trim(this.filters.id),
+            'agent':this.trim(this.filters.nickname),
             'startTime': this.state.startTime , /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime
           }

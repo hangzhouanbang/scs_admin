@@ -141,6 +141,11 @@
           let seconds = time.getSeconds();
           return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
+        trim(str) {
+          if(str != null){
+            return str.replace(/(^\s+)|(\s+$)/g, "");
+          }
+        },
         //导出Excel表
         exportExcel () {
           if(this.filters.status == '未付款'){
@@ -181,8 +186,8 @@
             params: {
               out_trade_no:'',
               pay_type:this.state.pay_type,
-              memberId:this.filters.memberId,
-              nickname:this.filters.nickname,
+              memberId:this.trim(this.filters.memberId),
+              nickname:this.trim(this.filters.nickname),
               status:this.state.status,
               startTime:this.state.startTime,
               endTime:this.state.startTime,
@@ -237,8 +242,8 @@
             params: {
               'page': this.page,
               'size': '10',
-              'memberId': this.filters.memberId,
-              'nickname': this.filters.nickname,
+              'memberId': this.trim(this.filters.memberId),
+              'nickname': this.trim(this.filters.nickname),
               'out_trade_no':'',
               'pay_type':this.state.pay_type,
               'startTime':this.state.startTime,

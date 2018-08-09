@@ -138,6 +138,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       // 上传文件到七牛云
       upqiniu(req) {
         //console.log(req)
@@ -214,11 +219,11 @@
             },
             params: {
               'status': 1,
-              'title': this.normalForm.title,
+              'title': this.trim(this.normalForm.title),
               'file': this.imageUrl,
-              'number': this.normalForm.number,
-              'integral': this.normalForm.integral,
-              'vipcard': this.normalForm.vipcard
+              'number': this.trim(this.normalForm.number),
+              'integral': this.trim(this.normalForm.integral),
+              'vipcard': this.trim(this.normalForm.vipcard)
             }
           })
             .then((res) => {
@@ -298,7 +303,7 @@
             'status': 1,
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'adminname': this.filters.adminname
+            'adminname': this.trim(this.filters.adminname)
           }
         })
           .then((res) => {

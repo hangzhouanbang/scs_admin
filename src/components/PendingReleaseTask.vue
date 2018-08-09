@@ -189,6 +189,11 @@
           }
         },
         methods:{
+          trim(str) {
+            if(str != null){
+              return str.replace(/(^\s+)|(\s+$)/g, "");
+            }
+          },
           selsChange: function (sels) {
             this.sels = sels;
           },
@@ -252,7 +257,7 @@
               params: {
                 page:page,
                 size:10,
-                name:this.filters.nickname,
+                name:this.trim(this.filters.nickname),
                 type:''
               }
             })
@@ -290,9 +295,9 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                name:this.addForm.name,
+                name:this.trim(this.addForm.name),
                 type:this.addForm.taskType,
-                desc:this.addForm.description,
+                desc:this.trim(this.addForm.description),
                 taskName:this.addForm.Typetask
               }
             })
@@ -341,13 +346,13 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                taskDocId:this.publishForm.id,
-                promulgator:this.publishForm.promulgator,
-                rewardGold:this.publishForm.goldNumber,
-                rewardScore:this.publishForm.integralNumber,
+                taskDocId:this.trim(this.publishForm.id),
+                promulgator:this.trim(this.publishForm.promulgator),
+                rewardGold:this.trim(this.publishForm.goldNumber),
+                rewardScore:this.trim(this.publishForm.integralNumber),
                 rewardVip:this.publishForm.vipDays,
                 vip:this.publishForm.userTypes,
-                targetNum:this.publishForm.completionTimes
+                targetNum:this.trim(this.publishForm.completionTimes)
               }
             })
               .then((res) => {

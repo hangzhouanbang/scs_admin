@@ -104,6 +104,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       //禁用按钮
       off(index, row) {
         sessionStorage.setItem('id', this.list[index].id);//保存id
@@ -167,8 +172,8 @@
             },
             params: {
               'status': '0',
-              'notice': this.normalForm.notice,
-              'place': this.place
+              'notice': this.trim(this.normalForm.notice),
+              'place': this.trim(this.place)
             }
           })
             .then((res) => {
@@ -227,7 +232,7 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'adminname': this.filters.adminname
+            'adminname': this.trim(this.filters.adminname)
           }
         })
           .then((res) => {

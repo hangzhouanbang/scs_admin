@@ -41,6 +41,11 @@
       };
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleLogin() {
         axios({//登录
           method: 'post',
@@ -49,8 +54,8 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'nickname': this.account.nickname,
-            'pass': this.account.pass,
+            'nickname': this.trim(this.account.nickname),
+            'pass': this.trim(this.account.pass)
           }
         })
           .then((res) => {

@@ -101,6 +101,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       dateTimeFormat(value) {
         let time = new Date(+value);
         let rightTwo = (v) => {
@@ -144,8 +149,8 @@
           params: {
             'size': '10',//每页数量
             'page': page,//当前页
-            'agentId':this.filters.id,
-            'agent':this.filters.nickname,
+            'agentId':this.trim(this.filters.id),
+            'agent':this.trim(this.filters.nickname),
             'type':this.filters.mailType,
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime':this.state.endTime

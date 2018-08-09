@@ -54,7 +54,6 @@
                        style="float:right;">
         </el-pagination>
       </el-col>
-
     </el-col>
   </el-row>
 </template>
@@ -79,6 +78,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       dateTimeFormat(value) {
         let time = new Date(+value);
         let rightTwo = (v) => {
@@ -94,7 +98,6 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-
       handleCurrentChange(val) {
         this.page = val;
         this.seek(this.page);
@@ -128,8 +131,8 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'agentId': this.filters.id,
-            'agent': this.filters.agent,
+            'agentId': this.trim(this.filters.id),
+            'agent': this.trim(this.filters.agent),
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime,
           }

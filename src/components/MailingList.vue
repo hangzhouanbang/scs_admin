@@ -99,6 +99,11 @@
           let seconds = time.getSeconds();
           return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
+        trim(str) {
+          if(str != null){
+            return str.replace(/(^\s+)|(\s+$)/g, "");
+          }
+        },
         handleSearch(page){
           axios({
             method: 'post',
@@ -107,7 +112,7 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              memberId:this.filters.nickname,
+              memberId:this.trim(this.filters.nickname),
               mailType:this.filters.type,
               page:page,
               size:'10'

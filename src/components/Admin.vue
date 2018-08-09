@@ -183,6 +183,11 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       handleSearch() {
         axios({//根据昵称查询
           method: 'post',
@@ -193,7 +198,7 @@
           params: {
             'page': this.page,
             'size': '15',
-            'nickname': this.filters.nickname
+            'nickname': this.trim(this.filters.nickname)
           }
         })
           .then((res) => {
@@ -370,10 +375,10 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'nickname': this.addForm.nickname,
-            'pass': this.addForm.pass,
-            'user': this.addForm.user,
-            'idCard': this.addForm.idCard,
+            'nickname': this.trim(this.addForm.nickname),
+            'pass': this.trim(this.addForm.pass),
+            'user': this.trim(this.addForm.user),
+            'idCard': this.trim(this.addForm.idCard),
             // 'sex':this.radio
           }
         })

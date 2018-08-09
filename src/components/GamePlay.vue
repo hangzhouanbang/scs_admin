@@ -1,0 +1,303 @@
+<template>
+  <el-row class="warp">
+    <el-col :span="24" class="warp-breadcrum">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item :to="{ path: '/' }"><b>玩法管理</b></el-breadcrumb-item>
+        <el-breadcrumb-item>玩法</el-breadcrumb-item>
+      </el-breadcrumb>
+    </el-col>
+
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <el-form :inline="true" :model="filters">
+        <el-form-item label="游戏名称" label-width="68px">
+          <el-input v-model="filters.gamename" @keyup.enter.native="handleSearch(1)"></el-input>
+        </el-form-item>
+        <el-form-item label="玩法" label-width="68px">
+          <el-input v-model="filters.play" @keyup.enter.native="handleSearch(1)"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+
+    <!-- 玩法列表-->
+    <el-table :data="playmethod" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+      <el-table-column type="selection" width="55"></el-table-column>
+      <el-table-column type="index" width="60"></el-table-column>
+      <el-table-column prop="id" label="玩法ID" width="auto" sortable></el-table-column>
+      <el-table-column prop="game" label="游戏名称" width="auto" sortable></el-table-column>
+      <el-table-column prop="name" label="玩法" width="auto" sortable></el-table-column>
+      <el-table-column prop="desc" label="描述" width="auto" sortable></el-table-column>
+      <el-table-column prop="mutexGroupId" label="互斥组id" width="auto" sortable></el-table-column>
+      <el-table-column prop="vip" label="是否会员" width="auto" sortable></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!--新增玩法-->
+    <el-dialog title="新增玩法" :visible.sync="addGameVisible" :close-on-click-modal="false">
+      <el-form :model="addGame" label-width="150px" :rules="editFormRules" ref="addGame">
+        <el-form-item label="游戏名称" prop="game">
+          <el-input v-model="addGame.game" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="玩法" prop="name">
+          <el-input v-model="addGame.name" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="desc">
+          <el-input v-model="addGame.desc" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="互斥组id" prop="mutexGroupId">
+          <el-input v-model="addGame.mutexGroupId" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="是否为vip" prop="vip">
+          <el-radio v-model="addGame.vip" label="是">是</el-radio>
+          <el-radio v-model="addGame.vip" label="否">否</el-radio>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="addGameVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="addSubmit">提交</el-button>
+      </div>
+    </el-dialog>
+
+    <!--工具条-->
+    <el-col :span="24" class="toolbar">
+      <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button>
+      <el-button type="primary" @click="addplay">新增</el-button>
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
+                     style="float:right;">
+      </el-pagination>
+    </el-col>
+  </el-row>
+</template>
+
+<script>
+    import axios from 'axios'
+    export default {
+      name: "PlayManagement",
+      data(){
+        return{
+          filters:{},
+          playmethod:[],
+          sels:[],
+          total:0,
+          addGame:{},
+          addGame1:{},
+          addGameVisible:false,
+          editFormRules:{
+            game: [
+              {required: true, message: '请输入游戏名称', trigger: 'blur'}
+            ],
+            name: [
+              {required: true, message: '请输入玩法', trigger: 'blur'}
+            ],
+            desc: [
+              {required: true, message: '请输入描述', trigger: 'blur'}
+            ],
+            mutexGroupId: [
+              {required: true, message: '请输入互斥组id', trigger: 'blur'}
+            ]
+          }
+        }
+      },
+      methods:{
+        handleCurrentChange(val){
+          this.page = val;
+          this.handleSearch(this.page);
+        },
+        trim(str) {
+          if(str != null){
+            return str.replace(/(^\s+)|(\s+$)/g, "");
+          }
+        },
+        handleSearch(page){
+          axios({
+            method: 'post',
+            url: '/api/game/query_gamelaw',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              game:this.trim(this.filters.gamename),
+              name:this.trim(this.filters.play),
+              page:page,
+              size:'10'
+            }
+          })
+            .then((res) => {
+                console.log(res.data.data)
+                this.playmethod = res.data.data.items;
+                this.total = res.data.data.pageCount;
+                for(let i = 0; i < this.playmethod.length;i++){
+                  console.log(this.playmethod[i])
+                  if(this.playmethod[i].vip == true){
+                    this.playmethod[i].vip = '是';
+                  }else{
+                    this.playmethod[i].vip = '否';
+                  }
+                }
+              },
+            ).catch((e) => {
+            if(e && e.response){
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        },
+        selsChange: function (sels) {
+          this.sels = sels;
+        },
+        delBook:function(index,row){
+          let that = this;
+          this.$confirm('确认删除该记录吗?', '提示', {type: 'warning'}).then(() => {
+            that.loading = true;
+            axios({//根据昵称查询
+              method: 'post',
+              url: '/api/game/remove_law',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'lawId':row.id
+              }
+            })
+              .then((res) => {
+                  // console.log(res.data.success)
+                  that.loading = false;
+                  if(res.data.success == true){
+                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                    that.handleSearch(1);
+                  }else{
+                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((e) => {
+              that.loading = false;
+              console.log(e);
+              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            });
+          });
+        },
+        batchDeleteBook:function(){
+          let ids = this.sels.map(item => item.id).toString();
+          let that = this;
+          this.$confirm('确认删除该记录吗?', '提示', {type: 'warning'}).then(() => {
+            that.loading = true;
+            axios({//根据昵称查询
+              method: 'post',
+              url: '/api/game/remove_law',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'lawId':ids
+              }
+            })
+              .then((res) => {
+                  that.loading = false;
+                  if(res.data.success == true){
+                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                    that.handleSearch(1);
+                  }else{
+                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((error) => {
+              that.loading = false;
+              console.log(error);
+              that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            });
+          });
+        },
+        addplay:function(){
+          this.addGameVisible = true;
+        },
+        addSubmit:function(){
+          if(this.addGame.vip == '是'){
+            this.addGame1.vip = true;
+          }else{
+            this.addGame1.vip = false;
+          }
+          axios({
+            method: 'post',
+            url: '/api/game/add_law',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params:{
+              'game':this.trim(this.addGame.game),
+              'name':this.trim(this.addGame.name),
+              'desc':this.trim(this.addGame.desc),
+              'mutexGroupId':this.trim(this.addGame.mutexGroupId),
+              'vip':this.addGame1.vip
+            }
+          })
+            .then((res) => {
+                console.log(res.data)
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '添加失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '添加成功',
+                    type: 'success'
+                  });
+                  this.addGameVisible = false;//关闭弹窗
+                  this.handleSearch(1);
+                }
+              },
+            ).catch((e) => {
+            if(e && e.response){
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        }
+      },
+      mounted(){
+        this.handleSearch(1)
+      }
+    }
+</script>
+
+<style scoped>
+  .toolbar{
+    margin-top:30px;
+  }
+</style>

@@ -105,6 +105,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       selsChange: function (sels) {
         this.sels = sels;
       },
@@ -123,8 +128,8 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'taskDocId': this.filters.taskDocId,
-            'promulgator': this.filters.promulgator,
+            'taskDocId': this.trim(this.filters.taskDocId),
+            'promulgator': this.trim(this.filters.promulgator),
             'vip': this.value,
           }
         })

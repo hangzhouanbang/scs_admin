@@ -123,6 +123,11 @@
       }
     },
     methods: {
+      trim(str) {
+        if(str != null){
+          return str.replace(/(^\s+)|(\s+$)/g, "");
+        }
+      },
       // 上传文件到七牛云
       upqiniu(req) {
         //console.log(req)
@@ -168,7 +173,6 @@
         }
         return isJPG && isLt2M
       },
-
       //重置
       reset() {
         this.filters.ids = ''
@@ -176,7 +180,6 @@
         this.filters.integral = ''
         this.id = ''
       },
-
       //发送
       send() {
         if (this.filters.ids == undefined || this.filters.ids == "") {
@@ -201,9 +204,9 @@
             params: {
               'mailType': this.value,
               'file': this.imageUrl,
-              'ids': this.filters.ids,
-              'number': this.filters.number,
-              'integral': this.filters.integral,
+              'ids': this.trim(this.filters.ids),
+              'number': this.trim(this.filters.number),
+              'integral': this.trim(this.filters.integral),
               'vipCardId': this.id,
               'validDay': this.value2
             }
