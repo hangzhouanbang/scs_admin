@@ -237,7 +237,7 @@
   .leftImg img,
   .rightImg img{
     width:200px;
-    height:120px;
+    height:200px;
   }
   p{
     text-align: center;

@@ -45,7 +45,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('normalForm')">立即设置</el-button>
-        <el-button @click="resetForm('normalForm')">重置</el-button>
+        <el-button @click="change('普通用户')">重置</el-button>
       </el-form-item>
     </el-form>
     <!--会员用户-->
@@ -69,8 +69,8 @@
         <el-input v-model="memberForm.vipMemberRoomsAliveHours"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitmemberForm('memberForm')">立即设置</el-button>
-        <el-button @click="resetForm('memberForm')">重置</el-button>
+        <el-button type="primary" @click="submitmemberForm()">立即设置</el-button>
+        <el-button @click="change('会员用户')">重置</el-button>
       </el-form-item>
     </el-form>
    </el-row>
@@ -155,39 +155,36 @@
             return str.replace(/(^\s+)|(\s+$)/g, "");
           }
         },
-          change(value8){
-            if(this.value8 == '普通用户'){
-              this.normalshow = true;
-              this.membershow = false;
-              axios({
-                method: 'post',
-                url: '/api/rights/commonrights',
-                headers: {
-                  'Content-type': 'application/x-www-form-urlencoded'
-                },
-                params:{}
+        change(value8){
+          if(this.value8 == '普通用户'){
+            this.normalshow = true;
+            this.membershow = false;
+            axios({
+              method: 'post',
+              url: '/api/rights/commonrights',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params:{}
+            })
+              .then((res) => {
+                this.normalForm = res.data;
+            })
+          }else{
+            this.normalshow = false;
+            this.membershow = true;
+            axios({
+              method: 'post',
+              url: '/api/rights/viprights',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params:{}
+            })
+              .then((res) => {
+                this.memberForm = res.data;
               })
-                .then((res) => {
-                  this.normalForm = res.data;
-              })
-            }else{
-              this.normalshow = false;
-              this.membershow = true;
-              axios({
-                method: 'post',
-                url: '/api/rights/viprights',
-                headers: {
-                  'Content-type': 'application/x-www-form-urlencoded'
-                },
-                params:{}
-              })
-                .then((res) => {
-                  this.memberForm = res.data;
-                })
-            }
-          },
-          memberchange(){
-            this.memberDisplay = true;
+          }
         },
         //普通用户
         submitForm:function(){
@@ -198,17 +195,17 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params:{
-              signGoldNumber:this.trim(this.normalForm.signGoldNumber),
-              shareIntegralNumber:this.trim(this.normalForm.shareIntegralNumber),
-              goldForNewNember:this.trim(this.normalForm.goldForNewNember),
-              shareGoldNumber:this.trim(this.normalForm.shareGoldNumber),
-              inviteIntegralNumber:this.trim(this.normalForm.inviteIntegralNumber),
-              planGrowIntegralSpeed:this.trim(this.normalForm.planGrowIntegralSpeed),
-              planMemberCreateRoomDailyGoldPrice:this.trim(this.normalForm.planMemberCreateRoomDailyGoldPrice),
-              planMemberaddRoomDailyGoldPrice:this.trim(this.normalForm.planMemberaddRoomDailyGoldPrice),
-              planMemberRoomsCount:this.trim(this.normalForm.planMemberRoomsCount),
-              planMemberMaxCreateRoomDaily:this.trim(this.normalForm.planMemberMaxCreateRoomDaily),
-              planMemberRoomsAliveHours:this.trim(this.normalForm.planMemberRoomsAliveHours)
+              signGoldNumber:this.normalForm.signGoldNumber,
+              shareIntegralNumber:this.normalForm.shareIntegralNumber,
+              goldForNewNember:this.normalForm.goldForNewNember,
+              shareGoldNumber:this.normalForm.shareGoldNumber,
+              inviteIntegralNumber:this.normalForm.inviteIntegralNumber,
+              planGrowIntegralSpeed:this.normalForm.planGrowIntegralSpeed,
+              planMemberCreateRoomDailyGoldPrice:this.normalForm.planMemberCreateRoomDailyGoldPrice,
+              planMemberaddRoomDailyGoldPrice:this.normalForm.planMemberaddRoomDailyGoldPrice,
+              planMemberRoomsCount:this.normalForm.planMemberRoomsCount,
+              planMemberMaxCreateRoomDaily:this.normalForm.planMemberMaxCreateRoomDaily,
+              planMemberRoomsAliveHours:this.normalForm.planMemberRoomsAliveHours
             }
           })
             .then((res) => {
@@ -251,6 +248,7 @@
         },
         //会员用户
         submitmemberForm:function(){
+          console.log(this.memberForm.vipMemberRoomsCount)
           axios({
             method: 'post',
             url: '/api/rights/vipuser',
@@ -258,14 +256,14 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params:{
-              signGoldNumber:this.trim(this.memberForm.signGoldNumber),
-              shareIntegralNumber:this.trim(this.memberForm.shareIntegralNumber),
-              shareGoldNumber:this.trim(this.memberForm.shareGoldNumber),
-              inviteIntegralNumber:this.trim(this.memberForm.inviteIntegralNumber),
-              vipGrowIntegralSpeed:this.trim(this.memberForm.vipGrowIntegralSpeed),
-              vipGrowGradeSpeed:this.trim(this.memberForm.vipGrowGradeSpeed),
-              vipMemberRoomsCount:this.trim(this.memberForm.vipMemberRoomsCount),
-              vipMemberRoomsAliveHours:this.trim(this.memberForm.vipMemberRoomsAliveHours)
+              signGoldNumber:this.memberForm.signGoldNumber,
+              shareIntegralNumber:this.memberForm.shareIntegralNumber,
+              shareGoldNumber:this.memberForm.shareGoldNumber,
+              inviteIntegralNumber:this.memberForm.inviteIntegralNumber,
+              vipGrowIntegralSpeed:this.memberForm.vipGrowIntegralSpeed,
+              vipGrowGradeSpeed:this.memberForm.vipGrowGradeSpeed,
+              vipMemberRoomsCount:this.memberForm.vipMemberRoomsCount,
+              vipMemberRoomsAliveHours:this.memberForm.vipMemberRoomsAliveHours
             }
           })
             .then((res) => {

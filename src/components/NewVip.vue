@@ -291,7 +291,8 @@
           .then((res) => {
               this.loading = false;//隐藏加载条
               this.items = res.data.data.items;
-              //console.log(res.data.data.items)
+              this.page = res.data.data.pageCount;
+              // console.log(res.data.data.items)
             },
           ).catch((e) => {
           if (e && e.response) {

@@ -315,12 +315,12 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'id':this.trim(this.editCard.id),
-                'name':this.trim(this.editCard.name),
-                'price':this.trim(this.editCard.price),
-                'gold':this.trim(this.editCard.gold),
-                'score':this.trim(this.editCard.score),
-                'time':this.trim(this.editCard.time)
+                'id':this.editCard.id,
+                'name':this.editCard.name,
+                'price':this.editCard.price,
+                'gold':this.editCard.gold,
+                'score':this.editCard.score,
+                'time':this.editCard.time
               }
             })
               .then((res) => {

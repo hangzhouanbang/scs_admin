@@ -117,11 +117,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       dateTimeFormat(value) {
         let time = new Date(+value);
         let rightTwo = (v) => {

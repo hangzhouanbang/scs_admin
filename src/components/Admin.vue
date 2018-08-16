@@ -74,7 +74,12 @@
       </el-dialog>
       <!--编辑角色-->
       <el-dialog title="编辑角色" :visible.sync="editRoleVisible" :close-on-click-modal="false">
-
+        <el-table :data="roles" highlight-current-row @selection-change="selsChange"
+                  style="width: 100%;">
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" width="60"></el-table-column>
+          <el-table-column prop="role" label="角色名" width="auto" sortable></el-table-column>
+        </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="editRoleVisible = false">取消</el-button>
           <el-button type="primary" @click.native="roleSubmit">提交</el-button>
@@ -315,6 +320,7 @@
           params: {}
         })
           .then((res) => {
+            console.log(res.data.data)
               this.roles = res.data.data;
             },
           ).catch((e) => {

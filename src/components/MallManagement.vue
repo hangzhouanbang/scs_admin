@@ -397,11 +397,11 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                id:this.trim(this.adjustForm.id),
+                id:this.adjustForm.id,
                 product:this.adjustForm.product,
-                number:this.trim(this.adjustForm.number),
-                price:this.trim(this.adjustForm.price),
-                repertory:this.trim(this.adjustForm.repertory),
+                number:this.adjustForm.number,
+                price:this.adjustForm.price,
+                repertory:this.adjustForm.repertory,
                 payType:this.adjustForm.payType,
                 productPic:this.imageUrl,
                 sale:this.radioData,

@@ -15,6 +15,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
+            <el-button type="primary" v-on:click="online">上线</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -33,7 +34,6 @@
       <el-table-column prop="onlineTime" label="上线时间" width="160" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="small" @click="online(scope.$index,scope.row)">上线</el-button>
           <el-button type="danger" @click="offline(scope.$index,scope.row)" size="small">下线</el-button>
         </template>
       </el-table-column>
@@ -204,7 +204,7 @@
         });
       },
       //显示上线界面
-      online: function (index, row) {
+      online: function () {
         this.onlineVisible = true;
         this.addonline = {};
       },
