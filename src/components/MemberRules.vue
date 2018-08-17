@@ -161,7 +161,7 @@
             this.membershow = false;
             axios({
               method: 'post',
-              url: '/api/rights/commonrights',
+              url: this.global.mPath + '/rights/commonrights',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -175,7 +175,7 @@
             this.membershow = true;
             axios({
               method: 'post',
-              url: '/api/rights/viprights',
+              url: this.global.mPath + '/rights/viprights',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -190,7 +190,7 @@
         submitForm:function(){
           axios({
             method: 'post',
-            url: '/api/rights/commonuser',
+            url: this.global.mPath + '/rights/commonuser',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -202,7 +202,7 @@
               inviteIntegralNumber:this.normalForm.inviteIntegralNumber,
               planGrowIntegralSpeed:this.normalForm.planGrowIntegralSpeed,
               planMemberCreateRoomDailyGoldPrice:this.normalForm.planMemberCreateRoomDailyGoldPrice,
-              planMemberaddRoomDailyGoldPrice:this.normalForm.planMemberaddRoomDailyGoldPrice,
+              planMemberJoinRoomGoldPrice:this.normalForm.planMemberaddRoomDailyGoldPrice,
               planMemberRoomsCount:this.normalForm.planMemberRoomsCount,
               planMemberMaxCreateRoomDaily:this.normalForm.planMemberMaxCreateRoomDaily,
               planMemberRoomsAliveHours:this.normalForm.planMemberRoomsAliveHours
@@ -251,7 +251,7 @@
           console.log(this.memberForm.vipMemberRoomsCount)
           axios({
             method: 'post',
-            url: '/api/rights/vipuser',
+            url: this.global.mPath + '/rights/vipuser',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },

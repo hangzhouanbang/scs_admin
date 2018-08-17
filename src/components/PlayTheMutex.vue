@@ -106,7 +106,7 @@
       handleSearch(page){
         axios({
           method: 'post',
-          url: '/api/game/query_lawsmutexgroup',
+          url: this.global.mPath + '/game/query_lawsmutexgroup',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -152,7 +152,7 @@
           that.loading = true;
           axios({//根据昵称查询
             method: 'post',
-            url: '/api/game/remove_mutexgroup',
+            url: this.global.mPath + '/game/remove_mutexgroup',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -184,7 +184,7 @@
           that.loading = true;
           axios({//根据昵称查询
             method: 'post',
-            url: '/api/game/remove_mutexgroup',
+            url: this.global.mPath + '/game/remove_mutexgroup',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -214,7 +214,7 @@
       addSubmit:function(){
         axios({
           method: 'post',
-          url: '/api/game/add_mutexgroup',
+          url: this.global.mPath + '/game/add_mutexgroup',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

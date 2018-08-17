@@ -69,7 +69,7 @@
         setLevel(){
           axios({
             method: 'post',
-            url: '/api/grade/find_grade',
+            url: this.global.mPath + '/grade/find_grade',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -87,7 +87,7 @@
         addSubmit(){
           axios({
             method: 'post',
-            url: '/api/grade/insert_grade',
+            url: this.global.mPath + '/grade/insert_grade',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },

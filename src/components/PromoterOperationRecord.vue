@@ -142,7 +142,7 @@
         }
         axios({
           method: 'post',
-          url: '/api/agent/queryclubcardrecord',
+          url: this.global.mPath + '/agent/queryclubcardrecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

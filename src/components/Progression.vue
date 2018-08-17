@@ -83,7 +83,7 @@
             return;
           }
           axios({
-            url:'/api/datareport/gamereport',
+            url:this.global.mPath + '/datareport/gamereport',
             method: 'post',
             params:{
               startTime:this.state.startTime,

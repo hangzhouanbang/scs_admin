@@ -161,7 +161,7 @@
       handleSearch() {
         axios({//根据角色名称查询
           method: 'post',
-          url: '/api/role/queryrole',
+          url: this.global.mPath + '/role/queryrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -207,7 +207,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/role/deleterole',
+            url: this.global.mPath + '/role/deleterole',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -240,7 +240,7 @@
       editSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/role/updaterole',
+          url: this.global.mPath + '/role/updaterole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -302,7 +302,7 @@
         //查询所有权限
         axios({
           method: 'post',
-          url: '/api/privilege/queryallprivilege',
+          url: this.global.mPath + '/privilege/queryallprivilege',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -344,7 +344,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/role/editprivilege',
+            url: this.global.mPath + '/role/editprivilege',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -378,7 +378,7 @@
       addSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/role/addrole',
+          url: this.global.mPath + '/role/addrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -434,7 +434,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/role/deleterole',
+            url: this.global.mPath + '/role/deleterole',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },

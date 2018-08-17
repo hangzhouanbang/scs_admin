@@ -117,7 +117,7 @@
         handleSearch(page){
           axios({
             method: 'post',
-            url: '/api/game/query_gamelaw',
+            url: this.global.mPath + '/game/query_gamelaw',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -171,7 +171,7 @@
             that.loading = true;
             axios({//根据昵称查询
               method: 'post',
-              url: '/api/game/remove_law',
+              url: this.global.mPath + '/game/remove_law',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -203,7 +203,7 @@
             that.loading = true;
             axios({//根据昵称查询
               method: 'post',
-              url: '/api/game/remove_law',
+              url: this.global.mPath + '/game/remove_law',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -238,7 +238,7 @@
           }
           axios({
             method: 'post',
-            url: '/api/game/add_law',
+            url: this.global.mPath + '/game/add_law',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },

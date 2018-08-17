@@ -188,7 +188,7 @@
         }
         axios({
           method: 'post',
-          url: '/api/agent/queryscorerecord',
+          url:this.global.mPath + '/agent/queryscorerecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -252,7 +252,7 @@
       sure() {
         axios({
           method: 'post',
-          url: '/api/agent/scoremanager',
+          url: this.global.mPath + '/agent/scoremanager',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

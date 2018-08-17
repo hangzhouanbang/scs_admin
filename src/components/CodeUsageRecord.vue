@@ -115,7 +115,7 @@
         }
         axios({
           method: 'post',
-          url: '/api/agent/queryagentinvitationrecord',
+          url: this.global.mPath + '/agent/queryagentinvitationrecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

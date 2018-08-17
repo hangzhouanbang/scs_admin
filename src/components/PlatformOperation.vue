@@ -114,7 +114,7 @@
         }
           axios({
             method: 'post',
-            url: '/api/datareport/platformreport',
+            url: this.global.mPath + '/datareport/platformreport',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },

@@ -124,7 +124,7 @@
         }
         axios({
           method: 'post',
-          url: '/api/agent/queryscorerecord',
+          url: this.global.mPath + '/agent/queryscorerecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

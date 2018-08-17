@@ -114,7 +114,7 @@
         sessionStorage.setItem('id', this.list[index].id);//保存id
         axios({
           method: 'post',
-          url: '/api/noticectrl/updatenotice',
+          url: this.global.mPath + '/noticectrl/updatenotice',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -166,7 +166,7 @@
         } else {
           axios({
             method: 'post',
-            url: '/api/noticectrl/addnotice',
+            url: this.global.mPath + '/noticectrl/addnotice',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -225,7 +225,7 @@
         this.loading = true;//显示加载条
         axios({//根据管理员昵称查询
           method: 'post',
-          url: '/api/noticectrl/querynotice',
+          url: this.global.mPath + '/noticectrl/querynotice',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

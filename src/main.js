@@ -19,12 +19,15 @@ import '@/assets/js/jquery.min.js'
 //echarts
 import echarts from 'echarts'
 
+import global from './components/Global'
+
 Vue.prototype.$echarts = echarts
 
 //全局注册
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios;
+Vue.prototype.global = global;
 
 /* eslint-disable no-new */
 new Vue({

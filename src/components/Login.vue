@@ -49,7 +49,7 @@
       handleLogin() {
         axios({//登录
           method: 'post',
-          url: '/api/login/login',
+          url: this.global.mPath + '/login/login',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

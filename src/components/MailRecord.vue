@@ -139,7 +139,7 @@
       handleSearch() {
         axios({
           method: 'post',
-          url: '/api/mailctrl/find_mail_record',
+          url: this.global.mPath + '/mailctrl/find_mail_record',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -205,7 +205,7 @@
       this.handleSearch();
       axios({//查出所有管理员名称
         method: 'post',
-        url: '/api/adminCtrl/queryAdmin',
+        url: this.global.mPath + '/adminCtrl/queryAdmin',
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },

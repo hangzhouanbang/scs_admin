@@ -198,7 +198,7 @@
         },
         handleSearch(page){
           axios({
-            url:'/api/agent/queryagent',
+            url:this.global.mPath + '/agent/queryagent',
             method:'post',
             params:{
               nickname:this.filters.mailType,
@@ -230,7 +230,7 @@
           this.centerDialogVisible = true;
           // console.log(row)
           axios({
-            url:'/api/agent/agentdetail',
+            url:this.global.mPath + '/agent/agentdetail',
             method:'post',
             params:{
               agentId:row.id
@@ -255,7 +255,7 @@
         //绑定
         bound:function(){
           axios({
-            url:'/api/agent/setboss',
+            url:this.global.mPath + '/agent/setboss',
             method:'post',
             params:{
               agentId:this.form.id,
@@ -277,7 +277,7 @@
         //解除绑定
         unbound:function(){
           axios({
-            url:'/api/agent/removeboss',
+            url:this.global.mPath + '/agent/removeboss',
             method:'post',
             params:{
               agentId:this.form.id
@@ -314,7 +314,7 @@
             this.upgrade = 2;
           }
           axios({
-            url:'/api/agent/setlevel',
+            url:this.global.mPath + '/agent/setlevel',
             method:'post',
             params:{
               agentId:this.form.id,
@@ -336,7 +336,7 @@
         },
         CancelSubmit:function(){
           axios({
-            url:'/api/agent/ban',
+            url:this.global.mPath + '/agent/ban',
             method:'post',
             params:{
               agentId:this.roles[0].id
@@ -357,7 +357,7 @@
         },
         relieveSubmit:function(){
           axios({
-            url:'/api/agent/liberate',
+            url:this.global.mPath + '/agent/liberate',
             method:'post',
             params:{
               agentId:this.roles[0].id

@@ -183,7 +183,7 @@
         }
         axios({
           method: 'post',
-          url: '/api/agent/queryclubcardrecord',
+          url: this.global.mPath + '/agent/queryclubcardrecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -248,7 +248,7 @@
       sure() {
         axios({
           method: 'post',
-          url: '/api/agent/clubcardmanager',
+          url: this.global.mPath + '/agent/clubcardmanager',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

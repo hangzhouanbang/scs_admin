@@ -94,7 +94,7 @@
       logout() {
         axios({//
           method: 'post',
-          url: '/api/login/logout',
+          url: this.global.mPath + '/login/logout',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

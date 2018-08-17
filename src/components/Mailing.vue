@@ -145,7 +145,7 @@
         // 从后端获取上传凭证token
         axios({
           method: 'post',
-          url: '/api/mailctrl/uptoken',
+          url: this.global.mPath + '/mailctrl/uptoken',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -197,7 +197,7 @@
         } else {
           axios({
             method: 'post',
-            url: '/api/mailctrl/addmailbyid',
+            url: this.global.mPath + '/mailctrl/addmailbyid',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -265,7 +265,7 @@
     mounted() { //初始化页面
       axios({//查出所有会员卡
         method: 'post',
-        url: '/api/mailctrl/find_vipcard',
+        url: this.global.mPath + '/mailctrl/find_vipcard',
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },

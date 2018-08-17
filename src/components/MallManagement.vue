@@ -239,7 +239,7 @@
           // 从后端获取上传凭证token
           axios({
             method: 'post',
-            url: '/api/mailctrl/uptoken',
+            url: this.global.mPath + '/mailctrl/uptoken',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -270,7 +270,7 @@
         },
         handleSearch(page){
           axios({
-            url:'/api/agent/queryagentclubcard',
+            url:this.global.mPath + '/agent/queryagentclubcard',
             method:'post',
             params:{
               page:page,
@@ -314,7 +314,7 @@
         issue:function() {
           axios({
             method: 'post',
-            url: '/api/agent/addagentclubcard',
+            url: this.global.mPath + '/agent/addagentclubcard',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -392,7 +392,7 @@
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/agent/updateagentclubcard',
+              url: this.global.mPath + '/agent/updateagentclubcard',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -428,7 +428,7 @@
           this.loading = true;
           axios({
             method: 'post',
-            url: '/api/agent/deleteagentclubcard',
+            url: this.global.mPath + '/agent/deleteagentclubcard',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -459,7 +459,7 @@
             that.loading = true;
             axios({
               method: 'post',
-              url: '/api/agent/deleteagentclubcard',
+              url: this.global.mPath + '/agent/deleteagentclubcard',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },

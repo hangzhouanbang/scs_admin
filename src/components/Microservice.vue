@@ -51,7 +51,7 @@
           /*that.loading = true;
           axios({
             method: 'post',
-            url: '/api/',
+            url: this.global.mPath + '/',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },

@@ -141,7 +141,7 @@
         // 从后端获取上传凭证token
         axios({
           method: 'post',
-          url: '/api/mailctrl/uptoken',
+          url: this.global.mPath + '/mailctrl/uptoken',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -181,7 +181,7 @@
         } else {
           axios({
             method: 'post',
-            url: '/api/activity/addactivity',
+            url: this.global.mPath + '/activity/addactivity',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -259,7 +259,7 @@
       handleSearch() {
         axios({
           method: 'post',
-          url: '/api/activity/queryactivity',
+          url: this.global.mPath + '/activity/queryactivity',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -314,7 +314,7 @@
         sessionStorage.setItem('id', this.items[index].id);//保存id
         axios({
           method: 'post',
-          url: '/api/activity/stopactivity',
+          url: this.global.mPath + '/activity/stopactivity',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

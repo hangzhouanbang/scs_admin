@@ -134,7 +134,7 @@
       handleSearch() {
         axios({
           method: 'post',
-          url: '/api/clubcard/showclubcard',
+          url: this.global.mPath + '/clubcard/showclubcard',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -179,7 +179,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/clubcard/deleteclubcard',
+            url: this.global.mPath + '/clubcard/deleteclubcard',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -214,7 +214,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/clubcard/deleteclubcard',
+            url: this.global.mPath + '/clubcard/deleteclubcard',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -247,7 +247,7 @@
       addSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/clubcard/addclubcard',
+          url: this.global.mPath + '/clubcard/addclubcard',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -310,7 +310,7 @@
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/clubcard/updateclubcard',
+              url: this.global.mPath + '/clubcard/updateclubcard',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },

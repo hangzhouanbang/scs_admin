@@ -205,7 +205,7 @@
             this.addFormVisible = true;
             axios({
               method: 'post',
-              url: '/api/task/querytaskconfig',
+              url: this.global.mPath + '/task/querytaskconfig',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -250,7 +250,7 @@
           handleSearch(page){
             axios({
               method: 'post',
-              url: '/api/task/querytaskdocument',
+              url: this.global.mPath + '/task/querytaskdocument',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -290,7 +290,7 @@
           addSubmit:function(){
             axios({
               method: 'post',
-              url: '/api/task/addtaskdocument',
+              url: this.global.mPath + '/task/addtaskdocument',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -341,7 +341,7 @@
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/task/release',
+              url: this.global.mPath + '/task/release',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -378,7 +378,7 @@
               that.loading = true;
               axios({
                 method: 'post',
-                url: '/api/task/deletetaskdocuments',
+                url: this.global.mPath + '/task/deletetaskdocuments',
                 headers: {
                   'Content-type': 'application/x-www-form-urlencoded'
                 },
@@ -411,7 +411,7 @@
               that.loading = true;
               axios({
                 method: 'post',
-                url: '/api/task/deletetaskdocuments',
+                url: this.global.mPath + '/task/deletetaskdocuments',
                 headers: {
                   'Content-type': 'application/x-www-form-urlencoded'
                 },

@@ -107,7 +107,7 @@
         handleSearch(page){
           axios({
             method: 'post',
-            url: '/api/mailctrl/find_mail_record',
+            url: this.global.mPath + '/mailctrl/find_mail_record',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -164,7 +164,7 @@
             that.loading = true;
             axios({//根据昵称查询
               method: 'post',
-              url: '/api/mailctrl/deleteMailStateAll',
+              url: this.global.mPath + '/mailctrl/deleteMailStateAll',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -196,7 +196,7 @@
             that.loading = true;
             axios({//根据昵称查询
               method: 'post',
-              url: '/api/mailctrl/deleteMailStateAll',
+              url: this.global.mPath + '/mailctrl/deleteMailStateAll',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },

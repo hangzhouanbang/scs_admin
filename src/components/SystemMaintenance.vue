@@ -130,7 +130,7 @@
         // 从后端获取上传凭证token
         axios({
           method: 'post',
-          url: '/api/mailctrl/uptoken',
+          url: this.global.mPath + '/mailctrl/uptoken',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -170,7 +170,7 @@
         } else {
           axios({
             method: 'post',
-            url: '/api/mailctrl/addmail',
+            url: this.global.mPath + '/mailctrl/addmail',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -239,7 +239,7 @@
         this.loading = true;//显示加载条
         axios({//根据管理员名称查询
           method: 'post',
-          url: '/api/mailctrl/querymail',
+          url: this.global.mPath + '/mailctrl/querymail',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

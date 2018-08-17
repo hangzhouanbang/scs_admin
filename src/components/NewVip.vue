@@ -227,7 +227,7 @@
         if (tab.index == "0") {
           axios({
             method: 'post',
-            url: '/api/member/querymember',
+            url: this.global.mPath + '/member/querymember',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -280,7 +280,7 @@
         //console.log(this.vip[index].id)
         axios({
           method: 'post',
-          url: '/api/member/querymember',
+          url: this.global.mPath + '/member/querymember',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -355,7 +355,7 @@
             that.loading = true;
             axios({
               method: 'post',
-              url: '/api/member/give_reward',
+              url: this.global.mPath + '/member/give_reward',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -448,7 +448,7 @@
             that.loading = true;
             axios({
               method: 'post',
-              url: '/api/member/give_reward',
+              url: this.global.mPath + '/member/give_reward',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -522,7 +522,7 @@
           this.loading = true;//显示加载条
           axios({//根据会员昵称查询
             method: 'post',
-            url: '/api/member/querymember',
+            url: this.global.mPath + '/member/querymember',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -576,7 +576,7 @@
           this.loading = true;//显示加载条
           axios({//根据会员昵称查询
             method: 'post',
-            url: '/api/member/querymember',
+            url: this.global.mPath + '/member/querymember',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -638,7 +638,7 @@
       goldwathercourse() {
         axios({
           method: 'post',
-          url: '/api/member/querygoldrecord',
+          url: this.global.mPath + '/member/querygoldrecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -691,7 +691,7 @@
       integral() {
         axios({
           method: 'post',
-          url: '/api/member/queryscorerecord',
+          url: this.global.mPath + '/member/queryscorerecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -767,7 +767,7 @@
       this.loading = true;//显示加载条
       axios({//根据会员昵称查询
         method: 'post',
-        url: '/api/member/querymember',
+        url: this.global.mPath + '/member/querymember',
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },

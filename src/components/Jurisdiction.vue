@@ -134,7 +134,7 @@
       handleSearch() {
         axios({
           method: 'post',
-          url: '/api/privilege/queryprivilege',
+          url: this.global.mPath + '/privilege/queryprivilege',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -179,7 +179,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/privilege/deleteprivilege',
+            url: this.global.mPath + '/privilege/deleteprivilege',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -214,7 +214,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/privilege/deleteprivilege',
+            url: this.global.mPath + '/privilege/deleteprivilege',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -254,7 +254,7 @@
         let params = JSON.stringify(privileges)
         axios({
           method: 'post',
-          url: '/api/privilege/deployprivilege',
+          url: this.global.mPath + '/privilege/deployprivilege',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -312,7 +312,7 @@
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/privilege/updateprivilege',
+              url: this.global.mPath + '/privilege/updateprivilege',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },

@@ -141,7 +141,7 @@
           },
           handleSearch(page){
             axios({
-              url:'/api/agent/queryapplyrecord',
+              url:this.global.mPath + '/agent/queryapplyrecord',
               method:'post',
               params:{
                 startTime:'NaN'? '':new Date(this.filters.startTime).getTime(),
@@ -186,7 +186,7 @@
           pass:function(){
             console.log(this.applicationRecord.id)
             axios({
-              url:'/api/agent/applypass',
+              url:this.global.mPath + '/agent/applypass',
               method:'post',
               params:{
                 recordId:this.applicationRecord.id
@@ -200,7 +200,7 @@
           },
           unpass:function(){
             axios({
-              url:'/api/agent/applyrefuse',
+              url:this.global.mPath + '/agent/applyrefuse',
               method:'post',
               params:{
                 recordId:row.id

@@ -196,7 +196,7 @@
       handleSearch() {
         axios({//根据昵称查询
           method: 'post',
-          url: '/api/admin/queryadmin',
+          url: this.global.mPath + '/admin/queryadmin',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -244,7 +244,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/admin/deleteadmin',
+            url: this.global.mPath + '/admin/deleteadmin',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -280,7 +280,7 @@
             this.loading = true;
             axios({
               method: 'post',
-              url: '/api/admin/repass',
+              url: this.global.mPath + '/admin/repass',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -313,7 +313,7 @@
         this.editRole = Object.assign({}, row);
         axios({
           method: 'post',
-          url: '/api/role/queryallrole',
+          url: this.global.mPath + '/role/queryallrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -333,7 +333,7 @@
         console.log(this.editRole)
         axios({
           method: 'post',
-          url: '/api/admin/editrole',
+          url: this.global.mPath + '/admin/editrole',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -376,7 +376,7 @@
       addSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/admin/addadmin',
+          url: this.global.mPath + '/admin/addadmin',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -436,7 +436,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/admin/deleteadmin',
+            url: this.global.mPath + '/admin/deleteadmin',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },

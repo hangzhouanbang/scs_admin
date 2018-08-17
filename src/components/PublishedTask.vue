@@ -121,7 +121,7 @@
       showtask() {
         axios({
           method: 'post',
-          url: '/api/task/querytaskdocumenthistory',
+          url: this.global.mPath + '/task/querytaskdocumenthistory',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -175,7 +175,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/task/withdraw',
+            url: this.global.mPath + '/task/withdraw',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -210,7 +210,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/task/withdraw',
+            url: this.global.mPath + '/task/withdraw',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -239,7 +239,7 @@
       this.showtask();
       axios({//查出所有任务类型
         method: 'post',
-        url: '/api/task/querytasktype',
+        url: this.global.mPath + '/task/querytasktype',
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },

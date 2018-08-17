@@ -133,7 +133,7 @@
       handleSearch() {
         axios({//根据昵称查询
           method: 'post',
-          url: 'api/game/servers_for_game',
+          url: this.global.mPath + '/game/servers_for_game',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -179,7 +179,7 @@
           that.loading = true;
           axios({
             method: 'post',
-            url: '/api/game/game_server_offline',
+            url: this.global.mPath + '/game/game_server_offline',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -212,7 +212,7 @@
       addSubmit: function () {
         axios({
           method: 'post',
-          url: '/api/game/game_server_online',
+          url: this.global.mPath + '/game/game_server_online',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },

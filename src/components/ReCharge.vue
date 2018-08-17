@@ -65,16 +65,20 @@
               style="width: 100%;" id="out-table">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="out_trade_no" label="订单编号" width="120" sortable></el-table-column>
+      <el-table-column prop="id" label="订单编号" width="120" sortable></el-table-column>
       <el-table-column prop="transaction_id" label="支付流水" width="120" sortable></el-table-column>
-      <el-table-column prop="memberId" label="游戏ID" width="120" sortable></el-table-column>
-      <el-table-column prop="nickname" label="玩家昵称" width="120" sortable></el-table-column>
-      <el-table-column prop="clubCardPrice" label="商品售价" width="120" sortable></el-table-column>
-      <el-table-column prop="totalamount" label="订单金额" width="120" sortable></el-table-column>
-      <el-table-column prop="clubCardName" label="购买类别" width="120" sortable></el-table-column>
+      <el-table-column prop="payerId" label="付款人ID" width="120" sortable></el-table-column>
+      <el-table-column prop="payerName" label="付款人昵称" width="120" sortable></el-table-column>
+      <el-table-column prop="productId" label="会员卡ID" width="120" sortable></el-table-column>
+      <el-table-column prop="productName" label="会员卡名称" width="120" sortable></el-table-column>
+      <el-table-column prop="productPrice" label="会员卡价格" width="120" sortable></el-table-column>
+      <el-table-column prop="number" label="购买数量" width="120" sortable></el-table-column>
+      <el-table-column prop="gold" label="单张会员卡赠送金币" width="120" sortable></el-table-column>
+      <el-table-column prop="score" label="单张会员卡赠送积分" width="120" sortable></el-table-column>
+      <el-table-column prop="vipTime" label="单张会员卡赠送VIP时间" width="120" sortable></el-table-column>
+      <el-table-column prop="totalamount" label="总金额" width="120" sortable></el-table-column>
       <el-table-column prop="createTime" label="下单时间" width="110" sortable></el-table-column>
       <el-table-column prop="status" label="订单状态" width="120" sortable></el-table-column>
-      <el-table-column prop="createTime" label="到账时间" width="110" sortable></el-table-column>
       <el-table-column prop="pay_type" label="支付方式" width="120" sortable></el-table-column>
       <el-table-column prop="reqIP" label="下单地址" width="auto" sortable></el-table-column>
     </el-table>
@@ -179,7 +183,7 @@
           this.addFormVisible = true;
           axios({
             method: 'post',
-            url: '/api/order/download',
+            url: this.global.mPath + '/order/download',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -197,7 +201,7 @@
             function(res){
               // console.log(res)
               let download = document.getElementById('download');
-              download.href = '/api'+res.data.data;
+              download.href = this.global.mPath + +res.data.data;
             }
           )
         },
@@ -235,7 +239,7 @@
           }
           axios({
             method: 'post',
-            url: '/api/order/queryorder',
+            url: this.global.mPath + '/order/queryorder',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -256,6 +260,7 @@
                 this.total = res.data.data.pageCount;
                 for(let i = 0;i < this.users.length;i++){
                   this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
+                  this.users[i].vipTime = this.users[i].vipTime / 1000 / 60 / 60 / 24;
                 }
               },
             ).catch((e) => {
