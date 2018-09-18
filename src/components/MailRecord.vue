@@ -149,7 +149,8 @@
             'startTime': 'NaN' ? '0' : new Date(this.filters.startTime).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': 'NaN' ? '0' : new Date(this.filters.endTime).getTime(),
             'mailType': this.filters.mailType,
-            'adminName': this.nickname
+            'adminName': this.nickname,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -209,6 +210,9 @@
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },
+        params:{
+          'token':sessionStorage.getItem('token')
+        }
       })
         .then((res) => {
             this.adminList = res.data.adminList;

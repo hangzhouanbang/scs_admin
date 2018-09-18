@@ -108,9 +108,17 @@
         name: "ReCharge",
         data() {
           return {
-            filters:{},
+            filters:{
+              memberId:'',
+              nickname:'',
+            },
             users:[],
-            state:[],
+            state:{
+              pay_type:'',
+              startTime:'',
+              endTime:'',
+              status:''
+            },
             total:0,
             down:[],
             addFormVisible:false,
@@ -181,29 +189,16 @@
             return;
           }
           this.addFormVisible = true;
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/order/download',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              out_trade_no:'',
-              pay_type:this.state.pay_type,
-              memberId:this.trim(this.filters.memberId),
-              nickname:this.trim(this.filters.nickname),
-              status:this.state.status,
-              startTime:this.state.startTime,
-              endTime:this.state.startTime,
-              deliveTime:''
-            }
-          }).then(
-            function(res){
-              // console.log(res)
-              let download = document.getElementById('download');
-              download.href = this.global.mPath + +res.data.data;
-            }
-          )
+          let download = document.getElementById('download');
+          download.href = this.global.mPath + '/order/download?out_trade_no='
+            +' &pay_type='+this.state.pay_type
+            +'&memberId='+this.trim(this.filters.memberId)
+            +'&nickname='+this.trim(this.filters.nickname)
+            +'&status='+this.state.status
+            +'&startTime='+this.state.startTime
+            +'&endTime='+this.state.endTime
+            +'&deliverTime='
+            +' &token='+sessionStorage.getItem('token');
         },
         addSubmit(){
           this.addFormVisible = false;
@@ -252,7 +247,8 @@
               'pay_type':this.state.pay_type,
               'startTime':this.state.startTime,
               'endTime':this.state.endTime,
-              'status':this.state.status
+              'status':this.state.status,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {

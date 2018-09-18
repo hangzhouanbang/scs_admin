@@ -274,7 +274,8 @@
             method:'post',
             params:{
               page:page,
-              size:10
+              size:10,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
             console.log(res.data.data.items)
@@ -325,7 +326,8 @@
               repertory:this.trim(this.normalForm.repertory),
               payType:this.normalForm.payType,
               productPic:this.imageUrl,
-              weight:Math.floor(Math.random()*10)
+              weight:Math.floor(Math.random()*10),
+              token:sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -405,7 +407,8 @@
                 payType:this.adjustForm.payType,
                 productPic:this.imageUrl,
                 sale:this.radioData,
-                weight:Math.floor(Math.random()*10)
+                weight:Math.floor(Math.random()*10),
+                token:sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -433,7 +436,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'cardId': row.id
+              'cardId': row.id,
+              'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
               this.loading = false;
@@ -464,7 +468,8 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'cardId': ids
+                'cardId': ids,
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {

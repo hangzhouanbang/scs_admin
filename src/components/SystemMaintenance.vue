@@ -177,7 +177,8 @@
             params: {
               'status': '0',
               'title': this.trim(this.normalForm.title),
-              'file': this.imageUrl
+              'file': this.imageUrl,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -247,7 +248,8 @@
             'status': '0',
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'adminname': this.trim(this.filters.adminname)
+            'adminname': this.trim(this.filters.adminname),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

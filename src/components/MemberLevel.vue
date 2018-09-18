@@ -73,7 +73,9 @@
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
-            params: {}
+            params: {
+              'token':sessionStorage.getItem('token')
+            }
           })
             .then((res) => {
                 console.log(res)
@@ -96,7 +98,8 @@
               vip2:this.addCard.vip2,
               vip3:this.addCard.vip3,
               vip4:this.addCard.vip4,
-              vip5:this.addCard.vip5
+              vip5:this.addCard.vip5,
+              token:sessionStorage.getItem('token')
             }
           })
             .then((res) => {

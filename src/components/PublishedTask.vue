@@ -131,6 +131,7 @@
             'taskDocId': this.trim(this.filters.taskDocId),
             'promulgator': this.trim(this.filters.promulgator),
             'vip': this.value,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -180,7 +181,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'taskId': row.id
+              'taskId': row.id,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -215,7 +217,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'taskId': ids
+              'taskId': ids,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -243,6 +246,9 @@
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },
+        params:{
+          'token':sessionStorage.getItem('token')
+        }
       })
         .then((res) => {
             this.data = res.data.data;

@@ -153,7 +153,8 @@
             'agent':this.trim(this.filters.nickname),
             'type':this.filters.mailType,
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime':this.state.endTime
+            'endTime':this.state.endTime,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

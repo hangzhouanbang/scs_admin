@@ -209,7 +209,9 @@
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
-              params: {}
+              params: {
+                'token':sessionStorage.getItem('token')
+              }
             })
               .then((res) => {
                   this.options = res.data.data.typeList;
@@ -258,7 +260,8 @@
                 page:page,
                 size:10,
                 name:this.trim(this.filters.nickname),
-                type:''
+                type:'',
+                token:sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -298,7 +301,8 @@
                 name:this.trim(this.addForm.name),
                 type:this.addForm.taskType,
                 desc:this.trim(this.addForm.description),
-                taskName:this.addForm.Typetask
+                taskName:this.addForm.Typetask,
+                token:sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -352,7 +356,8 @@
                 rewardScore:this.trim(this.publishForm.integralNumber),
                 rewardVip:this.publishForm.vipDays,
                 vip:this.publishForm.userTypes,
-                targetNum:this.trim(this.publishForm.completionTimes)
+                targetNum:this.trim(this.publishForm.completionTimes),
+                token:sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -383,7 +388,8 @@
                   'Content-type': 'application/x-www-form-urlencoded'
                 },
                 params: {
-                  'taskDocId':row.id
+                  'taskDocId':row.id,
+                  'token':sessionStorage.getItem('token')
                 }
               })
                 .then((res) => {
@@ -416,7 +422,8 @@
                   'Content-type': 'application/x-www-form-urlencoded'
                 },
                 params: {
-                  'taskDocId':ids
+                  'taskDocId':ids,
+                  'token':sessionStorage.getItem('token')
                 }
               })
                 .then((res) => {

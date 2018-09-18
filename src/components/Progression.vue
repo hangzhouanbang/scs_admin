@@ -88,7 +88,8 @@
             params:{
               startTime:this.state.startTime,
               endTime:this.state.endTime,
-              game:this.state.pay_type
+              game:this.state.pay_type,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
               for(let i = 0;i < res.data.data.length;i++){

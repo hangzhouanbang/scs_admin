@@ -29,6 +29,13 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="role" label="角色名称" width="100" sortable></el-table-column>
+        <el-table-column label="角色权限" width="100" sortable>
+          <template slot-scope="scope">
+            <ul style="margin-left:-26px;">
+              <li v-for="privileges in scope.row.privilegeList">{{privileges.privilege}}</li>
+            </ul>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑角色</el-button>
@@ -168,7 +175,8 @@
           params: {
             'page': this.page,
             'size': '15',
-            'role': this.trim(this.filters.role)
+            'role': this.trim(this.filters.role),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -212,7 +220,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': row.id
+              'id': row.id,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -246,7 +255,8 @@
           },
           params: {
             'id': this.trim(this.editForm.id),
-            'role': this.trim(this.editForm.role)
+            'role': this.trim(this.editForm.role),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -350,7 +360,8 @@
             },
             params: {
               'roleId': this.trim(this.editForm.id),//角色id
-              'privilegeId': ids//权限id数组
+              'privilegeId': ids,//权限id数组
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -358,6 +369,7 @@
                 if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '保存成功', duration: 1500});
                   this.chooseFormVisible = false;//关闭弹窗
+                  this.handleSearch();
                 } else {
                   this.$message({
                     showClose: true,
@@ -383,7 +395,8 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'role': this.trim(this.addForm.role)//角色名称
+            'role': this.trim(this.addForm.role),//角色名称
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -439,7 +452,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': ids
+              'id': ids,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {

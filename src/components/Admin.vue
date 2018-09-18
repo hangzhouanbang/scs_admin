@@ -30,7 +30,13 @@
         <el-table-column prop="nickname" label="用户名" width="100" sortable></el-table-column>
         <el-table-column prop="user" label="姓名" width="100" sortable></el-table-column>
         <el-table-column prop="idCard" label="身份证号" width="170" sortable></el-table-column>
-        <el-table-column prop="roleList[0].role" label="角色" width="100" sortable></el-table-column>
+        <el-table-column label="角色" width="100" sortable>
+          <template slot-scope="scope">
+            <ul style="margin-left:-26px;">
+              <li v-for="roles in scope.row.roleList">{{roles.role}}</li>
+            </ul>
+          </template>
+        </el-table-column>
         <el-table-column prop="createTime" label="添加时间" width="160" sortable></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -129,6 +135,7 @@
         total: 0,
         page: 1,
         limit: 10,
+        roles:'',
         loading: false,
         sels: [], //列表选中列
         //编辑相关数据
@@ -203,7 +210,8 @@
           params: {
             'page': this.page,
             'size': '15',
-            'nickname': this.trim(this.filters.nickname)
+            'nickname': this.trim(this.filters.nickname),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -249,7 +257,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': row.id
+              'id': row.id,
+              'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
                 that.loading = false;
@@ -287,6 +296,7 @@
               params: {
                 'id': this.editForm.id,
                 'pass': this.editForm.password,
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -317,7 +327,9 @@
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
-          params: {}
+          params: {
+            'token':sessionStorage.getItem('token')
+          }
         })
           .then((res) => {
             console.log(res.data.data)
@@ -339,7 +351,8 @@
           },
           params: {
             adminId: this.editRole.id,
-            roleId: roleids
+            roleId: roleids,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -385,7 +398,7 @@
             'pass': this.trim(this.addForm.pass),
             'user': this.trim(this.addForm.user),
             'idCard': this.trim(this.addForm.idCard),
-            // 'sex':this.radio
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -441,7 +454,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': ids
+              'id': ids,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {

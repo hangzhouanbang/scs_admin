@@ -145,7 +145,8 @@
               method:'post',
               params:{
                 startTime:'NaN'? '':new Date(this.filters.startTime).getTime(),
-                endTime:'NaN'? '': new Date(this.filters.endTime).getTime()
+                endTime:'NaN'? '': new Date(this.filters.endTime).getTime(),
+                token:sessionStorage.getItem('token')
               }
             }).then((res) => {
                 console.log(res.data)
@@ -189,7 +190,8 @@
               url:this.global.mPath + '/agent/applypass',
               method:'post',
               params:{
-                recordId:this.applicationRecord.id
+                recordId:this.applicationRecord.id,
+                token:sessionStorage.getItem('token')
               }
             }).then((res) => {
               if(res.data.success){
@@ -203,7 +205,8 @@
               url:this.global.mPath + '/agent/applyrefuse',
               method:'post',
               params:{
-                recordId:row.id
+                recordId:row.id,
+                token:sessionStorage.getItem('token')
               }
             }).then((res) => {
               console.log(res.data)

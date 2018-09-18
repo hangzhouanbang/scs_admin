@@ -135,6 +135,7 @@
             'agent': this.trim(this.filters.agent),
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

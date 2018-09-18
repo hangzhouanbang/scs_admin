@@ -223,7 +223,8 @@
               'file': this.imageUrl,
               'number': this.trim(this.normalForm.number),
               'integral': this.trim(this.normalForm.integral),
-              'vipcard': this.trim(this.normalForm.vipcard)
+              'vipcard': this.trim(this.normalForm.vipcard),
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -303,7 +304,8 @@
             'status': 1,
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'adminname': this.trim(this.filters.adminname)
+            'adminname': this.trim(this.filters.adminname),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

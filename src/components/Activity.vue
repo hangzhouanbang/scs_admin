@@ -4,6 +4,7 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>活动管理</b></el-breadcrumb-item>
+        <el-breadcrumb-item>活动配置</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -11,8 +12,8 @@
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
-          <el-form-item label="发布者">
-            <el-input v-model="filters.promulgator" placeholder="发布人名称"></el-input>
+          <el-form-item label="标题">
+            <el-input v-model="filters.title"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
@@ -39,7 +40,8 @@
             <el-button type="primary" v-if="scope.row.state === 'START'" :disabled="false"
                        @click="off(scope.$index,scope.row)">停用
             </el-button>
-            <el-button type="info" disabled v-if="scope.row.state === 'STOP'">已停用</el-button>
+            <el-button type="primary" v-if="scope.row.state === 'STOP'" :disabled="false"
+                       @click="open(scope.$index,scope.row)">启用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -89,7 +91,6 @@
 
   export default {
     name: "Activity",
-
     data() {
       return {
         imageUrl: '',
@@ -126,7 +127,7 @@
       },
       // 上传文件到七牛云
       upqiniu(req) {
-        //console.log(req)
+        console.log(req)
         const config = {
           headers: {'Content-Type': 'multipart/form-data'}
         }
@@ -145,6 +146,9 @@
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
+          params:{
+            token:sessionStorage.getItem('token')
+          }
         }).then(res => {
           const formdata = new FormData()
           formdata.append('file', req.file)
@@ -169,7 +173,6 @@
         }
         return isJPG && isLt2M
       },
-
       //发布
       issue(req) {
         if (this.normalForm.title == undefined || this.normalForm.title == "") {
@@ -189,7 +192,8 @@
               'theme': this.trim(this.normalForm.title),
               'content': this.imageUrl,
               'url': this.trim(this.normalForm.address),
-              'promulgator': sessionStorage.getItem('nickname')
+              'promulgator': sessionStorage.getItem('nickname'),
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -266,8 +270,8 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'promulgator': this.trim(this.filters.promulgator),//发布人
-            'state': 'START'//活动状态
+            'theme': this.trim(this.filters.title),//标题
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -308,7 +312,6 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
-
       //停用活动
       off(index, row) {
         sessionStorage.setItem('id', this.items[index].id);//保存id
@@ -319,7 +322,55 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'activityId': sessionStorage.getItem('id')
+            'activityId': sessionStorage.getItem('id'),
+            'token':sessionStorage.getItem('token')
+          }
+        })
+          .then((res) => {
+              this.handleSearch()
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      },
+     //启用
+      open(index,row){
+        sessionStorage.setItem('id', this.items[index].id);//保存id
+        axios({
+          method: 'post',
+          url: this.global.mPath + '/activity/startactivity',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'activityId': sessionStorage.getItem('id'),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

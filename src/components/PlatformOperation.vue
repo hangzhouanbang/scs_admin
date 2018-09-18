@@ -123,6 +123,7 @@
               'page': this.page,//当前页
               'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
               'endTime': this.state.endTime,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {

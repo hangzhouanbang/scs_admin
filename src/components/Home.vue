@@ -98,6 +98,9 @@
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
+          params:{
+            'token':sessionStorage.getItem('token')
+          }
         })
           .then((res) => {
               if (res.data == "success") {

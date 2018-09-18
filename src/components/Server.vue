@@ -26,15 +26,16 @@
               style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="game" label="游戏名称" width="120" sortable></el-table-column>
+      <el-table-column prop="game" label="游戏名称" width="150" sortable></el-table-column>
       <el-table-column prop="name" label="服务器名称" width="130" sortable></el-table-column>
-      <el-table-column prop="domainForHttp" label="域名" width="150" sortable></el-table-column>
-      <el-table-column prop="portForHttp" label="端口" width="100" sortable></el-table-column>
+      <el-table-column prop="httpUrl" label="httpUrl" width="150" sortable></el-table-column>
       <el-table-column prop="wsUrl" label="websocket URL" width="200" sortable></el-table-column>
       <el-table-column prop="onlineTime" label="上线时间" width="160" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="offline(scope.$index,scope.row)" size="small">下线</el-button>
+          <el-button type="danger" @click.native="pause(scope.$index,scope.row)" size="small" v-if="scope.row.state === 0">暂停</el-button>
+          <el-button type="danger" @click.native="recover(scope.$index,scope.row)" size="small" v-if="scope.row.state === 1">恢复</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,11 +49,8 @@
         <el-form-item label="服务器名称" prop="name">
           <el-input v-model="addonline.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="域名" prop="domainForHttp">
-          <el-input v-model="addonline.domainForHttp" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="端口" prop="portForHttp">
-          <el-input v-model="addonline.portForHttp" auto-complete="off"></el-input>
+        <el-form-item label="httpURL" prop="httpUrl">
+          <el-input v-model="addonline.httpUrl" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="websocket URL" prop="wsUrl">
           <el-input v-model="addonline.wsUrl" auto-complete="off"></el-input>
@@ -63,6 +61,7 @@
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </div>
     </el-dialog>
+
   </el-row>
 </template>
 
@@ -93,16 +92,13 @@
           name: [
             {required: true, message: '请输入服务器名称', trigger: 'blur'}
           ],
-          domainForHttp: [
-            {required: true, message: '请输入域名', trigger: 'blur'}
-          ],
-          portForHttp: [
-            {required: true, message: '请输入端口', trigger: 'blur'}
+          httpUrl: [
+            {required: true, message: '请输入httpUrl', trigger: 'blur'}
           ],
           wsUrl: [
             {required: true, message: '请输入websocket URL', trigger: 'blur'}
           ]
-        }
+        },
       }
     },
     methods: {
@@ -138,7 +134,8 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'game':this.trim(this.filters.game)
+            'game':this.trim(this.filters.game),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -184,7 +181,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'gameServerId':row.id
+              'gameServerId':row.id,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -219,9 +217,10 @@
           params:{
             'game':this.trim(this.addonline.game), //游戏
             'name':this.trim(this.addonline.name), //服务器名称
-            'domainForHttp':this.trim(this.addonline.domainForHttp), //http接口域名
-            'portForHttp':this.trim(this.addonline.portForHttp), //http接口端口
-            'wsUrl':this.trim(this.addonline.wsUrl) //websocket URL
+            'httpUrl':this.trim(this.addonline.httpUrl), //http接口域名
+            // 'portForHttp':this.trim(this.addonline.portForHttp), //http接口端口
+            'wsUrl':this.trim(this.addonline.wsUrl), //websocket URL
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -261,6 +260,114 @@
             }
           }
         });
+      },
+    //  暂停
+      pause:function(index,row){
+        this.$confirm('确认暂停服务器吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/game/stop',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'ids[]': row.id,
+            }
+          })
+            .then((res) => {
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '暂停失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '暂停成功',
+                    type: 'success'
+                  });
+                  this.onlineVisible = false;//关闭弹窗
+                  this.handleSearch(1);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        })
+      },
+    //  恢复
+      recover:function(index,row){
+        this.$confirm('确认恢复服务器吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/game/recover',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'ids[]': row.id,
+            }
+          })
+            .then((res) => {
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '恢复失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '恢复成功',
+                    type: 'success'
+                  });
+                  this.onlineVisible = false;//关闭弹窗
+                  this.handleSearch(1);
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        })
       }
     },
     mounted() {

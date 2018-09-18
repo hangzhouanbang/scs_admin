@@ -165,7 +165,9 @@
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
-              params:{}
+              params:{
+                'token':sessionStorage.getItem('token')
+              }
             })
               .then((res) => {
                 this.normalForm = res.data;
@@ -179,7 +181,9 @@
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
-              params:{}
+              params:{
+                'token':sessionStorage.getItem('token')
+              }
             })
               .then((res) => {
                 this.memberForm = res.data;
@@ -205,7 +209,8 @@
               planMemberJoinRoomGoldPrice:this.normalForm.planMemberaddRoomDailyGoldPrice,
               planMemberRoomsCount:this.normalForm.planMemberRoomsCount,
               planMemberMaxCreateRoomDaily:this.normalForm.planMemberMaxCreateRoomDaily,
-              planMemberRoomsAliveHours:this.normalForm.planMemberRoomsAliveHours
+              planMemberRoomsAliveHours:this.normalForm.planMemberRoomsAliveHours,
+              token:sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -263,7 +268,8 @@
               vipGrowIntegralSpeed:this.memberForm.vipGrowIntegralSpeed,
               vipGrowGradeSpeed:this.memberForm.vipGrowGradeSpeed,
               vipMemberRoomsCount:this.memberForm.vipMemberRoomsCount,
-              vipMemberRoomsAliveHours:this.memberForm.vipMemberRoomsAliveHours
+              vipMemberRoomsAliveHours:this.memberForm.vipMemberRoomsAliveHours,
+              token:sessionStorage.getItem('token')
             }
           })
             .then((res) => {

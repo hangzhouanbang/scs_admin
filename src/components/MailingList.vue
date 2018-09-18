@@ -115,7 +115,8 @@
               memberId:this.trim(this.filters.nickname),
               mailType:this.filters.type,
               page:page,
-              size:'10'
+              size:'10',
+              token:sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -169,7 +170,8 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'ids':row.id
+                'ids':row.id,
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -201,7 +203,8 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'ids':ids
+                'ids':ids,
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {

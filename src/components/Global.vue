@@ -1,8 +1,9 @@
 <script type="text/javascript">
 
+  // const mDevPath = 'http://47.96.20.47:99'
   const mDevPath = 'http://192.168.0.122:99'
   // const mDevPath = 'http://192.168.0.116:99'
-  const mProductionPath = 'www.linshaocong.cn'
+  const mProductionPath = 'http://47.96.20.47:99'
 
   let dev = 1
   let production = 2

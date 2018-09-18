@@ -86,13 +86,13 @@
         <el-table-column label="注册时间" prop="createTime" sortable></el-table-column>
       </el-table>
       <el-table :data="roles" style="width: 100%;">
-          <el-table-column label="推广员等级" prop="level" sortable></el-table-column>
-          <el-table-column label="周卡剩余" prop="clubCardZhou" sortable></el-table-column>
-          <el-table-column label="月卡剩余" prop="clubCardYue" sortable></el-table-column>
-          <el-table-column label="季卡剩余" prop="clubCardJi" sortable></el-table-column>
-          <el-table-column label="充值金额" prop="cost" sortable></el-table-column>
-          <el-table-column label="邀请码" prop="invitationCode" sortable></el-table-column>
-        </el-table>
+        <el-table-column label="推广员等级" prop="level" sortable></el-table-column>
+        <el-table-column label="周卡剩余" prop="clubCardZhou" sortable></el-table-column>
+        <el-table-column label="月卡剩余" prop="clubCardYue" sortable></el-table-column>
+        <el-table-column label="季卡剩余" prop="clubCardJi" sortable></el-table-column>
+        <el-table-column label="充值金额" prop="cost" sortable></el-table-column>
+        <el-table-column label="邀请码" prop="invitationCode" sortable></el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
         <router-link :to="{path:'/membershipCardPurchaseRecord'}">
           <el-button>会员卡购买记录</el-button>
@@ -100,8 +100,8 @@
         <router-link :to="{path:'/membershipCardConsumptionRecord'}">
           <el-button>会员卡兑换记录</el-button>
         </router-link>
-        <el-button @click.native="CancelSubmit" v-if="disqualifyDialogVisible">取消推广员资格</el-button>
-        <el-button @click.native="relieveSubmit" v-if="unlockingDialogVisible">解除封停状态</el-button>
+        <el-button @click.native="CancelSubmit" +>取消推广员资格</el-button>
+        <el-button @click.native="relieveSubmit" v-if="state === '封禁'">解除封停状态</el-button>
       </div>
     </el-dialog>
     <!--操作-->
@@ -130,7 +130,6 @@
           <el-input v-model="form.level"></el-input>
         </el-form-item>
         <el-form-item label="调整等级">
-          <!--<el-input v-model="form.upgrade"></el-input>-->
           <el-select v-model="form.upgrade" placeholder="请选择">
             <el-option
               v-for="item in options"
@@ -177,7 +176,8 @@
             boundVisible:false,
             operateVisible:false,
             disqualifyDialogVisible:true,
-            unlockingDialogVisible:false
+            unlockingDialogVisible:false,
+            state:''
           }
         },
       methods:{
@@ -203,7 +203,8 @@
             params:{
               nickname:this.filters.mailType,
               page:page,
-              size:10
+              size:10,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
               console.log(res.data)
@@ -233,14 +234,17 @@
             url:this.global.mPath + '/agent/agentdetail',
             method:'post',
             params:{
-              agentId:row.id
+              agentId:row.id,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
+              console.log(res.data)
               row.clubCardYue = res.data.data.clubCardYue;
               row.clubCardJi = res.data.data.clubCardJi;
               row.clubCardZhou = res.data.data.clubCardZhou;
               row.score = res.data.data.score;
               this.roles = [Object.assign({}, row)];
+              this.state = res.data.data.agent.state;
           }).catch((e) => {
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           })
@@ -259,7 +263,8 @@
             method:'post',
             params:{
               agentId:this.form.id,
-              bossId:this.form.bossId
+              bossId:this.form.bossId,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
             console.log(res.data)
@@ -280,7 +285,8 @@
             url:this.global.mPath + '/agent/removeboss',
             method:'post',
             params:{
-              agentId:this.form.id
+              agentId:this.form.id,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
             console.log(res.data)
@@ -318,7 +324,8 @@
             method:'post',
             params:{
               agentId:this.form.id,
-              level:this.upgrade
+              level:this.upgrade,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
             console.log(res.data)
@@ -339,7 +346,8 @@
             url:this.global.mPath + '/agent/ban',
             method:'post',
             params:{
-              agentId:this.roles[0].id
+              agentId:this.roles[0].id,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
             console.log(res.data)
@@ -347,6 +355,7 @@
               this.unlockingDialogVisible = true;
               this.disqualifyDialogVisible = false;
               this.roles[0].state = res.data.data
+              this.state = '封禁'
               this.handleSearch(1)
             }else{
               this.$message.error({showClose: true, message: err.toString(), duration: 2000});
@@ -360,7 +369,8 @@
             url:this.global.mPath + '/agent/liberate',
             method:'post',
             params:{
-              agentId:this.roles[0].id
+              agentId:this.roles[0].id,
+              token:sessionStorage.getItem('token')
             }
           }).then((res) => {
             console.log(res.data)
@@ -368,6 +378,7 @@
               this.unlockingDialogVisible = false;
               this.disqualifyDialogVisible = true;
               this.roles[0].state = res.data.data
+              this.state = '正常'
               this.handleSearch(1)
             }else{
               this.$message.error({showClose: true, message: err.toString(), duration: 2000});

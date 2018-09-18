@@ -39,7 +39,7 @@
         <el-table-column prop="state" label="状态">
           <template slot-scope="scope">
             <el-button type="primary" v-if="scope.row.state === 1" :disabled="false" @click="off(scope.$index,scope.row)">启用</el-button>
-            <el-button type="info" disabled v-if="scope.row.state === 0">禁用</el-button>
+            <el-button type="info" v-if="scope.row.state === 0" @click="off(scope.$index,scope.row)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -109,7 +109,7 @@
           return str.replace(/(^\s+)|(\s+$)/g, "");
         }
       },
-      //禁用按钮
+      //启用按钮
       off(index, row) {
         sessionStorage.setItem('id', this.list[index].id);//保存id
         axios({
@@ -119,7 +119,8 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'id': sessionStorage.getItem('id')
+            'id': sessionStorage.getItem('id'),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -173,7 +174,8 @@
             params: {
               'status': '0',
               'notice': this.trim(this.normalForm.notice),
-              'place': this.trim(this.place)
+              'place': this.trim(this.place),
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -232,7 +234,8 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'adminname': this.trim(this.filters.adminname)
+            'adminname': this.trim(this.filters.adminname),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

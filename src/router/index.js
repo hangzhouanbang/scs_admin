@@ -15,7 +15,6 @@ import MemberCard from '@/components/MemberCard.vue'
 import Microservice from '@/components/Microservice.vue'
 import MemberLevel from '@/components/MemberLevel.vue'
 import ReCharge from '@/components/ReCharge.vue'
-import OnlineUsers from '@/components/OnlineUsers.vue'
 import PlatformOperation from '@/components/PlatformOperation.vue'
 import Progression from '@/components/Progression.vue'
 import PendingReleaseTask from '@/components/PendingReleaseTask.vue'
@@ -34,6 +33,9 @@ import CodeUsageRecord from '@/components/CodeUsageRecord.vue'
 import IntegralRecord from '@/components/IntegralRecord.vue'
 import GamePlay from '@/components/GamePlay.vue'
 import PlayTheMutex from '@/components/PlayTheMutex.vue'
+import Lottery from '@/components/Lottery.vue'
+import Record from '@/components/Record.vue'
+import Winning from '@/components/Winning.vue'
 
 Vue.use(Router)
 
@@ -78,7 +80,6 @@ export default new Router({
         {path: '/memberCard', component: MemberCard, name: '会员卡', menuShow: true},
         {path: '/memberLevel', component: MemberLevel, name: 'vip等级', menuShow: true},
         {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
-        {path: '/onlineUsers', component: OnlineUsers, name: '在线用户', menuShow: true},
       ]
     },
     {
@@ -159,18 +160,8 @@ export default new Router({
       children: [
         {path: '/promoterManagement', component: PromoterManagement, name: '推广员管理', menuShow: true},
         {path: '/promoterApplicationRecord', component: PromoterApplicationRecord, name: '推广员申请记录', menuShow: true},
-        {
-          path: '/membershipCardPurchaseRecord',
-          component: MembershipCardPurchaseRecord,
-          name: '会员卡购买记录',
-          menuShow: true
-        },
-        {
-          path: '/membershipCardConsumptionRecord',
-          component: MembershipCardConsumptionRecord,
-          name: '会员卡兑换记录',
-          menuShow: true
-        },
+        {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
+        {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡兑换记录', menuShow: true},
         {path: '/integralRecord', component: IntegralRecord, name: '积分记录', menuShow: true},
         {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '会员卡记录', menuShow: true},
         {path: '/mallManagement', component: MallManagement, name: '推广员商城管理', menuShow: true},
@@ -180,11 +171,11 @@ export default new Router({
     {
       path: '/home',
       component: Home,
+      name: '活动管理',
       menuShow: true,
-      leaf: true,
       iconCls: 'iconfont icon-huodongguanli',
       children: [
-        {path: '/activity', component: Activity, name: '活动管理', menuShow: true}
+        {path: '/activity', component: Activity, name: '活动配置', menuShow: true},
       ]
     },
     {
@@ -196,6 +187,18 @@ export default new Router({
       children: [
         {path: '/gamePlay', component: GamePlay, name: '玩法', menuShow: true},
         {path: '/playTheMutex', component: PlayTheMutex, name: '玩法互斥', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '签到管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-ziyuan',
+      children: [
+        {path: '/Lottery', component: Lottery, name: '奖励管理', menuShow: true},
+        {path: '/winning', component: Winning, name: '中奖记录', menuShow: true},
+        {path: '/record', component: Record, name: '兑换记录', menuShow: true},
       ]
     },
   ]

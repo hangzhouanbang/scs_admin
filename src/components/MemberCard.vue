@@ -138,7 +138,9 @@
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
-          params: {}
+          params: {
+            'token':sessionStorage.getItem('token')
+          }
         })
           .then((res) => {
             console.log(res)
@@ -184,7 +186,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id':row.id
+              'id':row.id,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -219,7 +222,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id':ids
+              'id':ids,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -256,7 +260,8 @@
             'price':this.trim(this.addCard.price),
             'gold':this.trim(this.addCard.gold),
             'score':this.trim(this.addCard.score),
-            'time':this.addCard.time * 24 * 60 * 60 * 1000
+            'time':this.addCard.time * 24 * 60 * 60 * 1000,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -320,7 +325,8 @@
                 'price':this.editCard.price,
                 'gold':this.editCard.gold,
                 'score':this.editCard.score,
-                'time':this.editCard.time
+                'time':this.editCard.time * 24 * 60 * 60 * 1000,
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {

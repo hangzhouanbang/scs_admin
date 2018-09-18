@@ -198,7 +198,8 @@
             'agentId': this.trim(this.filters.id),
             'agent': this.trim(this.filters.agent),
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime': this.state.endTime
+            'endTime': this.state.endTime,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -260,7 +261,8 @@
             'agentId': this.trim(this.publishForm.agentId),
             'card': this.trim(this.publishForm.product),
             'cardAmount': this.trim(this.publishForm.afternumber),
-            'scoreAmount': this.trim(this.publishForm.afterAmount)
+            'scoreAmount': this.trim(this.publishForm.afterAmount),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

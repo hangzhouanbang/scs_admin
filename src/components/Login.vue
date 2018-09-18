@@ -59,7 +59,7 @@
           }
         })
           .then((res) => {
-              if (res.data.user == null) {
+              if (res.data.data == null) {
                 this.$message({
                   showClose: true,
                   message: '账号或密码错误',
@@ -72,7 +72,8 @@
                   message: '登录成功',
                   type: 'success'
                 });
-                sessionStorage.setItem('nickname', res.data.user.admin.nickname);
+                sessionStorage.setItem('nickname', res.data.data.admin.nickname);
+                sessionStorage.setItem('token', res.data.data.token);
               }
             },
           ).catch((e) => {

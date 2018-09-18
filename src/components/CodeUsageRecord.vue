@@ -41,7 +41,7 @@
                 style="width: 100%;">
         <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
         <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
-        <el-table-column prop="invitationCode" label="推广码" width="300" sortable></el-table-column>
+        <el-table-column prop="invitationCode" label="推广码" width="auto" sortable></el-table-column>
         <el-table-column prop="memberId" label="邀请ID" width="100" sortable></el-table-column>
         <el-table-column prop="createTime" label="绑定时间" width="160" sortable></el-table-column>
         <el-table-column prop="rewardScore" label="获得积分" width="100" sortable></el-table-column>
@@ -125,7 +125,8 @@
             'agentId':this.trim(this.filters.id),
             'agent':this.trim(this.filters.nickname),
             'startTime': this.state.startTime , /*日期转换为时间戳（毫秒数）发送到后台*/
-            'endTime': this.state.endTime
+            'endTime': this.state.endTime,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {

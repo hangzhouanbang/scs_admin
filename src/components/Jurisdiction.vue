@@ -141,7 +141,8 @@
           params: {
             'page': this.page,
             'size': '10',
-            'privilege': this.trim(this.filters.privilege)
+            'privilege': this.trim(this.filters.privilege),
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -184,7 +185,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': row.id
+              'id': row.id,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -219,7 +221,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'id': ids
+              'id': ids,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -259,7 +262,8 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'privileges': params
+            'privileges': params,
+            'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
@@ -319,7 +323,8 @@
               params: {
                 'id': this.trim(this.editPrivilege.id),
                 'privilege': this.trim(this.editPrivilege.privilege),
-                'uri': this.trim(this.editPrivilege.uri)
+                'uri': this.trim(this.editPrivilege.uri),
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {

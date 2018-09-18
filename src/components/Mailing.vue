@@ -11,7 +11,11 @@
     <el-col :span="24" class="warp-main">
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+
         <el-form :model="filters" label-width="120px" :rules="rules">
+          <el-form-item label="标题" prop="title">
+            <el-input type="text" min="0" v-model="filters.title"></el-input>
+          </el-form-item>
           <el-form-item label="类型">
             <el-select v-model="value">
               <el-option
@@ -35,14 +39,19 @@
               </el-upload>
             </div>
           </el-form-item>
-          <el-form-item label="用户ID" prop="ids">
+          <el-form-item label="用户对象" prop="ids">
+            <el-radio v-model="radio" label="0" @change="changeInput()">单个用户</el-radio>
             <el-input
               type="textarea"
               autosize
               placeholder="多个以上ID，用“，”分隔开来。"
-              v-model="filters.ids">
+              v-model="filters.ids" v-if="visible">
             </el-input>
+            <el-radio v-model="radio" label="1" @change="changeInput()">会员用户</el-radio>
+            <el-radio v-model="radio" label="2" @change="changeInput()">非会员用户</el-radio>
+            <el-radio v-model="radio" label="3" @change="changeInput()">所有</el-radio>
           </el-form-item>
+
           <el-form-item label="玉石" prop="number">
             <el-input type="number" min="0" placeholder="数目" v-model="filters.number"></el-input>
           </el-form-item>
@@ -107,9 +116,7 @@
         value2: '1',
         data: [],
         id: this.data,
-        filters: {
-          name: ''
-        },
+        filters: {},
         imageUrl: '',
         // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
         domain: 'http://up.qiniu.com',
@@ -120,6 +127,8 @@
             {required: true, message: '请输入ID', trigger: 'blur'}
           ]
         },
+        radio:'',
+        visible:false
       }
     },
     methods: {
@@ -180,21 +189,23 @@
         this.filters.integral = ''
         this.id = ''
       },
+      changeInput(){
+        if(this.radio == 0){
+          this.visible = true;
+        }else{
+          this.visible = false;
+        }
+      },
       //发送
       send() {
-        if (this.filters.ids == undefined || this.filters.ids == "") {
-          this.$message({
-            showClose: true,
-            message: '用户ID不能为空',
-            type: 'warning'
-          });
-        } else if (this.filters.number < 0 || this.filters.integral < 0) {
+        console.log(this.radio)
+        if (this.filters.number < 0 || this.filters.integral < 0) {
           this.$message({
             showClose: true,
             message: '金币或积分为正整数',
             type: 'warning'
           });
-        } else {
+        } else if(this.radio == 0){
           axios({
             method: 'post',
             url: this.global.mPath + '/mailctrl/addmailbyid',
@@ -202,13 +213,82 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
+              'title':this.trim(this.filters.title),
               'mailType': this.value,
               'file': this.imageUrl,
               'ids': this.trim(this.filters.ids),
               'number': this.trim(this.filters.number),
               'integral': this.trim(this.filters.integral),
               'vipCardId': this.id,
-              'validDay': this.value2
+              'validDay': this.value2,
+              'token':sessionStorage.getItem('token')
+            }
+          })
+            .then((res) => {
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '发布失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '发布成功',
+                    type: 'success'
+                  });
+                  this.filters.ids = ''
+                  this.filters.number = ''
+                  this.filters.integral = ''
+                  this.id = ''
+                }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        }else{
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/mailctrl/addmailbytype',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'title':this.trim(this.filters.title),
+              'mailType': this.value,
+              'file': this.imageUrl,
+              'number': this.trim(this.filters.number),
+              'integral': this.trim(this.filters.integral),
+              'vipCardId': this.id,
+              'validDay': this.value2,
+              'sendType': this.radio,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -269,6 +349,9 @@
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         },
+        params:{
+          'token':sessionStorage.getItem('token')
+        }
       })
         .then((res) => {
             this.data = res.data.data;
@@ -312,8 +395,10 @@
     margin-top: 30px;
   }
 
-  .el-form-item {
-    width: 500px;
+  .el-select,
+  .el-input,
+  .el-textarea{
+    width: 300px;
   }
 
   img {

@@ -125,7 +125,8 @@
               game:this.trim(this.filters.gamename),
               name:this.trim(this.filters.play),
               page:page,
-              size:'10'
+              size:'10',
+              token:sessionStorage.getItem('token')
             }
           })
             .then((res) => {
@@ -176,7 +177,8 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'lawId':row.id
+                'lawId':row.id,
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -208,7 +210,8 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'lawId':ids
+                'lawId':ids,
+                'token':sessionStorage.getItem('token')
               }
             })
               .then((res) => {
@@ -247,7 +250,8 @@
               'name':this.trim(this.addGame.name),
               'desc':this.trim(this.addGame.desc),
               'mutexGroupId':this.trim(this.addGame.mutexGroupId),
-              'vip':this.addGame1.vip
+              'vip':this.addGame1.vip,
+              'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
