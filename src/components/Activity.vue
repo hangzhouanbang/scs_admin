@@ -27,13 +27,13 @@
       <!-- 活动列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
-        <el-table-column prop="theme" label="活动标题" width="100" sortable></el-table-column>
+        <el-table-column prop="theme" label="活动标题" width="160" sortable></el-table-column>
         <el-table-column prop="content" label="内容" width="100" sortable>
           <template slot-scope="scope">
             <img :src="scope.row.content" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="url" label="活动地址" width="180" sortable></el-table-column>
+        <el-table-column prop="url" label="活动地址" width="200" sortable></el-table-column>
         <el-table-column prop="promulgator" label="发布者" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
@@ -42,6 +42,8 @@
             </el-button>
             <el-button type="primary" v-if="scope.row.state === 'STOP'" :disabled="false"
                        @click="open(scope.$index,scope.row)">启用</el-button>
+            <el-button type="primary" v-if="scope.row.state === 'STOP'"
+                       @click="del(scope.$index,scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -315,96 +317,162 @@
       //停用活动
       off(index, row) {
         sessionStorage.setItem('id', this.items[index].id);//保存id
-        axios({
-          method: 'post',
-          url: this.global.mPath + '/activity/stopactivity',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'activityId': sessionStorage.getItem('id'),
-            'token':sessionStorage.getItem('token')
-          }
-        })
-          .then((res) => {
-              this.handleSearch()
+        this.$confirm('确认停用吗?', '提示', {type: 'warning'}).then(() => {
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/activity/stopactivity',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
             },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
+            params: {
+              'activityId': sessionStorage.getItem('id'),
+              'token': sessionStorage.getItem('token')
             }
-          }
-        });
+          })
+            .then((res) => {
+              if (res.data.success == true) {
+                this.$message.success({showClose: true, message: '停用成功', duration: 1500});
+                this.handleSearch();
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          })
+        })
       },
      //启用
       open(index,row){
         sessionStorage.setItem('id', this.items[index].id);//保存id
-        axios({
-          method: 'post',
-          url: this.global.mPath + '/activity/startactivity',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'activityId': sessionStorage.getItem('id'),
-            'token':sessionStorage.getItem('token')
-          }
-        })
-          .then((res) => {
-              this.handleSearch()
+        this.$confirm('确认启用吗?', '提示', {type: 'warning'}).then(() => {
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/activity/startactivity',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
             },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
+            params: {
+              'activityId': sessionStorage.getItem('id'),
+              'token': sessionStorage.getItem('token')
             }
-          }
-        });
+          })
+            .then((res) => {
+              if (res.data.success == true) {
+                this.$message.success({showClose: true, message: '启用成功', duration: 1500});
+                this.handleSearch();
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          })
+        })
+      },
+      //删除
+      del:function(index,row){
+        this.$confirm('确认删除该记录吗?', '提示', {type: 'warning'}).then(() => {
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/activity/deleteactivity',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'activityId': row.id,
+              'token':sessionStorage.getItem('token')
+            }
+          })
+            .then((res) => {
+              if(res.data.success == true){
+                this.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                this.handleSearch();
+              }else{
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          })
+        })
       }
     },
     mounted() { //初始化页面
