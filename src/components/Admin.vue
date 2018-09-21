@@ -56,7 +56,7 @@
       </el-col>
 
       <el-dialog title="修改密码" :visible.sync="editFormVisible" :close-on-click-modal="false">
-        <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+        <el-form :model="editForm" label-width="100px" ref="editForm">
           <el-form-item label="用户名" prop="nickname">
             <el-input v-model="editForm.nickname" auto-complete="off"></el-input>
           </el-form-item>
@@ -141,17 +141,6 @@
         //编辑相关数据
         editFormVisible: false,//编辑界面是否显示
         checked: true,
-        editFormRules: {
-          name: [
-            {required: true, message: '请输入书名', trigger: 'blur'}
-          ],
-          author: [
-            {required: true, message: '请输入作者', trigger: 'blur'}
-          ],
-          description: [
-            {required: true, message: '请输入简介', trigger: 'blur'}
-          ]
-        },
         editForm: {},
         editRole: {},
         addForm: {},

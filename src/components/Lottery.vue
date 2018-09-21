@@ -28,14 +28,18 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60" label="序号"></el-table-column>
       <el-table-column prop="name" label="奖励备注" width="160" sortable></el-table-column>
-      <el-table-column prop="desc" label="类型" width="120" sortable></el-table-column>
-      <el-table-column prop="desc" label="单奖数量" width="120" sortable></el-table-column>
-      <el-table-column prop="type" label="已抽取数量" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="库存数量" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="icon图" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="中奖概率" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="首次中奖概率" width="160" sortable></el-table-column>
-      <el-table-column prop="taskName" label="超额奖池" width="160" sortable></el-table-column>
+      <el-table-column prop="type" label="类型" width="120" sortable></el-table-column>
+      <el-table-column prop="singleNum" label="单奖数量" width="120" sortable></el-table-column>
+      <el-table-column prop="lotteryNum" label="已抽取数量" width="120" sortable></el-table-column>
+      <el-table-column prop="storeNum" label="库存数量" width="120" sortable></el-table-column>
+      <el-table-column prop="iconUrl" label="icon图" width="120" sortable>
+        <template slot-scope="scope">
+          <img :src="scope.row.iconUrl" alt="" style="width: 50px;height: 50px">
+        </template>
+      </el-table-column>
+      <el-table-column prop="prizeProb" label="中奖概率" width="120" sortable></el-table-column>
+      <el-table-column prop="firstPrizeProb" label="首次中奖概率" width="160" sortable></el-table-column>
+      <el-table-column prop="overstep" label="超额奖池" width="160" sortable></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="small" @click="adjustmentDialog(scope.$index,scope.row)">调整</el-button>
@@ -50,8 +54,8 @@
         <el-form-item label="奖励备注" prop="name" required>
           <el-input v-model="adjustForm.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="奖励类别" prop="name" required>
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="奖励类别" prop="type" required>
+          <el-select v-model="adjustForm.type" placeholder="请选择">
             <el-option
               v-for="item in types"
               :key="item.value"
@@ -60,13 +64,71 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="单奖数量" prop="desc" required>
-          <el-input v-model="adjustForm.desc" auto-complete="off"></el-input>
+        <el-form-item label="单奖数量" prop="singleNum" required>
+          <el-input v-model="adjustForm.singleNum" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="库存数量" prop="desc" required>
-          <el-input v-model="adjustForm.desc" auto-complete="off"></el-input>
+        <el-form-item label="库存数量" prop="storeNum" required>
+          <el-input v-model="adjustForm.storeNum" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="icon图" prop="type" required>
+        <el-form-item label="icon图" prop="iconUrl" required>
+          <div class="upload">
+            <el-upload
+              class="avatar-uploader"
+              :action=domain
+              :http-request=upqiniu
+              :show-file-list="false"
+              :before-upload="beforeUpload">
+              <img v-if="imageUrl1" :src="imageUrl1" class="avatar">
+              <el-button v-else class="el-icon-plus avatar-uploader-icon"></el-button>
+            </el-upload>
+          </div>
+        </el-form-item>
+        <el-form-item label="中奖概率" prop="prizeProb" required>
+          <el-input v-model="adjustForm.prizeProb" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="首次中奖概率" prop="firstPrizeProb" required>
+          <el-input v-model="adjustForm.firstPrizeProb" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="加入超额奖池" prop="overstep" required>
+          <el-select v-model="adjustForm.overstep" placeholder="请选择">
+            <el-option
+              v-for="item in jackpot"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="publishVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="adjustSubmit">确认</el-button>
+      </div>
+    </el-dialog>
+
+    <!--添加商品-->
+    <el-dialog title="添加商品" :visible.sync="addVisible" :close-on-click-modal="false">
+      <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
+        <el-form-item label="奖励备注" prop="name" required>
+          <el-input v-model="addForm.name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="奖励类别" prop="type" required>
+          <el-select v-model="addForm.type" placeholder="请选择">
+            <el-option
+              v-for="item in types"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="数量" prop="singleNum" required>
+          <el-input v-model="addForm.singleNum" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="库存数量" prop="storeNum" required>
+          <el-input v-model="addForm.storeNum" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="icon图" prop="iconUrl" required>
           <div class="upload">
             <el-upload
               class="avatar-uploader"
@@ -79,14 +141,14 @@
             </el-upload>
           </div>
         </el-form-item>
-        <el-form-item label="中奖概率" prop="taskName" required>
-          <el-input v-model="adjustForm.taskName" auto-complete="off"></el-input>
+        <el-form-item label="中奖概率" prop="prizeProb" required>
+          <el-input v-model="addForm.prizeProb" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="首次中奖概率" prop="goldNumber" required>
-          <el-input v-model="adjustForm.goldNumber" auto-complete="off"></el-input>
+        <el-form-item label="首次中奖概率" prop="firstPrizeProb" required>
+          <el-input v-model="addForm.firstPrizeProb" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="加入超额奖池" prop="name" required>
-          <el-select v-model="value" placeholder="请选择">
+        <el-form-item label="超额奖池" prop="overstep" required>
+          <el-select v-model="addForm.overstep" placeholder="请选择">
             <el-option
               v-for="item in jackpot"
               :key="item.value"
@@ -102,69 +164,56 @@
       </div>
     </el-dialog>
 
-    <!--添加商品-->
-    <el-dialog title="添加商品" :visible.sync="addVisible" :close-on-click-modal="false">
-      <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
-        <el-form-item label="奖励备注" prop="name" required>
-          <el-input v-model="addForm.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="奖励类别" prop="name" required>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in types"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="数量" prop="desc" required>
-          <el-input v-model="addForm.desc" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="库存数量" prop="desc" required>
-          <el-input v-model="addForm.desc" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="icon图" prop="type" required>
-          <div class="upload">
-            <el-upload
-              class="avatar-uploader"
-              :action=domain
-              :http-request=upqiniu
-              :show-file-list="false"
-              :before-upload="beforeUpload">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
-              <el-button v-else class="el-icon-plus avatar-uploader-icon"></el-button>
-            </el-upload>
-          </div>
-        </el-form-item>
-        <el-form-item label="中奖概率" prop="taskName" required>
-          <el-input v-model="addForm.taskName" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="首次中奖概率" prop="goldNumber" required>
-          <el-input v-model="addForm.goldNumber" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="publishVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="publishSubmit">确认</el-button>
+    <!--奖励个数添加不足-->
+    <el-dialog title="" :visible.sync="tipVisible" :close-on-click-modal="false" width="400px" class="tip">
+      <div class="title">提示</div>
+      <div class="content">奖励个数添加不足! <br>请确保已设置10个奖励后再发布!</div>
+      <div class="footer">
+        <el-button @click.native="tipVisible = false" style="margin:30px 0 0 80px;">取消</el-button>
+        <el-button type="primary" @click.native="tipVisible = false" style="margin:30px 0 0 55px;">确认</el-button>
       </div>
     </el-dialog>
 
-    <!--提示-->
-    <!--<el-dialog title="" :visible.sync="tipVisible" :close-on-click-modal="false">-->
-      <!--<div class="title">提示</div>-->
-      <!--<div class="content">奖励个数添加不足! <br>请确保已设置10个奖励后再发布!</div>-->
-      <!--<div slot="footer" class="dialog-footer">-->
-        <!--<el-button @click.native="publishVisible = false">取消</el-button>-->
-        <!--<el-button type="primary" @click.native="publishSubmit">确认</el-button>-->
-      <!--</div>-->
-    <!--</el-dialog>-->
+    <!--当前中奖概率设置-->
+    <el-dialog title="" :visible.sync="tip1Visible" :close-on-click-modal="false" width="400px" class="tip">
+      <div class="title">提示</div>
+      <div class="content1">概率设置异常，发布失败！<br>当前中奖概率设置超过100%，请重设！</div>
+      <div class="footer">
+        <el-button @click.native="tip1Visible = false" style="margin:30px 0 0 80px;">取消</el-button>
+        <el-button type="primary" @click.native="tip1Visible = false" style="margin:30px 0 0 55px;">确认</el-button>
+      </div>
+    </el-dialog>
 
-    <!--查看预览-->
-    <!--<el-dialog title="签到转盘预览" :visible.sync="previewVisible" :close-on-click-modal="false" width="340px">-->
-      <!--<canvas id="canvas" width="300px" height="300px"></canvas>-->
-      <!--<img src="../assets/images/zhuanpan.png" alt="" style="width: 280px;height: 280px;position: absolute;top: 92px;left: 30px;">-->
-    <!--</el-dialog>-->
+    <!--当前首重概率设置-->
+    <el-dialog title="" :visible.sync="tip2Visible" :close-on-click-modal="false" width="400px" class="tip">
+      <div class="title">提示</div>
+      <div class="content1">概率设置异常，发布失败！<br>当前首重概率设置超过100%，请重设！</div>
+      <div class="footer">
+        <el-button @click.native="tip2Visible = false" style="margin:30px 0 0 80px;">取消</el-button>
+        <el-button type="primary" @click.native="tip2Visible = false" style="margin:30px 0 0 55px;">确认</el-button>
+      </div>
+    </el-dialog>
+
+    <!--发布成功-->
+    <el-dialog title="" :visible.sync="tip3Visible" :close-on-click-modal="false" width="400px" class="tip">
+      <div class="title">提示</div>
+      <div class="content1" style="text-align: center;">奖励信息发布成功！</div>
+      <div class="footer">
+        <el-button @click.native="tip3Visible = false" style="margin:30px 0 0 80px;">取消</el-button>
+        <el-button type="primary" @click.native="tip3Visible = false" style="margin:30px 0 0 55px;">确认</el-button>
+      </div>
+    </el-dialog>
+
+    <!--个数超10个-->
+    <el-dialog title="" :visible.sync="tip4Visible" :close-on-click-modal="false" width="400px" class="tip">
+      <div class="title">提示</div>
+      <div class="content1" style="text-align: center;">添加商品总个数超过10个!</div>
+      <div class="footer">
+        <el-button @click.native="tip4Visible = false" style="margin:30px 0 0 80px;">取消</el-button>
+        <el-button type="primary" @click.native="tip4Visible = false" style="margin:30px 0 0 55px;">确认</el-button>
+      </div>
+    </el-dialog>
+
   </el-row>
 
 </template>
@@ -172,21 +221,34 @@
 <script>
     import axios from 'axios'
     export default {
-        name: "Cq_lottery",
+        name: "Lottery",
         data(){
           return{
             adjustmentVisible:false,
             addVisible:false,
             imageUrl: '',
+            imageUrl1: '',
             addFormRules: {
-              title: [
-                {required: true, message: '请输入标题', trigger: 'blur'}
+              name: [
+                {required: true, message: '请输入奖励备注', trigger: 'blur'}
               ],
-              file: [
-                {required: true, message: '请选择图片', trigger: 'blur'}
+              type:[
+                {required: true, message: '请选择奖励类别', trigger: 'change'}
               ],
-              address: [
-                {required: true, message: '请选择图片', trigger: 'blur'}
+              singleNum: [
+                {required: true, message: '请输入数量', trigger: 'blur'}
+              ],
+              storeNum: [
+                {required: true, message: '请输入库存数量', trigger: 'blur'}
+              ],
+              prizeProb: [
+                {required: true, message: '请输入中奖概率', trigger: 'blur'}
+              ],
+              firstPrizeProb: [
+                {required: true, message: '请输入首次中奖概率', trigger: 'blur'}
+              ],
+              overstep:[
+                {required: true, message: '请选择超额奖池', trigger: 'change'}
               ]
             },
             adjustForm:{},
@@ -216,9 +278,12 @@
             domain: 'http://up.qiniu.com',
             // 这是七牛云空间的外链默认域名
             qiniuaddr: 'qiniu.3cscy.com',
-            value:'',
-            tipVisible:true,
-            previewVisible:false
+            tipVisible:false,
+            tip1Visible:false,
+            tip2Visible:false,
+            tip3Visible:false,
+            tip4Visible:false,
+            previewVisible:false,
           }
         },
       methods:{
@@ -251,6 +316,7 @@
             // 获取到凭证之后再将文件上传到七牛云空间
             axios.post(this.domain, formdata, config).then(res => {
               this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
+              this.imageUrl1 = 'http://' + this.qiniuaddr + '/' + res.data.key
               this.img = false;
               console.log(this.imageUrl)
             })
@@ -268,70 +334,200 @@
           }
           return isJPG && isLt2M
         },
-        adjustmentDialog:function(){
+        handleSearch:function(){
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/signin/querysigninprize',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+            }
+          })
+            .then((res) => {
+                this.loading = false;//隐藏加载条
+                this.lottery = res.data.data;
+                //console.log(res.data.data)
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        },
+        adjustmentDialog:function(index,row){
           this.adjustmentVisible = true;
+          this.adjustForm = Object.assign({}, row);
+          this.imageUrl1 = this.adjustForm.iconUrl
+        },
+        adjustSubmit:function(){
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/signin/updatesigninprize',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              id:this.adjustForm.id,
+              name:this.adjustForm.name,
+              type:this.adjustForm.name,
+              singleNum:this.adjustForm.singleNum,
+              storeNum:this.adjustForm.storeNum,
+              iconUrl:this.imageUrl1,
+              prizeProb:this.adjustForm.prizeProb,
+              firstPrizeProb:this.adjustForm.firstPrizeProb,
+              overstep:this.adjustForm.overstep,
+              token:sessionStorage.getItem('token')
+            }
+          })
+            .then((res) => {
+              if (res.data.success == true) {
+                this.adjustmentVisible = false;
+                this.$message.success({showClose: true, message: '调整成功', duration: 1500});
+                this.handleSearch(1);
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+              },
+            ).catch((e) => {
+            this.loading = false;
+            console.log(error);
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          });
         },
         showAddDialog:function(){
-
+          this.$confirm('确认发布吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/signin/releasesigninprize ',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+              }
+            })
+              .then((res) => {
+                  if (res.data.success == true) {
+                    this.tip3Visible = true;
+                    this.$message.success({showClose: true, message: '发布成功', duration: 1500});
+                    this.handleSearch(1);
+                  } else {
+                    if(res.data.msg == 'notEnough'){
+                      this.tipVisible = true;
+                    }else if(res.data.msg == 'PrizeProbOverstep'){
+                      this.tip1Visible = true;
+                    }else if(res.data.msg == 'FirstPrizeProbOverstep'){
+                      this.tip2Visible = true;
+                    }
+                  }
+                },
+              ).catch((e) => {
+              this.loading = false;
+              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            });
+          })
         },
         AddDialog:function(){
           this.addVisible = true;
         },
-        // viewPreview:function(){
-        //   this.previewVisible = true;
-        // },
-
+        publishSubmit:function(){
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/signin/addsigninprize',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              name:this.addForm.name,
+              type:this.value,
+              singleNum:this.addForm.singleNum,
+              storeNum:this.addForm.storeNum,
+              iconUrl:this.imageUrl,
+              prizeProb:this.addForm.prizeProb,
+              firstPrizeProb:this.addForm.firstPrizeProb,
+              overstep:this.value1,
+              token:sessionStorage.getItem('token')
+            }
+          })
+            .then((res) => {
+                if (res.data.success == true) {
+                  this.addVisible = false;
+                  this.$message.success({showClose: true, message: '添加成功', duration: 1500});
+                  this.handleSearch(1);
+                } else {
+                  if(res.data.msg == 'overstep'){
+                    this.tip4Visible = true;
+                  }else{
+                    this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                }
+              },
+            ).catch((e) => {
+            this.loading = false;
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          });
+        },
+        delBook:function(index,row){
+          this.$confirm('确认删除选中记录吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/signin/deletesigninprizebyid',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                id: row.id
+              }
+            })
+              .then((res) => {
+                  if (res.data.success == true) {
+                    this.addVisible = false;
+                    this.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                    this.handleSearch(1);
+                  } else {
+                    this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                  }
+                },
+              ).catch((e) => {
+              this.loading = false;
+              console.log(error);
+              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            });
+          })
+        }
       },
       mounted(){
-        // console.log()
-        // this.$refs.aa.style.backgroundColor = 'red'
+       this.handleSearch();
       },
-      // updated(){
-      //   let info = ['1','2','3','4','5','6','7','8','9','10']
-      //   let color = ['#ffccff', '#ccffff', '#993366', '#FFEC8B', '#FFE4E1', '#FF83FA', '#FFF4D6', '#F08080', '#D15FEE', '#CAFF70']
-      //   let canvas = document.getElementById('canvas');
-      //   let ctx = canvas.getContext('2d');
-      //   createCircle();
-      //   createCirText(); // 绘制文字
-      //
-      //   //外圆
-      //   function createCircle() {
-      //     let startAngle = 0; //扇形的开始弧度
-      //     let endAngle = 0; //扇形的终止弧度
-      //     //画一个等份扇形组成的圆形
-      //     for (let i = 0; i < info.length; i++) {
-      //       startAngle = Math.PI * (i / (info.length / 2) - 2 / info.length);
-      //       endAngle = startAngle + Math.PI * (1 / (info.length / 2));
-      //       // console.log(endAngle)
-      //       ctx.save(); // 保存备份
-      //       ctx.beginPath(); // 绘制两条线
-      //       ctx.arc(150, 150, 90, startAngle, endAngle, false); // 绘制圆
-      //       ctx.lineWidth = 120;
-      //       ctx.strokeStyle = color[i]
-      //       ctx.stroke();
-      //       ctx.restore();
-      //
-      //     }
-      //   }
-      //
-      //   //各奖项
-      //   function createCirText() {
-      //     ctx.textAlign = 'center';
-      //     ctx.textBaseline = 'middle';
-      //     let step = 2 * Math.PI / info.length;
-      //     for (let i = 0; i < 10; i++) {
-      //       ctx.save();
-      //       ctx.beginPath();
-      //       ctx.translate(150, 150);
-      //       ctx.rotate(i * step);
-      //       ctx.font = " 20px Microsoft YaHei";
-      //       ctx.fillStyle = '#000';
-      //       ctx.fillText(info[i], -60, -100, 60); // 书写转盘文字
-      //       ctx.closePath();
-      //       ctx.restore();
-      //     }
-      //   }
-      // }
+
     }
 </script>
 
@@ -342,9 +538,32 @@
   .el-input{
     width:300px;
   }
-  /*.img{*/
-    /*position: absolute;*/
-    /*top:50px;*/
-    /*left:50%;*/
-  /*}*/
+ .avatar-uploader img{
+   width:150px;
+   height:100px;
+ }
+  .title{
+    width: 400px;
+    height: 43px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    margin: -50px 0 0 -20px;
+    line-height:43px;
+    font-size:20px;
+  }
+  .content{
+    width: 290px;
+    padding:55px;
+    margin: 0 0 0 -20px;
+    font-size:20px;
+    border-bottom: 1px solid #eee;
+  }
+  .content1{
+    width: 360px;
+    padding: 55px 20px;
+    margin: 0 0 0 -20px;
+    font-size: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
 </style>

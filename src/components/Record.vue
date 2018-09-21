@@ -19,6 +19,7 @@
         <el-form-item label="手机号码">
           <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
+        <br>
         <el-form-item label="时间">
           <el-date-picker
             v-model="filters.startTime"
