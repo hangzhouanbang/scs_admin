@@ -145,7 +145,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '15',//每页数量
+            'size': '10',//每页数量
             'page': this.page,//当前页
             'startTime': 'NaN' ? '0' : new Date(this.filters.startTime).getTime(), /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': 'NaN' ? '0' : new Date(this.filters.endTime).getTime(),

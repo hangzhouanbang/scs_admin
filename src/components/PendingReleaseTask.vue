@@ -100,10 +100,10 @@
         <el-form-item label="任务种类" prop="taskName" required>
           <el-input v-model="publishForm.taskName" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="奖励金币数量" prop="goldNumber">
-          <el-input v-model="publishForm.goldNumber" auto-complete="off" style="width:220px;"></el-input>万
+        <el-form-item label="奖励玉石数量" prop="goldNumber">
+          <el-input v-model="publishForm.goldNumber" auto-complete="off" style="width:220px;"></el-input>个
         </el-form-item>
-        <el-form-item label="奖励积分数量" prop="integralNumber">
+        <el-form-item label="奖励礼券数量" prop="integralNumber">
           <el-input v-model="publishForm.integralNumber" auto-complete="off" style="width:220px;"></el-input>个
         </el-form-item>
         <el-form-item label="奖励会员天数" prop="vipDays">

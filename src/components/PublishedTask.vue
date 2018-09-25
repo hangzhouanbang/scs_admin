@@ -53,7 +53,7 @@
       <el-table-column prop="name" label="任务名称" width="100" sortable></el-table-column>
       <el-table-column prop="desc" label="详细描述" width="100" sortable></el-table-column>
       <el-table-column prop="type" label="任务类型" width="100" sortable></el-table-column>
-      <el-table-column prop="rewardGold" label="玉石（万）" width="120" sortable></el-table-column>
+      <el-table-column prop="rewardGold" label="玉石（个）" width="120" sortable></el-table-column>
       <el-table-column prop="rewardScore" label="礼券" width="100" sortable></el-table-column>
       <el-table-column prop="rewardVip" label="会员卡（天）" width="140" sortable></el-table-column>
       <el-table-column prop="targetNum" label="完成次数" width="100" sortable></el-table-column>
@@ -126,7 +126,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '15',//每页数量
+            'size': '10',//每页数量
             'page': this.page,//当前页
             'taskDocId': this.trim(this.filters.taskDocId),
             'promulgator': this.trim(this.filters.promulgator),

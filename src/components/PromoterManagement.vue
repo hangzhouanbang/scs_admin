@@ -100,7 +100,7 @@
         <router-link :to="{path:'/membershipCardConsumptionRecord'}">
           <el-button>会员卡兑换记录</el-button>
         </router-link>
-        <el-button @click.native="CancelSubmit" +>取消推广员资格</el-button>
+        <el-button @click.native="CancelSubmit">取消推广员资格</el-button>
         <el-button @click.native="relieveSubmit" v-if="state === '封禁'">解除封停状态</el-button>
       </div>
     </el-dialog>
