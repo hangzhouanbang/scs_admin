@@ -44,10 +44,10 @@
         <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
         <el-table-column prop="product" label="商品名称" width="100" sortable></el-table-column>
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="accountingAmount" label="礼券变化" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingAmount" label="积分变化" width="100" sortable></el-table-column>
         <el-table-column prop="accountingTime" label="时间" width="160" sortable></el-table-column>
         <el-table-column prop="summary.text" label="说明" width="140" sortable></el-table-column>
-        <el-table-column prop="balanceAfter" label="剩余礼券" width="100" sortable></el-table-column>
+        <el-table-column prop="balanceAfter" label="剩余积分" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">积分调整</el-button>
@@ -78,7 +78,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="当前数量">
-            <el-input class="memberInput" v-model="publishForm.number" :disabled="true"></el-input>
+            <el-input class="memberInput" v-model="number" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="调整数量为">
             <el-input class="memberInput" v-model="publishForm.afternumber"></el-input>
@@ -100,7 +100,7 @@
       <el-dialog title="确认操作" :visible.sync="notarizeVisible" :close-on-click-modal="false">
         <el-form>
           <div align="center">
-            推广员{{publishForm.agentId}}拥有的<br/>{{publishForm.product}}：由{{publishForm.number}}调整至{{publishForm.afternumber}}<br/>
+            推广员{{publishForm.agentId}}拥有的<br/>{{publishForm.product}}：由{{number}}调整至{{publishForm.afternumber}}<br/>
             积分：由{{publishForm.accountingAmount}}调整到{{publishForm.afterAmount}}
           </div>
           <br/>
@@ -138,7 +138,8 @@
         publishVisible: false,
         publishForm: {},
         notarizeVisible: false,
-        state: []
+        state: [],
+        number:''
       }
     },
     methods: {
@@ -247,6 +248,19 @@
       publishDialog: function (index, row) {
         this.publishVisible = true;
         this.publishForm = Object.assign({}, row);
+        axios({
+          method: 'post',
+          url: this.global.mPath + '/agent/score_amount',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'agentId': this.trim(row.agentId)
+          }
+        })
+          .then((res) => {
+            this.number = res.data.data;
+        });
       },
 
       //确认调整会员卡

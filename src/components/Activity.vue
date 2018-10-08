@@ -109,7 +109,7 @@
             {required: true, message: '请选择图片', trigger: 'blur'}
           ],
           address: [
-            {required: true, message: '请输入活动地址', trigger: 'blur'}
+            {required: false, message: '请输入活动地址', trigger: 'blur'}
           ]
         },
         items: [],

@@ -48,12 +48,8 @@
       <el-table-column prop="createTime" label="申请时间" width="auto" sortable></el-table-column>
       <el-table-column prop="phone" label="手机号码" width="auto" sortable></el-table-column>
       <el-table-column prop="userName" label="姓名" width="auto" sortable></el-table-column>
-      <el-table-column prop="idCard" label="身份证号" width="auto" sortable></el-table-column>
-      <el-table-column prop="" label="身份证正反照" width="auto" sortable>
-        <template slot-scope="scope">
-          <el-button type="text" @click="check(scope.$index,scope.row)">查看</el-button>
-        </template>
-      </el-table-column>
+      <el-table-column prop="area" label="地区" width="auto" sortable></el-table-column>
+      <el-table-column prop="desc" label="备注" width="auto" sortable></el-table-column>
       <el-table-column prop="state" label="操作" width="auto" sortable>
         <template slot-scope="scope">
           <el-button type="button" @click="operation(scope.$index,scope.row)" v-if="scope.row.state3">操作</el-button>
@@ -63,26 +59,9 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="" :visible.sync="centerDialogVisible" width="37%" center >
-      <div class="IMG">
-        <div class="leftImg">
-          <p>图片1</p>
-          <img :src="frontUrl" alt="">
-        </div>
-        <div class="rightImg">
-          <p>图片2</p>
-          <img :src="reverseUrl" alt="">
-        </div>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="centerDialogVisible = false" class="sure">确 定</el-button>
-      </span>
-    </el-dialog>
-
     <el-dialog title="申请记录" :visible.sync="recordDialogVisible" width="37%" center v-model="applicationRecord">
       <p>申请人：{{nickname}}</p>
       <p>手机号码：{{phone}}</p>
-      <p>身份证号：{{idCard}}</p>
       <p>是否同意申请？</p>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="pass()" class="agree">同意</el-button>
@@ -116,7 +95,6 @@
             nickname:'',
             phone:'',
             idCard:'',
-            centerDialogVisible:false,
             recordDialogVisible:false,
             applicationRecord:{},
             AGRDAgreed:false,
@@ -171,11 +149,6 @@
           handleCurrentChange(val){
             this.page = val;
             this.handleSearch(this.page);
-          },
-          check:function(index, row){
-            this.centerDialogVisible = true;
-            this.frontUrl = row.frontUrl;
-            this.reverseUrl = row.reverseUrl;
           },
           operation:function(index, row){
             this.recordDialogVisible = true;

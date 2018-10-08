@@ -103,15 +103,7 @@
           }
         })
           .then((res) => {
-              if (res.data == "success") {
-                this.$router.replace('/');
-              } else {
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-              }
+            this.$router.replace('/');
             },
           ).catch((e) => {
         });
@@ -144,9 +136,6 @@
       .topbar-btn {
         color: #fff;
       }
-      /*.topbar-btn:hover {*/
-      /*background-color: #4A5064;*/
-      /*}*/
       .topbar-logo {
         float: left;
         width: 59px;

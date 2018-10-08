@@ -124,7 +124,7 @@
         }
         axios({
           method: 'post',
-          url: this.global.mPath + '/agent/queryscorerecord',
+          url: this.global.mPath + '/agent/queryclubcardrecord',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -135,10 +135,10 @@
             'agent': this.trim(this.filters.agent),
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime,
-            'token':sessionStorage.getItem('token')
+            'token':sessionStorage.getItem('token'),
+            'type':'exchange'
           }
-        })
-          .then((res) => {
+        }).then((res) => {
               this.po = true;//显示表单
               this.loading = false;//隐藏加载条
               this.items = res.data.data.items;

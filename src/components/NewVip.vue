@@ -64,8 +64,8 @@
         <el-table-column prop="verifyUser" label="是否通过实名认证" width="160" sortable></el-table-column>
         <el-table-column label="流水" width="80">
           <template slot-scope="scope">
-            <el-button type="primary" @click="goldwathercourse(scope.$index,scope.row)" style="margin:0;">玉石</el-button>
-            <el-button type="primary" @click="integral(scope.$index,scope.row)" style="margin:10px 0 0 0;">礼券</el-button>
+            <el-button type="primary" @click="goldwathercourse(scope.row.id)" style="margin:0;">玉石</el-button>
+            <el-button type="primary" @click="integral(scope.row.id)" style="margin:10px 0 0 0;">礼券</el-button>
           </template>
         </el-table-column>
         <el-table-column prop="other" label="其他信息">
@@ -110,15 +110,14 @@
         </el-form>
       </el-dialog>
 
-      <!--流水-->
+      <!--玉石流水-->
       <el-dialog title="流水" :visible.sync="watercourse" :close-on-click-modal="false" style="padding-bottom:20px;">
           <el-table :data="items" highlight-current-row @selection-change="selsChange"
                     style="width: 100%;">
-            <el-table-column type="index" width="60"></el-table-column>
-            <el-table-column prop="accountingNo" label="流水号" width="100" sortable></el-table-column>
+            <el-table-column prop="accountingNo" label="流水号" width="90" sortable></el-table-column>
             <el-table-column prop="accountingAmount" label="变化数量" width="100" sortable></el-table-column>
-            <el-table-column prop="balanceAfter" label="剩余量" width="100" sortable></el-table-column>
-            <el-table-column prop="summary.text" label="操作原因" sortable></el-table-column>
+            <el-table-column prop="balanceAfter" label="剩余量" width="90" sortable></el-table-column>
+            <el-table-column prop="summary.text" label="操作原因" width="150" sortable></el-table-column>
             <el-table-column prop="accountingTime" label="操作时间" width="160" sortable></el-table-column>
           </el-table>
           <!--工具条-->
@@ -127,6 +126,24 @@
                            style="float:right;">
             </el-pagination>
           </el-col>
+      </el-dialog>
+
+      <!--礼券流水-->
+      <el-dialog title="流水" :visible.sync="giftcourse" :close-on-click-modal="false" style="padding-bottom:20px;">
+        <el-table :data="items" highlight-current-row @selection-change="selsChange"
+                  style="width: 100%;">
+          <el-table-column prop="accountingNo" label="流水号" width="90" sortable></el-table-column>
+          <el-table-column prop="accountingAmount" label="变化数量" width="100" sortable></el-table-column>
+          <el-table-column prop="balanceAfter" label="剩余量" width="90" sortable></el-table-column>
+          <el-table-column prop="summary.text" label="操作原因" width="150" sortable></el-table-column>
+          <el-table-column prop="accountingTime" label="操作时间" width="160" sortable></el-table-column>
+        </el-table>
+        <!--工具条-->
+        <el-col :span="24" class="toolbars">
+          <el-pagination layout="prev, pager, next" @current-change="ChangePage1" :page-size="1" :total="page1"
+                         style="float:right;">
+          </el-pagination>
+        </el-col>
       </el-dialog>
 
       <!--其他信息弹窗-->
@@ -242,6 +259,7 @@
         },
         total: 0,
         page: 0,
+        page1: 0,
         limit: 10,
         loading: false,
         addLoading: false,
@@ -265,7 +283,8 @@
           author: '',
           publishAt: '',
           description: ''
-        }
+        },
+        giftcourse:false
       }
     },
     methods: {
@@ -289,58 +308,58 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      handleClick(tab, event) {
-        if (tab.index == "0") {
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/member/querymember',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              'id': sessionStorage.getItem('id'),
-              'token':sessionStorage.getItem('token')
-            }
-          })
-            .then((res) => {
-                this.loading = false;//隐藏加载条
-                this.items = res.data.data.items;
-                //console.log(res.data.data.items)
-              },
-            ).catch((e) => {
-            if (e && e.response) {
-              switch (e.response.status) {
-                case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
-                  break
-              }
-            }
-          });
-        }
-        if (tab.index == "1") {
-          this.goldwathercourse(1);//显示金币流水
-        }
-      },
+      // handleClick(tab, event) {
+      //   if (tab.index == "0") {
+      //     axios({
+      //       method: 'post',
+      //       url: this.global.mPath + '/member/querymember',
+      //       headers: {
+      //         'Content-type': 'application/x-www-form-urlencoded'
+      //       },
+      //       params: {
+      //         'id': sessionStorage.getItem('id'),
+      //         'token':sessionStorage.getItem('token')
+      //       }
+      //     })
+      //       .then((res) => {
+      //           this.loading = false;//隐藏加载条
+      //           this.items = res.data.data.items;
+      //           //console.log(res.data.data.items)
+      //         },
+      //       ).catch((e) => {
+      //       if (e && e.response) {
+      //         switch (e.response.status) {
+      //           case 504:
+      //             this.$message({
+      //               showClose: true,
+      //               message: '服务器异常',
+      //               type: 'warning'
+      //             });
+      //             this.loading = false;//隐藏加载条
+      //             break
+      //           case 500:
+      //             this.$message({
+      //               showClose: true,
+      //               message: '服务器异常',
+      //               type: 'warning'
+      //             });
+      //             this.loading = false;//隐藏加载条
+      //             break
+      //           case 405:
+      //             this.$message({
+      //               showClose: true,
+      //               message: '请先登录',
+      //               type: 'warning'
+      //             });
+      //             break
+      //         }
+      //       }
+      //     });
+      //   }
+      //   if (tab.index == "1") {
+      //     this.goldwathercourse(1);//显示金币流水
+      //   }
+      // },
       //弹窗显示其他信息
       showother: function (index, row) {
         sessionStorage.setItem('id', this.vip[index].id);//保存id
@@ -670,12 +689,20 @@
       },
       ChangePage(val) {
         this.page = val;
-        this.handleSearch(this.page);
+        this.jade(sessionStorage.getItem('id'),this.page)
+      },
+      ChangePage1(val) {
+        this.page1 = val;
+        this.certificate(sessionStorage.getItem('ID'),this.page1);
       },
       //按金币筛选
-      goldwathercourse(index,row) {
-        console.log(row)
+      goldwathercourse(id) {
+        sessionStorage.setItem('id',id)
         this.watercourse = true;
+        this.jade(id,1)
+        this.page = 1;
+      },
+      jade(memberId,page){
         axios({
           method: 'post',
           url: this.global.mPath + '/member/querygoldrecord',
@@ -684,8 +711,8 @@
           },
           params: {
             'size': '15',//每页数量
-            'page': this.page,//当前页
-            'memberId':row.id,  //0023
+            'page': page,//当前页
+            'memberId':memberId,  //0023
             'token':sessionStorage.getItem('token')
           }
         })
@@ -728,9 +755,13 @@
         });
       },
       //按积分筛选
-      integral(index,row) {
-        console.log(row)
-        this.watercourse = true;
+      integral(id) {
+        sessionStorage.setItem('ID',id)
+        this.giftcourse = true;
+        this.certificate(id,1);
+        this.page1 = 1;
+      },
+      certificate(memberId,page){
         axios({
           method: 'post',
           url: this.global.mPath + '/member/queryscorerecord',
@@ -739,15 +770,15 @@
           },
           params: {
             'size': '15',//每页数量
-            'page': this.page,//当前页
-            'memberId': row.id,//0023
+            'page': page,//当前页
+            'memberId': memberId,//0023
             'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
               this.loading = false;//隐藏加载条
               this.items = res.data.data.items;
-              this.page = res.data.data.pageNum;//总页数
+              this.page1 = res.data.data.pageCount;//总页数
               for (let i = 0; i < this.items.length; i++) {
                 this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
               }
@@ -783,8 +814,8 @@
         });
       },
       handleCurrentChange(val) {
-        this.page = val;
-        this.handleSearch(this.page);
+        this.total = val;
+        this.handleSearch(this.total);
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -799,7 +830,7 @@
           },
           params: {
             'size': '10',//每页数量
-            'page': this.page,//当前页
+            'page': this.total,//当前页
             'token':sessionStorage.getItem('token')
           }
         })
@@ -881,10 +912,10 @@
   .el-dialog__body{
    padding-bottom:60px;
   }
-  .el-dialog__wrapper:nth-child(7){
+  .el-dialog__wrapper:nth-child(8){
     left:10%;
   }
-  .el-dialog__wrapper:nth-child(7) .el-dialog{
+  .el-dialog__wrapper:nth-child(8) .el-dialog{
     width:90%;
   }
 </style>

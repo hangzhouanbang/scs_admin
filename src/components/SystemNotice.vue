@@ -39,7 +39,7 @@
         <el-table-column prop="state" label="状态">
           <template slot-scope="scope">
             <el-button type="primary" v-if="scope.row.state === 1" :disabled="false" @click="off(scope.$index,scope.row)">启用</el-button>
-            <el-button type="info" v-if="scope.row.state === 0" @click="off(scope.$index,scope.row)">禁用</el-button>
+            <el-button type="info" v-if="scope.row.state === 0" @click="open(scope.$index,scope.row)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -109,7 +109,7 @@
           return str.replace(/(^\s+)|(\s+$)/g, "");
         }
       },
-      //启用按钮
+      //点击启用按钮
       off(index, row) {
         sessionStorage.setItem('id', this.list[index].id);//保存id
         axios({
@@ -120,11 +120,64 @@
           },
           params: {
             'id': sessionStorage.getItem('id'),
-            'token':sessionStorage.getItem('token')
+            'token':sessionStorage.getItem('token'),
+            'notice': row.notice,//公告信息
+            'place': row.place,//发布位置:0-游戏大厅，1-游戏房间，2-游戏大厅加游戏房间同时显示
+            'state': 1
           }
         })
           .then((res) => {
-            this.handleSearch()
+              this.handleSearch()
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      },
+      //点击禁用按钮
+      open(index, row) {
+        sessionStorage.setItem('id', this.list[index].id);//保存id
+        axios({
+          method: 'post',
+          url: this.global.mPath + '/noticectrl/updatenotice',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'id': sessionStorage.getItem('id'),
+            'token':sessionStorage.getItem('token'),
+            'notice': row.notice,//公告信息
+            'place': row.place,//发布位置:0-游戏大厅，1-游戏房间，2-游戏大厅加游戏房间同时显示
+            'state': 0
+          }
+        })
+          .then((res) => {
+              this.handleSearch()
             },
           ).catch((e) => {
           if (e && e.response) {

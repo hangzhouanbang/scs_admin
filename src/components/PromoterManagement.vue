@@ -63,6 +63,7 @@
       <el-table-column prop="bossName" label="上级推广员昵称" width="auto" sortable></el-table-column>
       <el-table-column prop="phone" label="手机号码" width="auto" sortable></el-table-column>
       <el-table-column prop="userName" label="姓名" width="auto" sortable></el-table-column>
+      <el-table-column label="状态" prop="state" sortable></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto" sortable>
         <template slot-scope="scope">
           <el-button type="text" @click="particulars(scope.$index,scope.row)">详情</el-button>

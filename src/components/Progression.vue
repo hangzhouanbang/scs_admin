@@ -58,7 +58,9 @@
           loginMember:[],
           Time:[],
           options:[
-            {value:'瑞安麻将'}
+            {value:'瑞安麻将'},
+            {value:'温州麻将'},
+            {value:'放炮麻将'}
           ]
         }
       },
@@ -67,6 +69,12 @@
           if(this.filters.pay_type){
             if(this.filters.pay_type == '瑞安麻将'){
               this.state.pay_type = 'ruianmajiang'
+            }
+            if(this.filters.pay_type == '温州麻将'){
+              this.state.pay_type = 'wenzhoumajiang'
+            }
+            if(this.filters.pay_type == '放炮麻将'){
+              this.state.pay_type = 'fangpaomajiang'
             }
           }
           if(this.filters.startTime){

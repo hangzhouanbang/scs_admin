@@ -78,7 +78,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="当前数量">
-            <el-input class="memberInput" v-model="publishForm.number" :disabled="true"></el-input>
+            <el-input class="memberInput" v-model="number" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="调整数量为">
             <el-input class="memberInput" v-model="publishForm.afternumber"></el-input>
@@ -94,7 +94,7 @@
       <el-dialog title="会员卡调整" :visible.sync="notarizeVisible" :close-on-click-modal="false">
         <el-form>
           <div align="center">
-            推广员{{publishForm.agentId}}拥有的<br/>{{publishForm.product}}：由{{publishForm.number}}调整至{{this.publishForm.afternumber}}<br/>是否确认调整？
+            推广员{{publishForm.agentId}}拥有的<br/>{{publishForm.product}}：由{{number}}调整至{{this.publishForm.afternumber}}<br/>是否确认调整？
           </div>
           <br/>
           <div align="center">
@@ -133,7 +133,8 @@
         publishForm: {},
         notarizeVisible: false,
         normalForm: {},
-        state: []
+        state: [],
+        number:''
       }
     },
     methods: {
@@ -239,12 +240,25 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
-
       publishDialog: function (index, row) {
         this.publishVisible = true;
         this.publishForm = Object.assign({}, row);
+        axios({
+          method: 'post',
+          url: this.global.mPath + '/agent/card_amount',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'agentId': this.trim(row.agentId),
+            'cardType':row.product,
+            'token':sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+              console.log(res.data.data)
+              this.number = res.data.data;
+        });
       },
-
       //确认调整会员卡
       sure() {
         axios({
@@ -259,8 +273,7 @@
             'cardAmount': this.trim(this.publishForm.afternumber),
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
+        }).then((res) => {
               //console.log(res.data.success)
               if (res.data.success == false) {
                 this.$message({

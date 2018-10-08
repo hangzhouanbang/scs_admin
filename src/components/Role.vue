@@ -29,9 +29,9 @@
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="role" label="角色名称" width="100" sortable></el-table-column>
-        <el-table-column label="角色权限" width="100" sortable>
+        <el-table-column label="角色权限" width="200" height="300px" sortable>
           <template slot-scope="scope">
-            <ul style="margin-left:-26px;">
+            <ul style="margin-left:-26px;height: 110px;overflow: auto;">
               <li v-for="privileges in scope.row.privilegeList">{{privileges.privilege}}</li>
             </ul>
           </template>
@@ -316,6 +316,9 @@
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
+          params:{
+            'token':sessionStorage.getItem('token')
+          }
         })
           .then((res) => {
               this.privilege = res.data.data;
@@ -484,7 +487,6 @@
   .demo-table-expand label {
     font-weight: bold;
   }
-
   .toolbar {
     margin-top: 30px;
   }

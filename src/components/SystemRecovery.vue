@@ -164,6 +164,9 @@
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
+          params:{
+            token:sessionStorage.getItem('token')
+          }
         }).then(res => {
           const formdata = new FormData()
           formdata.append('file', req.file)
