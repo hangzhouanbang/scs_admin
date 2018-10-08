@@ -82,6 +82,9 @@
         <el-form-item label="价格" prop="price">
           <el-input v-model="normalForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
         </el-form-item>
+        <el-form-item label="权重" prop="weight">
+          <el-input v-model="normalForm.weight" auto-complete="off" style="width:217px;" placeholder="请输入数字"></el-input>
+        </el-form-item>
         <el-form-item label="ICON图" prop="productPic">
           <div class="upload">
             <el-upload
@@ -134,6 +137,9 @@
           <el-form-item label="价格" prop="price">
             <el-input v-model="adjustForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
           </el-form-item>
+          <el-form-item label="权重" prop="weight">
+            <el-input v-model="adjustForm.weight" auto-complete="off" style="width:217px;"></el-input>
+          </el-form-item>
           <el-form-item label="是否可用">
             <el-radio v-model="radioData" label="true">是</el-radio>
             <el-radio v-model="radioData" label="false">否</el-radio>
@@ -152,21 +158,12 @@
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="Adjust()">确认添加</el-button>
+            <el-button type="primary" @click="Adjust()">确认调整</el-button>
             <el-button type="primary" @click.native="adjustmentVisible = false">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
 
-      <!--删除-->
-      <el-dialog title="删除商品" :visible.sync="RemoveItemVisible" width="37%" center >
-        <p>是否确认删除以下商品？</p>
-        <img src="../assets/images/girl.jpg" alt="">
-        <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="centerDialogVisible = false" class="agree">确认删除</el-button>
-        <el-button type="primary" @click="centerDialogVisible = false">取消</el-button>
-      </span>
-      </el-dialog>
     </el-col>
   </el-row>
 </template>
@@ -180,7 +177,6 @@
             addFormVisible:false,
             loading:false,
             adjustmentVisible:false,
-            RemoveItemVisible:false,
             total:0,
             list:[],
             img:true,
@@ -224,7 +220,6 @@
         },
         // 上传文件到七牛云
         upqiniu(req) {
-          console.log(req)
           const config = {
             headers: {'Content-Type': 'multipart/form-data'}
           }
@@ -255,7 +250,6 @@
             axios.post(this.domain, formdata, config).then(res => {
               this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
               this.img = false;
-              console.log(this.imageUrl)
             })
           })
         },
@@ -281,7 +275,6 @@
               token:sessionStorage.getItem('token')
             }
           }).then((res) => {
-            console.log(res.data.data.items)
             this.list = res.data.data.items;
             this.total = res.data.data.pageCount;
             for(let i = 0;i < this.list.length;i++){
@@ -313,6 +306,7 @@
           })
         },
         showAddDialog:function(){
+          this.imageUrl = '';
           this.addFormVisible = true;
         },
         issue:function() {
@@ -329,11 +323,10 @@
               repertory:this.trim(this.normalForm.repertory),
               payType:this.normalForm.payType,
               productPic:this.imageUrl,
-              weight:Math.floor(Math.random()*10),
+              weight:this.normalForm.weight,
               token:sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
+          }).then((res) => {
                 if (res.data.success == false) {
                   this.$message({
                     showClose: true,
@@ -382,7 +375,6 @@
           this.imageUrl = '';
           this.adjustmentVisible = true;
           this.adjustForm = Object.assign({}, row);
-          console.log(this.adjustForm)
           if(this.adjustForm.sale == '是'){
             this.radioData = 'true';
           }
@@ -410,7 +402,7 @@
                 payType:this.adjustForm.payType,
                 productPic:this.imageUrl,
                 sale:this.radioData,
-                weight:Math.floor(Math.random()*10),
+                weight:this.adjustForm.weight,
                 token:sessionStorage.getItem('token')
               }
             })
@@ -426,7 +418,6 @@
                 },
               ).catch((e) => {
               this.loading = false;
-              console.log(e);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           },
@@ -452,9 +443,8 @@
               }
             },
           ).catch((e) => {
-            that.loading = false;
-            console.log(error);
-            that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            this.loading = false;
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         },
         batchDeleteBook:function(){
@@ -486,7 +476,6 @@
                 },
               ).catch((e) => {
               that.loading = false;
-              console.log(error);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           });
