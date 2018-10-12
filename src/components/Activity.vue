@@ -27,14 +27,14 @@
       <!-- 活动列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
-        <el-table-column prop="theme" label="活动标题" width="160" sortable></el-table-column>
-        <el-table-column prop="content" label="内容" width="100" sortable>
+        <el-table-column prop="theme" label="活动标题" width="160"></el-table-column>
+        <el-table-column prop="content" label="内容" width="100">
           <template slot-scope="scope">
             <img :src="scope.row.content" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="url" label="活动地址" width="200" sortable></el-table-column>
-        <el-table-column prop="promulgator" label="发布者" width="100" sortable></el-table-column>
+        <el-table-column prop="url" label="活动地址" width="200"></el-table-column>
+        <el-table-column prop="promulgator" label="发布者" width="100"></el-table-column>
         <el-table-column prop="remainSecond" label="操作">
           <template slot-scope="scope">
             <el-button type="primary" v-if="scope.row.state === 'START'" :disabled="false"

@@ -42,9 +42,9 @@
 
     <!-- 中奖记录列表-->
     <el-table :data="record" highlight-current-row style="width:100%;" id="out-table">
-      <el-table-column prop="name" label="游戏ID" width="160" sortable></el-table-column>
-      <el-table-column prop="desc" label="昵称" width="120" sortable></el-table-column>
-      <el-table-column prop="type" label="兑换物品" width="120" sortable></el-table-column>
+      <el-table-column prop="name" label="游戏ID" width="160"></el-table-column>
+      <el-table-column prop="desc" label="昵称" width="120"></el-table-column>
+      <el-table-column prop="type" label="兑换物品" width="120"></el-table-column>
       <el-table-column prop="taskName" label="兑换数量" width="120" sortable></el-table-column>
       <el-table-column prop="taskName" label="联系电话" width="120" sortable></el-table-column>
       <el-table-column prop="taskName" label="收件地址" width="160" sortable></el-table-column>

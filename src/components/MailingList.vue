@@ -13,7 +13,7 @@
           <el-input v-model="filters.nickname" placeholder="用户ID" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item label="类型" label-width="68px">
-          <el-select v-model="filters.type" placeholder="请选择">
+          <el-select v-model="filters.type" placeholder="请选择"  clearable>
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -32,19 +32,19 @@
     <el-table :data="email" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="memberId" label="用户ID" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.file" label="邮件内容" width="auto" sortable>
+      <el-table-column prop="memberId" label="用户ID" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.file" label="邮件内容" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.systemMail.file" alt=""style="width:50px;height:50px;">
         </template>
       </el-table-column>
-      <el-table-column prop="systemMail.mailType" label="类型" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.number" label="玉石" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.integral" label="礼券" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.vipcard" label="会员卡" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.validTime" label="有效时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.createtime" label="发送时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="receive" label="是否领取" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.mailType" label="类型" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.number" label="玉石" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.integral" label="礼券" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.vipcard" label="会员卡" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.validTime" label="有效时间" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.createtime" label="发送时间" width="auto"></el-table-column>
+      <el-table-column prop="receive" label="是否领取" width="auto"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>

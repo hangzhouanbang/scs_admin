@@ -8,18 +8,39 @@
       </el-breadcrumb>
     </el-col>
 
+    <el-row :gutter="20" style="margin-top:30px;">
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="type">所有用户</div>
+          <div class="num">{{amount}}人</div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="type">会员用户</div>
+          <div class="num">{{vipAmount}}人</div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="type">非会员用户</div>
+          <div class="num">{{noVipAmount}}人</div>
+        </div>
+      </el-col>
+    </el-row>
+
     <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch()"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="filters.nickname" placeholder="用户昵称" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model="filters.nickname" placeholder="用户昵称" @keyup.enter.native="handleSearch()"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="identity" placeholder="请选择身份进行查询" @change="change">
+            <el-select v-model="identity" placeholder="请选择身份进行查询" @change="handleSearch()">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -28,7 +49,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="state" placeholder="请选择在线状态" @change="change">
+            <el-select v-model="state" placeholder="请选择在线状态" @change="handleSearch()">
               <el-option
                 v-for="item in states"
                 :key="item.value"
@@ -43,25 +64,25 @@
 
       <!-- 会员列表-->
       <el-table :data="vip" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
-        <el-table-column type="selection" width="40"></el-table-column>
+                style="width: 100%;" @sort-change="sort">
+        <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="40"></el-table-column>
-        <el-table-column prop="id" label="用户ID" width="90" sortable></el-table-column>
-        <el-table-column prop="headimgurl" label="用户头像" width="100" sortable>
+        <el-table-column prop="id" label="用户ID" width="90"></el-table-column>
+        <el-table-column prop="headimgurl" label="用户头像" width="100">
           <template slot-scope="scope">
             <img :src="scope.row.headimgurl" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="nickname" label="用户名称" width="100" sortable></el-table-column>
-        <el-table-column prop="gold" label="玉石剩余量" width="120" sortable></el-table-column>
-        <el-table-column prop="score" label="礼券剩余量" width="120" sortable></el-table-column>
-        <el-table-column prop="createTime" label="注册时间" width="100" sortable></el-table-column>
-        <el-table-column prop="vip" label="是否会员" width="100" sortable></el-table-column>
-        <el-table-column prop="vipEndTime" label="到期时间" width="100" sortable></el-table-column>
-        <el-table-column prop="vipLevel" label="会员等级" width="100" sortable></el-table-column>
-        <el-table-column prop="vipScore" label="会员积分" width="100" sortable></el-table-column>
-        <el-table-column prop="onlineState" label="在线状态" width="100" sortable></el-table-column>
-        <el-table-column prop="verifyUser" label="是否通过实名认证" width="160" sortable></el-table-column>
+        <el-table-column prop="nickname" label="用户名称" width="100"></el-table-column>
+        <el-table-column prop="gold" label="玉石剩余量" width="120" sortable="custom"></el-table-column>
+        <el-table-column prop="score" label="礼券剩余量" width="120" sortable="custom"></el-table-column>
+        <el-table-column prop="createTime" label="注册时间" width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="vip" label="是否会员" width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="vipEndTime" label="到期时间" width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="vipLevel" label="会员等级" width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="vipScore" label="会员积分" width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="onlineState" label="在线状态" width="100" sortable="custom"></el-table-column>
+        <el-table-column prop="verifyUser" label="是否通过实名认证" width="160" sortable="custom"></el-table-column>
         <el-table-column label="流水" width="80">
           <template slot-scope="scope">
             <el-button type="primary" @click="goldwathercourse(scope.row.id)" style="margin:0;">玉石</el-button>
@@ -114,11 +135,11 @@
       <el-dialog title="流水" :visible.sync="watercourse" :close-on-click-modal="false" style="padding-bottom:20px;">
           <el-table :data="items" highlight-current-row @selection-change="selsChange"
                     style="width: 100%;">
-            <el-table-column prop="accountingNo" label="流水号" width="90" sortable></el-table-column>
-            <el-table-column prop="accountingAmount" label="变化数量" width="100" sortable></el-table-column>
-            <el-table-column prop="balanceAfter" label="剩余量" width="90" sortable></el-table-column>
-            <el-table-column prop="summary.text" label="操作原因" width="150" sortable></el-table-column>
-            <el-table-column prop="accountingTime" label="操作时间" width="160" sortable></el-table-column>
+            <el-table-column prop="accountingNo" label="流水号" width="90"></el-table-column>
+            <el-table-column prop="accountingAmount" label="变化数量" width="100"></el-table-column>
+            <el-table-column prop="balanceAfter" label="剩余量" width="90"></el-table-column>
+            <el-table-column prop="summary.text" label="操作原因" width="150"></el-table-column>
+            <el-table-column prop="accountingTime" label="操作时间" width="auto"></el-table-column>
           </el-table>
           <!--工具条-->
           <el-col :span="24" class="toolbars">
@@ -132,11 +153,11 @@
       <el-dialog title="流水" :visible.sync="giftcourse" :close-on-click-modal="false" style="padding-bottom:20px;">
         <el-table :data="items" highlight-current-row @selection-change="selsChange"
                   style="width: 100%;">
-          <el-table-column prop="accountingNo" label="流水号" width="90" sortable></el-table-column>
-          <el-table-column prop="accountingAmount" label="变化数量" width="100" sortable></el-table-column>
-          <el-table-column prop="balanceAfter" label="剩余量" width="90" sortable></el-table-column>
-          <el-table-column prop="summary.text" label="操作原因" width="150" sortable></el-table-column>
-          <el-table-column prop="accountingTime" label="操作时间" width="160" sortable></el-table-column>
+          <el-table-column prop="accountingNo" label="流水号" width="90"></el-table-column>
+          <el-table-column prop="accountingAmount" label="变化数量" width="100"></el-table-column>
+          <el-table-column prop="balanceAfter" label="剩余量" width="90"></el-table-column>
+          <el-table-column prop="summary.text" label="操作原因" width="150"></el-table-column>
+          <el-table-column prop="accountingTime" label="操作时间" width="auto"></el-table-column>
         </el-table>
         <!--工具条-->
         <el-col :span="24" class="toolbars">
@@ -147,7 +168,7 @@
       </el-dialog>
 
       <!--其他信息弹窗-->
-      <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false" style="width:80%;">
+      <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false" class="other">
           <!-- 其他信息-->
         <el-form ref="details" :model="details" label-width="150px">
           <el-form-item label="真实姓名：">
@@ -258,7 +279,7 @@
           name: ''
         },
         total: 0,
-        page: 0,
+        page: 1,
         page1: 0,
         limit: 10,
         loading: false,
@@ -284,7 +305,11 @@
           publishAt: '',
           description: ''
         },
-        giftcourse:false
+        giftcourse:false,
+        noVipAmount:'',
+        vipAmount:'',
+        amount:'',
+        sorting:{}
       }
     },
     methods: {
@@ -308,58 +333,6 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      // handleClick(tab, event) {
-      //   if (tab.index == "0") {
-      //     axios({
-      //       method: 'post',
-      //       url: this.global.mPath + '/member/querymember',
-      //       headers: {
-      //         'Content-type': 'application/x-www-form-urlencoded'
-      //       },
-      //       params: {
-      //         'id': sessionStorage.getItem('id'),
-      //         'token':sessionStorage.getItem('token')
-      //       }
-      //     })
-      //       .then((res) => {
-      //           this.loading = false;//隐藏加载条
-      //           this.items = res.data.data.items;
-      //           //console.log(res.data.data.items)
-      //         },
-      //       ).catch((e) => {
-      //       if (e && e.response) {
-      //         switch (e.response.status) {
-      //           case 504:
-      //             this.$message({
-      //               showClose: true,
-      //               message: '服务器异常',
-      //               type: 'warning'
-      //             });
-      //             this.loading = false;//隐藏加载条
-      //             break
-      //           case 500:
-      //             this.$message({
-      //               showClose: true,
-      //               message: '服务器异常',
-      //               type: 'warning'
-      //             });
-      //             this.loading = false;//隐藏加载条
-      //             break
-      //           case 405:
-      //             this.$message({
-      //               showClose: true,
-      //               message: '请先登录',
-      //               type: 'warning'
-      //             });
-      //             break
-      //         }
-      //       }
-      //     });
-      //   }
-      //   if (tab.index == "1") {
-      //     this.goldwathercourse(1);//显示金币流水
-      //   }
-      // },
       //弹窗显示其他信息
       showother: function (index, row) {
         sessionStorage.setItem('id', this.vip[index].id);//保存id
@@ -371,7 +344,8 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'memberId': row.id
+            'memberId': row.id,
+            'token':sessionStorage.getItem('token'),
           }
         })
           .then((res) => {
@@ -608,85 +582,6 @@
           description: ''
         };
       },
-      change() {
-        if (this.identity == '会员用户') {//查询会员用户
-          this.identity1 = 1;
-        }else if(this.identity == '非会员用户') {
-          this.identity1 = 0;
-        }else{
-          this.identity1 = '';
-        }
-        if(this.state == '在线'){
-          this.state1 = 'online'
-        }else{
-          this.state1 = 'offline'
-        }
-        this.loading = true;//显示加载条
-        axios({//根据会员昵称查询
-          method: 'post',
-          url: this.global.mPath + '/member/querymember',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'size': '10',//每页数量
-            'page': this.page,//当前页
-            'id': this.trim(this.filters.id),
-            'nickname': this.trim(this.filters.nickname),
-            'queryType': this.identity1,
-            'onlineState':this.state1,
-            'token':sessionStorage.getItem('token')
-          }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.vip = res.data.data.items;
-              this.total = res.data.data.pageCount;//总页数
-              for (let i = 0; i < this.vip.length; i++) {
-                this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
-                this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
-                if(this.vip[i].vip == true){
-                  this.vip[i].vip = '是'
-                }else{
-                  this.vip[i].vip = '否'
-                }
-                if(this.vip[i].verifyUser == true){
-                  this.vip[i].verifyUser = '是'
-                }else{
-                  this.vip[i].verifyUser = '否'
-                }
-              }
-            },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
-            }
-          }
-        });
-      },
       ChangePage(val) {
         this.page = val;
         this.jade(sessionStorage.getItem('id'),this.page)
@@ -814,13 +709,25 @@
         });
       },
       handleCurrentChange(val) {
-        this.total = val;
-        this.handleSearch(this.total);
+        this.page = val;
+        this.sort(this.sorting);
       },
       selsChange: function (sels) {
         this.sels = sels;
       },
-      handleSearch(){
+      handleSearch(goldSort,scoreSort,createTimeSort,vipSort,vipEndTimeSort,vipLevelSort,vipScoreSort,onlineStateSort,verifyUserSort){
+        if (this.identity == '会员用户') {//查询会员用户
+          this.identity1 = true;
+        }else if(this.identity == '非会员用户') {
+          this.identity1 = false;
+        }else{
+          this.identity1 = '';
+        }
+        if(this.state == '在线'){
+          this.state1 = 'online'
+        }else if(this.state == '下线'){
+          this.state1 = 'offline'
+        }
         this.loading = true;//显示加载条
         axios({//根据会员昵称查询
           method: 'post',
@@ -830,14 +737,30 @@
           },
           params: {
             'size': '10',//每页数量
-            'page': this.total,//当前页
-            'token':sessionStorage.getItem('token')
+            'page':this.page,//当前页
+            'token':sessionStorage.getItem('token'),
+            'id':this.filters.id,
+            'nickname':this.filters.nickname,
+            'isVip':this.identity1,
+            'onlineState':this.state1,
+            'goldSort':goldSort,
+            'scoreSort':scoreSort,
+            'createTimeSort':createTimeSort,
+            'vipSort':vipSort,
+            'vipEndTimeSort':vipEndTimeSort,
+            'vipLevelSort':vipLevelSort,
+            'vipScoreSort':vipScoreSort,
+            'onlineStateSort':onlineStateSort,
+            'verifyUserSort':verifyUserSort
           }
         })
           .then((res) => {
               this.loading = false;//隐藏加载条
-              this.vip = res.data.data.items;
-              this.total = res.data.data.pageCount;//总页数
+              this.amount = res.data.data.amount;
+              this.vipAmount = res.data.data.vipAmount;
+              this.noVipAmount = res.data.data.noVipAmount;
+              this.vip = res.data.data.memberList.items;
+              this.total = res.data.data.memberList.pageCount;//总页数
               for (let i = 0; i < this.vip.length; i++) {
                 this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
                 this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
@@ -882,10 +805,86 @@
             }
           }
         });
+      },
+      sort(a){
+        this.sorting = a;
+        if(this.sorting.prop == 'gold'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.gold = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.gold = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'score'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.score = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.score = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'createTime'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.createTime = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.createTime = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'vip'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.vip = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.vip = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'vipEndTime'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.vipEndTime = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.vipEndTime = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'vipLevel'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.vipLevel = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.vipLevel = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'vipScore'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.vipScore = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.vipScore = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'onlineState'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.onlineState = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.onlineState = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'verifyUser'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.verifyUser = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.verifyUser = 'DESC'
+          }
+        }
+        this.handleSearch(this.sorting.gold,this.sorting.score,this.sorting.createTime,this.sorting.vip,this.sorting.vipEndTime,this.sorting.vipLevel,this.sorting.vipScore,this.sorting.onlineState,this.sorting.verifyUser)
       }
     },
     mounted() { //初始化页面
-      this.handleSearch(1)
+      this.handleSearch()
     }
   }
 </script>
@@ -915,8 +914,23 @@
   .el-dialog__wrapper:nth-child(8){
     left:10%;
   }
-  .el-dialog__wrapper:nth-child(8) .el-dialog{
+  .other .el-dialog{
     width:90%;
+  }
+  .bg-purple{
+    width:200px;
+    height:100px;
+    text-align: center;
+    background-color: #eee;
+    border-radius: 5px;
+    border:1px solid #eee;
+  }
+  .bg-purple div:nth-child(1){
+    margin-top:20px;
+    font-size:20px;
+  }
+  .bg-purple div:nth-child(2){
+    margin-top:10px;
   }
 </style>
 

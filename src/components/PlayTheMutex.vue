@@ -25,10 +25,10 @@
     <el-table :data="playmethod" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="id" label="互斥组ID" width="auto" sortable></el-table-column>
-      <el-table-column prop="game" label="游戏名称" width="auto" sortable></el-table-column>
-      <el-table-column prop="name" label="玩法" width="auto" sortable></el-table-column>
-      <el-table-column prop="desc" label="描述" width="auto" sortable></el-table-column>
+      <el-table-column prop="id" label="互斥组ID" width="auto"></el-table-column>
+      <el-table-column prop="game" label="游戏名称" width="auto"></el-table-column>
+      <el-table-column prop="name" label="玩法" width="auto"></el-table-column>
+      <el-table-column prop="desc" label="描述" width="auto"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>

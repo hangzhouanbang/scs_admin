@@ -59,7 +59,7 @@
             <el-input type="number" min="0" placeholder="数目" v-model="filters.integral"></el-input>
           </el-form-item>
           <el-form-item label="物品" prop="number">
-            <el-select v-model="id" placeholder="请选择">
+            <el-select v-model="id" placeholder="请选择" clearable>
               <el-option
                 v-for="item in this.data"
                 :key="item.id"
@@ -69,7 +69,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="邮件有效期">
-            <el-select v-model="value2" placeholder="请选择">
+            <el-select v-model="value2" placeholder="请选择" clearable>
               <el-option
                 v-for="item in day"
                 :key="item.value2"

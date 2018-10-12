@@ -27,10 +27,10 @@
               style="width:100%;" id="out-table">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="name" label="任务名称" width="160" sortable></el-table-column>
-      <el-table-column prop="desc" label="详细描述" width="200" sortable></el-table-column>
-      <el-table-column prop="type" label="任务类型" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="任务种类" width="120" sortable></el-table-column>
+      <el-table-column prop="name" label="任务名称" width="160"></el-table-column>
+      <el-table-column prop="desc" label="详细描述" width="200"></el-table-column>
+      <el-table-column prop="type" label="任务类型" width="120"></el-table-column>
+      <el-table-column prop="taskName" label="任务种类" width="120"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="small" @click="publishDialog(scope.$index,scope.row)">发布</el-button>

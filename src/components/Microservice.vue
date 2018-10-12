@@ -11,7 +11,7 @@
     <el-table :data="list" highlight-current-row @selection-change="selsChange"
               style="width: 100%;" class="warp-main">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="name" label="微服务名称" width="160" sortable></el-table-column>
+      <el-table-column prop="name" label="微服务名称" width="160"></el-table-column>
       <el-table-column prop="state" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" @click="save(scope.$index,scope.row)">微服务快照保存</el-button>

@@ -15,20 +15,6 @@
         <el-form-item label="推广员昵称">
           <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
-        <el-form-item label="注册时间" label-width="68px">
-          <el-date-picker
-            v-model="filters.startTime"
-            type="date"
-            placeholder="选择日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="至" label-width="68px" style="margin-left:-44px;">
-          <el-date-picker
-            v-model="filters.endTime"
-            type="date"
-            placeholder="选择日期">
-          </el-date-picker>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch">查询</el-button>
         </el-form-item>
@@ -37,20 +23,19 @@
 
     <!-- 申请记录列表-->
     <el-table :data="record" highlight-current-row style="width: 100%;">
-      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="headimgurl" label="微信头像" width="auto" sortable>
+      <el-table-column prop="headimgurl" label="微信头像" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.headimgurl" alt="" style="width:50px;height:50px;">
         </template>
       </el-table-column>
-      <el-table-column prop="nickname" label="注册昵称" width="auto" sortable></el-table-column>
-      <el-table-column prop="createTime" label="申请时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="phone" label="手机号码" width="auto" sortable></el-table-column>
-      <el-table-column prop="userName" label="姓名" width="auto" sortable></el-table-column>
-      <el-table-column prop="area" label="地区" width="auto" sortable></el-table-column>
-      <el-table-column prop="desc" label="备注" width="auto" sortable></el-table-column>
-      <el-table-column prop="state" label="操作" width="auto" sortable>
+      <el-table-column prop="nickname" label="注册昵称" width="auto"></el-table-column>
+      <el-table-column prop="createTime" label="申请时间" width="auto"></el-table-column>
+      <el-table-column prop="phone" label="手机号码" width="auto"></el-table-column>
+      <el-table-column prop="userName" label="姓名" width="auto"></el-table-column>
+      <el-table-column prop="area" label="地区" width="auto"></el-table-column>
+      <el-table-column prop="desc" label="备注" width="auto"></el-table-column>
+      <el-table-column prop="state" label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="button" @click="operation(scope.$index,scope.row)" v-if="scope.row.state3">操作</el-button>
           <el-button type="text" v-if="scope.row.state1">已同意</el-button>
@@ -122,8 +107,8 @@
               url:this.global.mPath + '/agent/queryapplyrecord',
               method:'post',
               params:{
-                startTime:'NaN'? '':new Date(this.filters.startTime).getTime(),
-                endTime:'NaN'? '': new Date(this.filters.endTime).getTime(),
+                startTime:'',
+                endTime:'',
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
@@ -178,7 +163,7 @@
               url:this.global.mPath + '/agent/applyrefuse',
               method:'post',
               params:{
-                recordId:row.id,
+                recordId:this.applicationRecord.id,
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {

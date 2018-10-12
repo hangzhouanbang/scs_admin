@@ -28,15 +28,15 @@
       <el-table :data="list" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="adminname" label="管理员名称" width="160" sortable></el-table-column>
-        <el-table-column prop="title" label="标题" width="180" sortable></el-table-column>
-        <el-table-column prop="file" label="内容" width="100" sortable>
+        <el-table-column prop="adminname" label="管理员名称" width="160"></el-table-column>
+        <el-table-column prop="title" label="标题" width="180"></el-table-column>
+        <el-table-column prop="file" label="内容" width="100">
           <template slot-scope="scope">
             <img :src="scope.row.file" alt="" style="width: 50px;height: 50px">
           </template>
         </el-table-column>
-        <el-table-column prop="number" label="玉石数量" width="140" sortable></el-table-column>
-        <el-table-column prop="integral" label="礼券数量" width="140" sortable></el-table-column>
+        <el-table-column prop="number" label="玉石数量" width="140"></el-table-column>
+        <el-table-column prop="integral" label="礼券数量" width="140"></el-table-column>
         <el-table-column prop="vipcard" label="会员卡体验时间(天)"></el-table-column>
       </el-table>
 

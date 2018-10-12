@@ -34,15 +34,15 @@
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;" v-show="po">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="date" label="日期" width="120" sortable></el-table-column>
-        <el-table-column prop="newMember" label="新增注册量" width="120" sortable></el-table-column>
-        <el-table-column prop="currentMember" label="当日会员人数" width="140" sortable></el-table-column>
-        <el-table-column prop="cost" label="消费金额（元）" width="160" sortable></el-table-column>
-        <el-table-column prop="gameNum" label="游戏总局数" width="120" sortable></el-table-column>
-        <el-table-column prop="loginMember" label="独立玩家" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSecond" label="次日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="remainThird" label="三日留存" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSeventh" label="七日留存" width="100" sortable></el-table-column>
+        <el-table-column prop="date" label="日期" width="120"></el-table-column>
+        <el-table-column prop="newMember" label="新增注册量" width="120"></el-table-column>
+        <el-table-column prop="currentMember" label="当日会员人数" width="140"></el-table-column>
+        <el-table-column prop="cost" label="消费金额（元）" width="160"></el-table-column>
+        <el-table-column prop="gameNum" label="游戏总局数" width="120"></el-table-column>
+        <el-table-column prop="loginMember" label="独立玩家" width="100"></el-table-column>
+        <el-table-column prop="remainSecond" label="次日留存" width="100"></el-table-column>
+        <el-table-column prop="remainThird" label="三日留存" width="100"></el-table-column>
+        <el-table-column prop="remainSeventh" label="七日留存" width="100"></el-table-column>
         <el-table-column prop="remainMonth" label="30日以外留存"></el-table-column>
       </el-table>
       <!--工具条-->

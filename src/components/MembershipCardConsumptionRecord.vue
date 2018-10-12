@@ -32,19 +32,19 @@
               placeholder="时间选择">
             </el-date-picker>
           </el-form-item>
-          <el-button type="primary" @click="seek">搜索</el-button>
+          <el-button type="primary" @click="seek()">搜索</el-button>
         </el-form>
       </el-col>
 
       <!-- 积分流水列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
+                style="width: 100%;" @sort-change="sort">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
-        <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
-        <el-table-column prop="product" label="商品名称" width="100" sortable></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
+        <el-table-column prop="product" label="商品名称" width="100"></el-table-column>
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="accountingAmount" label="兑换消耗" width="100" sortable></el-table-column>
+        <el-table-column prop="accountingAmount" label="兑换消耗" width="100"></el-table-column>
         <el-table-column prop="accountingTime" label="兑换时间" width="160" sortable></el-table-column>
         <el-table-column prop="balanceAfter" label="剩余积分" width="auto" sortable></el-table-column>
       </el-table>
@@ -74,7 +74,9 @@
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
-        state:[]
+        state:[],
+        sorting:{},
+        page:1
       }
     },
     methods: {
@@ -100,10 +102,10 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.seek(this.page);
+        this.sort(this.sorting);
       },
       //搜索
-      seek() {
+      seek(accountingTimeSort,balanceAfterSort,numberSort) {
         if (this.filters.startTime) {
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
@@ -124,7 +126,7 @@
         }
         axios({
           method: 'post',
-          url: this.global.mPath + '/agent/queryclubcardrecord',
+          url: this.global.mPath + '/agent/queryscoreexchange',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
@@ -136,7 +138,9 @@
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime,
             'token':sessionStorage.getItem('token'),
-            'type':'exchange'
+            'accountingTimeSort':accountingTimeSort,
+            'balanceAfterSort':balanceAfterSort,
+            'numberSort':numberSort
           }
         }).then((res) => {
               this.po = true;//显示表单
@@ -177,6 +181,34 @@
             }
           }
         });
+      },
+      sort(a){
+        this.sorting = a;
+        if(this.sorting.prop == 'accountingTime'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.accountingTime = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.accountingTime = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'balanceAfter'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.balanceAfter = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.balanceAfter = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'number'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.number = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.number = 'DESC'
+          }
+        }
+        this.seek(this.sorting.accountingTime,this.sorting.balanceAfter,this.sorting.number)
       },
       selsChange: function (sels) {
         this.sels = sels;

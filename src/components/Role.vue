@@ -28,8 +28,8 @@
                 style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="role" label="角色名称" width="100" sortable></el-table-column>
-        <el-table-column label="角色权限" width="200" height="300px" sortable>
+        <el-table-column prop="role" label="角色名称" width="100"></el-table-column>
+        <el-table-column label="角色权限" width="200" height="300px">
           <template slot-scope="scope">
             <ul style="margin-left:-26px;height: 110px;overflow: auto;">
               <li v-for="privileges in scope.row.privilegeList">{{privileges.privilege}}</li>

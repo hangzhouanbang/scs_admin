@@ -68,13 +68,13 @@
         handleSearch(){
           if(this.filters.pay_type){
             if(this.filters.pay_type == '瑞安麻将'){
-              this.state.pay_type = 'ruianmajiang'
+              this.state.pay_type = 'ruianMajiang'
             }
             if(this.filters.pay_type == '温州麻将'){
-              this.state.pay_type = 'wenzhoumajiang'
+              this.state.pay_type = 'wenzhouMajiang'
             }
             if(this.filters.pay_type == '放炮麻将'){
-              this.state.pay_type = 'fangpaomajiang'
+              this.state.pay_type = 'fangpaoMajiang'
             }
           }
           if(this.filters.startTime){

@@ -19,7 +19,7 @@
             <el-input v-model="filters.promulgator" placeholder="管理员名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="filters.vip" placeholder="请选择发布对象">
+            <el-select v-model="filters.vip" placeholder="请选择发布对象" clearable>
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -29,7 +29,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="filters.type" placeholder="请选择任务类型">
+            <el-select v-model="filters.type" placeholder="请选择任务类型" clearable>
               <el-option
                 v-for="(item,index) in data"
                 :key="index"
@@ -48,15 +48,15 @@
               style="width: 100%;">
       <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column type="index" width="50"></el-table-column>
-      <el-table-column prop="taskDocId" label="任务ID" width="120" sortable></el-table-column>
-      <el-table-column prop="promulgator" label="管理员名称" width="120" sortable></el-table-column>
-      <el-table-column prop="name" label="任务名称" width="100" sortable></el-table-column>
-      <el-table-column prop="desc" label="详细描述" width="100" sortable></el-table-column>
-      <el-table-column prop="type" label="任务类型" width="100" sortable></el-table-column>
-      <el-table-column prop="rewardGold" label="玉石（个）" width="120" sortable></el-table-column>
-      <el-table-column prop="rewardScore" label="礼券" width="100" sortable></el-table-column>
-      <el-table-column prop="rewardVip" label="会员卡（天）" width="140" sortable></el-table-column>
-      <el-table-column prop="targetNum" label="完成次数" width="100" sortable></el-table-column>
+      <el-table-column prop="taskDocId" label="任务ID" width="120"></el-table-column>
+      <el-table-column prop="promulgator" label="管理员名称" width="120"></el-table-column>
+      <el-table-column prop="name" label="任务名称" width="100"></el-table-column>
+      <el-table-column prop="desc" label="详细描述" width="100"></el-table-column>
+      <el-table-column prop="type" label="任务类型" width="100"></el-table-column>
+      <el-table-column prop="rewardGold" label="玉石（个）" width="120"></el-table-column>
+      <el-table-column prop="rewardScore" label="礼券" width="100"></el-table-column>
+      <el-table-column prop="rewardVip" label="会员卡（天）" width="140"></el-table-column>
+      <el-table-column prop="targetNum" label="完成次数" width="100"></el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">

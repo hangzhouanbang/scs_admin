@@ -27,9 +27,9 @@
       <el-table :data="list" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="adminname" label="管理员名称" width="160" sortable></el-table-column>
-        <el-table-column prop="notice" label="公告内容" width="300" sortable></el-table-column>
-        <el-table-column prop="place" label="发布地方" width="160" sortable>
+        <el-table-column prop="adminname" label="管理员名称" width="160"></el-table-column>
+        <el-table-column prop="notice" label="公告内容" width="300"></el-table-column>
+        <el-table-column prop="place" label="发布地方" width="160">
           <template slot-scope="scope">
             <el-button type="text" v-if="scope.row.place === '0'">游戏大厅</el-button>
             <el-button type="text" v-if="scope.row.place === '1'">游戏房间</el-button>

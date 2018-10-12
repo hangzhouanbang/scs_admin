@@ -3,59 +3,75 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>充值系统</b></el-breadcrumb-item>
-        <el-breadcrumb-item>充值记录</el-breadcrumb-item>
+        <el-breadcrumb-item>订单管理</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
     <el-row :gutter="20" style="margin-top:30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="type">订单总金额</div>
-          <div class="num">{{cost}}元</div>
+          <div class="type">已支付</div>
+          <div class="num">{{payCost}}元 {{payAmount}}单</div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="type">未支付</div>
+          <div class="num">{{notPayCost}} {{notPayAmount}}单</div>
         </div>
       </el-col>
     </el-row>
 
-    <el-col :span="24" class="toolbar" style="padding-bottom:0;margin-top:30px;">
-      <el-form :inline="true" :model="filters">
-        <el-form-item label="订单编号" label-width="68px">
-          <el-input v-model="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
-        </el-form-item>
-        <el-form-item label="玩家ID" label-width="68px">
-          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
-        </el-form-item>
-        <el-form-item label="支付方式" label-width="68px">
-          <el-select v-model="filters.pay_type" placeholder="请选择"  clearable>
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="开始时间" label-width="68px">
-          <el-date-picker
-            v-model="filters.startTime"
-            type="date"
-            placeholder="选择日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="结束时间" label-width="68px">
-          <el-date-picker
-            v-model="filters.endTime"
-            type="date"
-            placeholder="选择日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" v-on:click="handleSearch()">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="exportExcel">导出</el-button>
-        </el-form-item>
-      </el-form>
-    </el-col>
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+        <el-form :inline="true" :model="filters">
+          <el-form-item label="用户ID" label-width="68px">
+            <el-input v-model="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+          </el-form-item>
+          <el-form-item label="昵称" label-width="68px">
+            <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+          </el-form-item>
+          <el-form-item label="支付方式" label-width="68px">
+            <el-select v-model="filters.pay_type" placeholder="请选择"  clearable>
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="开始时间" label-width="68px">
+            <el-date-picker
+              v-model="filters.startTime"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="结束时间" label-width="68px">
+            <el-date-picker
+              v-model="filters.endTime"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="订单状态" label-width="68px">
+            <el-select v-model="filters.status" placeholder="所有状态" clearable>
+              <el-option
+                v-for="item in status"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" v-on:click="handleSearch()">查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="exportExcel">导出</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
 
     <!-- 充值记录列表-->
     <el-table :data="users" highlight-current-row
@@ -63,13 +79,20 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="id" label="订单编号" width="120"></el-table-column>
       <el-table-column prop="transaction_id" label="支付流水" width="120"></el-table-column>
-      <el-table-column prop="pay_type" label="充值类型" width="120"></el-table-column>
-      <el-table-column prop="payerId" label="玩家ID" width="120"></el-table-column>
-      <el-table-column prop="payerName" label="玩家昵称" width="120"></el-table-column>
-      <el-table-column prop="productPrice" label="订单金额" width="120" sortable="custom"></el-table-column>
-      <el-table-column prop="productName" label="购买道具" width="120"></el-table-column>
-      <el-table-column prop="reqIP" label="充值地址IP" width="120"></el-table-column>
-      <el-table-column prop="createTime" label="充值时间" width="auto" sortable="custom"></el-table-column>
+      <el-table-column prop="payerId" label="付款人ID" width="120"></el-table-column>
+      <el-table-column prop="payerName" label="付款人昵称" width="120"></el-table-column>
+      <el-table-column prop="productId" label="会员卡ID" width="120"></el-table-column>
+      <el-table-column prop="productName" label="会员卡名称" width="120"></el-table-column>
+      <el-table-column prop="productPrice" label="会员卡价格" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="number" label="购买数量" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="gold" label="单张会员卡赠送玉石" width="120"></el-table-column>
+      <el-table-column prop="score" label="单张会员卡赠送礼券" width="120"></el-table-column>
+      <el-table-column prop="vipTime" label="单张会员卡赠送VIP时间" width="120"></el-table-column>
+      <el-table-column prop="totalamount" label="总金额" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="createTime" label="下单时间" width="110"  sortable="custom"></el-table-column>
+      <el-table-column prop="status" label="订单状态" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="pay_type" label="支付方式" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="reqIP" label="下单地址" width="auto"></el-table-column>
     </el-table>
 
     <!--下载文件-->
@@ -87,14 +110,14 @@
                      style="float:right;">
       </el-pagination>
     </el-col>
-
   </el-row>
 </template>
 
 <script>
   import axios from 'axios'
+
     export default {
-        name: "ReCharge",
+        name: "OrderManagement",
         data() {
           return {
             filters:{
@@ -102,24 +125,37 @@
               nickname:''
             },
             users:[],
-            options:[
-              {value:'支付宝'},
-              {value:'微信'},
-            ],
-            sorting:{},
-            page:1,
-            total:0,
             state:{
               status:'',
               pay_type:'',
               startTime:'',
               endTime:''
             },
-            cost:'',
-           addFormVisible:false,
+            total:0,
+            down:[],
+            addFormVisible:false,
+            options:[
+              {value:'支付宝'},
+              {value:'微信'},
+            ],
+            status:[
+              {value:'已付款'},
+              {value:'未付款'},
+              {value:'支付失败'}
+            ],
+            sorting:{},
+            page:1,
+            payCost:'',
+            payAmount:'',
+            notPayCost:'',
+            notPayAmount:''
           }
         },
       methods:{
+        handleCurrentChange(val) {
+          this.page = val;
+          this.sort(this.sorting);
+        },
         dateTimeFormat(value) {
           let time = new Date(+value);
           let rightTwo = (v) => {
@@ -140,9 +176,50 @@
             return str.replace(/(^\s+)|(\s+$)/g, "");
           }
         },
-        handleCurrentChange(val) {
-          this.page = val;
-          this.sort(this.sorting);
+        //导出Excel表
+        exportExcel () {
+          if(this.filters.status == '未付款'){
+            this.state.status = 0;
+          }
+          if(this.filters.status == '支付失败'){
+            this.state.status = -1;
+          }
+          if(this.filters.status == '已付款'){
+            this.state.status = 1;
+          }
+          if(this.filters.pay_type == '支付宝'){
+            this.state.pay_type = 'alipay';
+          }
+          if(this.filters.pay_type == '微信'){
+            this.state.pay_type = 'wxpay';
+          }
+          if(this.filters.startTime){
+            let date = new Date(this.filters.startTime);
+            this.state.startTime = date.getTime();
+          }
+          if(this.filters.endTime){
+            let date = new Date(this.filters.endTime);
+            this.state.endTime = date.getTime();
+          }
+          if(this.filters.startTime &&
+            this.filters.endTime &&
+            this.state.endTime - this.state.startTime < 0){
+            return;
+          }
+          this.addFormVisible = true;
+          let download = document.getElementById('download');
+          download.href = this.global.mPath + '/order/download?out_trade_no='
+            +'&pay_type='+this.state.pay_type
+            +'&payerId='+this.trim(this.filters.memberId)
+            +'&payerName='+this.trim(this.filters.nickname)
+            +'&status='+this.state.status
+            +'&startTime='+this.state.startTime
+            +'&endTime='+this.state.endTime
+            +'&deliverTime='
+            +'&token='+sessionStorage.getItem('token');
+        },
+        addSubmit(){
+          this.addFormVisible = false;
         },
         handleSearch(productPriceSort,numberSort,totalamountSort,createTimeSort,statusSort,pay_typeSort) {
           if(this.filters.status == '未付款'){
@@ -175,7 +252,7 @@
           }
           axios({
             method: 'post',
-            url: this.global.mPath + '/order/queryrecharge',
+            url: this.global.mPath + '/order/queryorder',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -199,7 +276,10 @@
             }
           })
             .then((res) => {
-                this.cost =  res.data.data.cost
+                this.payCost =  res.data.data.payCost
+                this.payAmount =  res.data.data.payAmount
+                this.notPayCost =  res.data.data.notPayCost
+                this.notPayAmount =  res.data.data.notPayAmount
                 this.users = res.data.data.listPage.items;
                 this.total = res.data.data.listPage.pageCount;
                 for(let i = 0;i < this.users.length;i++){
@@ -279,52 +359,7 @@
             }
           }
           this.handleSearch(this.sorting.productPrice,this.sorting.number,this.sorting.totalamount,this.sorting.createTime,this.sorting.status,this.sorting.pay_type)
-        },
-        //导出Excel表
-        exportExcel () {
-          if(this.filters.status == '未付款'){
-            this.state.status = 0;
-          }
-          if(this.filters.status == '支付失败'){
-            this.state.status = -1;
-          }
-          if(this.filters.status == '已付款'){
-            this.state.status = 1;
-          }
-          if(this.filters.pay_type == '支付宝'){
-            this.state.pay_type = 'alipay';
-          }
-          if(this.filters.pay_type == '微信'){
-            this.state.pay_type = 'wxpay';
-          }
-          if(this.filters.startTime){
-            let date = new Date(this.filters.startTime);
-            this.state.startTime = date.getTime();
-          }
-          if(this.filters.endTime){
-            let date = new Date(this.filters.endTime);
-            this.state.endTime = date.getTime();
-          }
-          if(this.filters.startTime &&
-            this.filters.endTime &&
-            this.state.endTime - this.state.startTime < 0){
-            return;
-          }
-          this.addFormVisible = true;
-          let download = document.getElementById('download');
-          download.href = this.global.mPath + '/order/rechargedownload?out_trade_no='
-            +'&pay_type='+this.state.pay_type
-            +'&payerId='+this.trim(this.filters.memberId)
-            +'&payerName='+this.trim(this.filters.nickname)
-            +'&status='+this.state.status
-            +'&startTime='+this.state.startTime
-            +'&endTime='+this.state.endTime
-            +'&deliverTime='
-            +'&token='+sessionStorage.getItem('token');
-        },
-        addSubmit(){
-          this.addFormVisible = false;
-        },
+        }
       },
       mounted() {
         this.handleSearch()
@@ -333,20 +368,8 @@
 </script>
 
 <style scoped>
-  .bg-purple{
-    width:200px;
-    height:100px;
-    text-align: center;
-    background-color: #eee;
-    border-radius: 5px;
-    border:1px solid #eee;
-  }
-  .bg-purple div:nth-child(1){
-    margin-top:20px;
-    font-size:20px;
-  }
-  .bg-purple div:nth-child(2){
-    margin-top:10px;
+  .toolbar{
+    margin-top:30px;
   }
   #download{
     display: inline-block;
@@ -372,5 +395,20 @@
     background: #66b1ff;
     border-color: #66b1ff;
     color: #fff;
+  }
+  .bg-purple{
+    width:200px;
+    height:100px;
+    text-align: center;
+    background-color: #eee;
+    border-radius: 5px;
+    border:1px solid #eee;
+  }
+  .bg-purple div:nth-child(1){
+    margin-top:20px;
+    font-size:20px;
+  }
+  .bg-purple div:nth-child(2){
+    margin-top:10px;
   }
 </style>

@@ -32,27 +32,20 @@
               placeholder="时间选择">
             </el-date-picker>
           </el-form-item>
-          <el-button type="primary" @click="seek">搜索</el-button>
+          <el-button type="primary" @click="seek()">搜索</el-button>
         </el-form>
       </el-col>
 
       <!-- 积分记录列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
+                style="width: 100%;" @sort-change="sort">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
-        <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
-        <el-table-column prop="product" label="商品名称" width="100" sortable></el-table-column>
-        <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
         <el-table-column prop="accountingAmount" label="积分变化" width="100" sortable></el-table-column>
         <el-table-column prop="accountingTime" label="时间" width="160" sortable></el-table-column>
-        <el-table-column prop="summary.text" label="说明" width="140" sortable></el-table-column>
-        <el-table-column prop="balanceAfter" label="剩余积分" width="100" sortable></el-table-column>
-        <el-table-column prop="remainSecond" label="操作">
-          <template slot-scope="scope">
-            <el-button type="primary" @click="publishDialog(scope.$index,scope.row)">积分调整</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column prop="summary.text" label="说明" width="140"></el-table-column>
+        <el-table-column prop="balanceAfter" label="剩余积分" width="auto" sortable></el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">
@@ -60,56 +53,6 @@
                        style="float:right;">
         </el-pagination>
       </el-col>
-
-      <!--积分操作弹窗-->
-      <el-dialog title="积分操作" :visible.sync="publishVisible" :close-on-click-modal="false">
-        <el-form :model="publishForm" label-width="220px">
-          <el-form-item label="推广员ID">
-            <el-input class="memberInput" v-model="publishForm.agentId" :disabled="true"></el-input>
-          </el-form-item>
-          <el-form-item label="会员卡类型">
-            <el-select v-model="publishForm.product" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="当前数量">
-            <el-input class="memberInput" v-model="number" :disabled="true"></el-input>
-          </el-form-item>
-          <el-form-item label="调整数量为">
-            <el-input class="memberInput" v-model="publishForm.afternumber"></el-input>
-          </el-form-item>
-          <el-form-item label="当前积分">
-            <el-input class="memberInput" v-model="publishForm.accountingAmount" :disabled="true"></el-input>
-          </el-form-item>
-          <el-form-item label="调整积分为">
-            <el-input class="memberInput" v-model="publishForm.afterAmount"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="notarizeVisible = true,publishVisible =false">确认调整</el-button>
-            <el-button type="primary" @click.native="publishVisible = false">取消</el-button>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
-
-      <!--确认调整弹窗-->
-      <el-dialog title="确认操作" :visible.sync="notarizeVisible" :close-on-click-modal="false">
-        <el-form>
-          <div align="center">
-            推广员{{publishForm.agentId}}拥有的<br/>{{publishForm.product}}：由{{number}}调整至{{publishForm.afternumber}}<br/>
-            积分：由{{publishForm.accountingAmount}}调整到{{publishForm.afterAmount}}
-          </div>
-          <br/>
-          <div align="center">
-            <el-button type="primary" @click="sure">确认调整</el-button>
-            <el-button type="primary" @click.native="notarizeVisible = false,publishVisible = true">返回修改</el-button>
-          </div>
-        </el-form>
-      </el-dialog>
 
     </el-col>
   </el-row>
@@ -139,7 +82,9 @@
         publishForm: {},
         notarizeVisible: false,
         state: [],
-        number:''
+        number:'',
+        sorting:{},
+        page:1
       }
     },
     methods: {
@@ -165,10 +110,10 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.seek(this.page);
+        this.sort(this.sorting);
       },
       //搜索
-      seek() {
+      seek(accountingAmountSort,accountingTimeSort,balanceAfterSort) {
         if (this.filters.startTime) {
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
@@ -200,7 +145,10 @@
             'agent': this.trim(this.filters.agent),
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime,
-            'token':sessionStorage.getItem('token')
+            'token':sessionStorage.getItem('token'),
+            'accountingAmountSort':accountingAmountSort,
+            'accountingTimeSort':accountingTimeSort,
+            'balanceAfterSort':balanceAfterSort
           }
         })
           .then((res) => {
@@ -242,91 +190,37 @@
           }
         });
       },
+      sort(a){
+        this.sorting = a;
+        if(this.sorting.prop == 'accountingAmount'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.accountingAmount = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.accountingAmount = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'accountingTime'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.accountingTime = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.accountingTime = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'balanceAfter'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.balanceAfter = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.balanceAfter = 'DESC'
+          }
+        }
+        this.seek(this.sorting.accountingAmount,this.sorting.accountingTime,this.sorting.balanceAfter)
+      },
       selsChange: function (sels) {
         this.sels = sels;
       },
-      publishDialog: function (index, row) {
-        this.publishVisible = true;
-        this.publishForm = Object.assign({}, row);
-        axios({
-          method: 'post',
-          url: this.global.mPath + '/agent/score_amount',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'agentId': this.trim(row.agentId)
-          }
-        })
-          .then((res) => {
-            this.number = res.data.data;
-        });
-      },
-
-      //确认调整会员卡
-      sure() {
-        axios({
-          method: 'post',
-          url: this.global.mPath + '/agent/scoremanager',
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded'
-          },
-          params: {
-            'agentId': this.trim(this.publishForm.agentId),
-            'card': this.trim(this.publishForm.product),
-            'cardAmount': this.trim(this.publishForm.afternumber),
-            'scoreAmount': this.trim(this.publishForm.afterAmount),
-            'token':sessionStorage.getItem('token')
-          }
-        })
-          .then((res) => {
-              //console.log(res.data.success)
-              if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '调整失败',
-                  type: 'warning'
-                });
-              } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '调整成功',
-                  type: 'success'
-                });
-                this.notarizeVisible = false;
-                this.seek();
-              }
-            },
-          ).catch((e) => {
-          if (e && e.response) {
-            switch (e.response.status) {
-              case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
-                this.loading = false;//隐藏加载条
-                break
-              case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
-                break
-            }
-          }
-        });
-      }
     },
     mounted() {
       this.seek();

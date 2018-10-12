@@ -25,14 +25,15 @@
     <el-table :data="playmethod" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="id" label="玩法ID" width="auto" sortable></el-table-column>
-      <el-table-column prop="game" label="游戏名称" width="auto" sortable></el-table-column>
-      <el-table-column prop="name" label="玩法" width="auto" sortable></el-table-column>
-      <el-table-column prop="desc" label="描述" width="auto" sortable></el-table-column>
-      <el-table-column prop="mutexGroupId" label="互斥组id" width="auto" sortable></el-table-column>
-      <el-table-column prop="vip" label="是否会员" width="auto" sortable></el-table-column>
+      <el-table-column prop="id" label="玩法ID" width="auto"></el-table-column>
+      <el-table-column prop="game" label="游戏名称" width="auto"></el-table-column>
+      <el-table-column prop="name" label="玩法" width="auto"></el-table-column>
+      <el-table-column prop="desc" label="描述" width="auto"></el-table-column>
+      <el-table-column prop="mutexGroupId" label="互斥组id" width="auto"></el-table-column>
+      <el-table-column prop="vip" label="是否会员" width="auto"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
+          <el-button type="primary" @click="adjust(scope.$index,scope.row)" size="small">调整</el-button>
           <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -64,6 +65,32 @@
       </div>
     </el-dialog>
 
+    <!--调整玩法-->
+    <el-dialog title="调整玩法" :visible.sync="adjustGameVisible" :close-on-click-modal="false">
+      <el-form :model="adjustGame" label-width="150px" :rules="editFormRules" ref="addGame">
+        <el-form-item label="游戏名称" prop="game">
+          <el-input v-model="adjustGame.game" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="玩法" prop="name">
+          <el-input v-model="adjustGame.name" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="desc">
+          <el-input v-model="adjustGame.desc" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="互斥组id" prop="mutexGroupId">
+          <el-input v-model="adjustGame.mutexGroupId" auto-complete="off" style="width:300px;"></el-input>
+        </el-form-item>
+        <el-form-item label="是否为vip" prop="vip">
+          <el-radio v-model="adjustGame.vip" label="是">是</el-radio>
+          <el-radio v-model="adjustGame.vip" label="否">否</el-radio>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="adjustGameVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="referSubmit">提交</el-button>
+      </div>
+    </el-dialog>
+
     <!--工具条-->
     <el-col :span="24" class="toolbar">
       <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button>
@@ -78,7 +105,7 @@
 <script>
     import axios from 'axios'
     export default {
-      name: "PlayManagement",
+      name: "GamePlay",
       data(){
         return{
           filters:{},
@@ -87,7 +114,10 @@
           total:0,
           addGame:{},
           addGame1:{},
+          adjustGame:{},
+          adjustGame1:{},
           addGameVisible:false,
+          adjustGameVisible:false,
           editFormRules:{
             game: [
               {required: true, message: '请输入游戏名称', trigger: 'blur'}
@@ -130,7 +160,6 @@
             }
           })
             .then((res) => {
-                console.log(res.data.data)
                 this.playmethod = res.data.data.items;
                 this.total = res.data.data.pageCount;
                 for(let i = 0; i < this.playmethod.length;i++){
@@ -165,6 +194,71 @@
         },
         selsChange: function (sels) {
           this.sels = sels;
+        },
+        adjust:function(index,row){
+          this.adjustGameVisible = true;
+          this.adjustGame = Object.assign({}, row);
+        },
+        referSubmit:function(){
+          console.log(this.adjustGame.id)
+          if(this.adjustGame.vip == '是'){
+            this.adjustGame1.vip = true;
+          }else{
+            this.adjustGame1.vip = false;
+          }
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/game/update_law',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params:{
+              'id':this.adjustGame.id,
+              'game':this.trim(this.adjustGame.game),
+              'name':this.trim(this.adjustGame.name),
+              'desc':this.trim(this.adjustGame.desc),
+              'mutexGroupId':this.trim(this.adjustGame.mutexGroupId),
+              'vip':this.adjustGame1.vip,
+              'token':sessionStorage.getItem('token')
+            }
+          })
+            .then((res) => {
+                if (res.data.success == false) {
+                  this.$message({
+                    showClose: true,
+                    message: '调整失败',
+                    type: 'warning'
+                  });
+                } else if (res.data.success == true) {
+                  this.$message({
+                    showClose: true,
+                    message: '调整成功',
+                    type: 'success'
+                  });
+                  this.adjustGameVisible = false;//关闭弹窗
+                  this.handleSearch(1);
+                }
+              },
+            ).catch((e) => {
+            if(e && e.response){
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
         },
         delBook:function(index,row){
           let that = this;
@@ -255,7 +349,6 @@
             }
           })
             .then((res) => {
-                console.log(res.data)
                 if (res.data.success == false) {
                   this.$message({
                     showClose: true,

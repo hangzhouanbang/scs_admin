@@ -12,11 +12,11 @@
               style="width: 100%;margin-top:30px;">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="name" label="会员卡名称" width="auto" sortable></el-table-column>
-      <el-table-column prop="price" label="会员卡价格" width="auto" sortable></el-table-column>
-      <el-table-column prop="score" label="购买获得积分数" width="auto" sortable></el-table-column>
-      <el-table-column prop="gold" label="购买获得玉石数" width="auto" sortable></el-table-column>
-      <el-table-column prop="time" label="延长的会员时间" width="auto" sortable></el-table-column>
+      <el-table-column prop="name" label="会员卡名称" width="auto"></el-table-column>
+      <el-table-column prop="price" label="会员卡价格" width="auto"></el-table-column>
+      <el-table-column prop="score" label="购买获得积分数" width="auto"></el-table-column>
+      <el-table-column prop="gold" label="购买获得玉石数" width="auto"></el-table-column>
+      <el-table-column prop="time" label="延长的会员时间" width="auto"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="small" @click="showEditCard(scope.$index,scope.row)">编辑</el-button>

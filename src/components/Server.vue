@@ -24,13 +24,12 @@
     <!-- 服务器列表-->
     <el-table :data="server" highlight-current-row @selection-change="selsChange"
               style="width: 100%;">
-      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="game" label="游戏名称" width="150" sortable></el-table-column>
-      <el-table-column prop="name" label="服务器名称" width="130" sortable></el-table-column>
-      <el-table-column prop="httpUrl" label="httpUrl" width="150" sortable></el-table-column>
-      <el-table-column prop="wsUrl" label="websocket URL" width="200" sortable></el-table-column>
-      <el-table-column prop="onlineTime" label="上线时间" width="160" sortable></el-table-column>
+      <el-table-column prop="game" label="游戏名称" width="150"></el-table-column>
+      <el-table-column prop="name" label="服务器名称" width="130"></el-table-column>
+      <el-table-column prop="httpUrl" label="httpUrl" width="150"></el-table-column>
+      <el-table-column prop="wsUrl" label="websocket URL" width="200"></el-table-column>
+      <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="offline(scope.$index,scope.row)" size="small">下线</el-button>

@@ -21,17 +21,17 @@
                 style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="product" label="商品类型" width="100" sortable></el-table-column>
+        <el-table-column prop="product" label="商品类型" width="100"></el-table-column>
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
         <el-table-column prop="repertory" label="库存数量" width="100" sortable></el-table-column>
         <el-table-column prop="remain" label="剩余数量" width="100" sortable></el-table-column>
         <el-table-column prop="price" label="价格" width="100" sortable></el-table-column>
-        <el-table-column prop="productPic" label="ICON图" width="100" sortable>
+        <el-table-column prop="productPic" label="ICON图" width="100">
           <template slot-scope="scope">
             <img :src="scope.row.productPic" alt="" style="width: 50px;height: 50px;">
           </template>
         </el-table-column>
-        <el-table-column prop="payType" label="支付方式" width="100" sortable></el-table-column>
+        <el-table-column prop="payType" label="支付方式" width="100"></el-table-column>
         <el-table-column prop="sale" label="是否可用" width="100" sortable></el-table-column>
         <el-table-column prop="weight" label="排序" width="100" sortable></el-table-column>
         <el-table-column prop="remainSecond" label="操作">

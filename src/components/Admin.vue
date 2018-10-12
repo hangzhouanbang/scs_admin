@@ -27,17 +27,17 @@
                 style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="nickname" label="用户名" width="100" sortable></el-table-column>
-        <el-table-column prop="user" label="姓名" width="100" sortable></el-table-column>
-        <el-table-column prop="idCard" label="身份证号" width="170" sortable></el-table-column>
-        <el-table-column label="角色" width="100" sortable>
+        <el-table-column prop="nickname" label="用户名" width="100"></el-table-column>
+        <el-table-column prop="user" label="姓名" width="100"></el-table-column>
+        <el-table-column prop="idCard" label="身份证号" width="170"></el-table-column>
+        <el-table-column label="角色" width="100">
           <template slot-scope="scope">
             <ul style="margin-left:-26px;">
               <li v-for="roles in scope.row.roleList">{{roles.role}}</li>
             </ul>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="添加时间" width="160" sortable></el-table-column>
+        <el-table-column prop="createTime" label="添加时间" width="160"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">修改密码</el-button>

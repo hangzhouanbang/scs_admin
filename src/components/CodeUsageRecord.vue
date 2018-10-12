@@ -38,13 +38,13 @@
 
       <!-- 推广员操作记录列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
-        <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
-        <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
-        <el-table-column prop="invitationCode" label="推广码" width="auto" sortable></el-table-column>
-        <el-table-column prop="memberId" label="邀请ID" width="100" sortable></el-table-column>
+                style="width: 100%;" @sort-change="sort">
+        <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
+        <el-table-column prop="invitationCode" label="推广码" width="auto"></el-table-column>
+        <el-table-column prop="memberId" label="邀请ID" width="100"></el-table-column>
         <el-table-column prop="createTime" label="绑定时间" width="160" sortable></el-table-column>
-        <el-table-column prop="rewardScore" label="获得积分" width="100" sortable></el-table-column>
+        <el-table-column prop="rewardScore" label="获得积分" width="100"></el-table-column>
         <el-table-column prop="inviteNum" label="邀请总人数" width="150" sortable></el-table-column>
         <el-table-column prop="score" label="累计得分" sortable></el-table-column>
       </el-table>
@@ -70,7 +70,9 @@
         filters: {},
         items: [],
         total: 0,
-        state:{}
+        state:{},
+        sorting:{},
+        page:1
       }
     },
     methods: {
@@ -96,10 +98,10 @@
       },
       handleCurrentChange(val) {
         this.page = val;
-        this.handleSearch(this.page);
+        this.sort(this.sorting);
       },
       //查询会员卡购买记录
-      handleSearch(page) {
+      handleSearch(createTimeSort,inviteNumSort,scoreSort) {
         if(this.filters.startTime){
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
@@ -121,12 +123,15 @@
           },
           params: {
             'size': '10',//每页数量
-            'page': page,//当前页
+            'page': this.page,//当前页
             'agentId':this.trim(this.filters.id),
             'agent':this.trim(this.filters.nickname),
             'startTime': this.state.startTime , /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime,
-            'token':sessionStorage.getItem('token')
+            'token':sessionStorage.getItem('token'),
+            'createTimeSort':createTimeSort,
+            'inviteNumSort':inviteNumSort,
+            'scoreSort':scoreSort
           }
         })
           .then((res) => {
@@ -167,12 +172,40 @@
           }
         });
       },
+      sort(a){
+        this.sorting = a;
+        if(this.sorting.prop == 'createTime'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.createTime = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.createTime = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'inviteNum'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.inviteNum = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.inviteNum = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'score'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.score = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.score = 'DESC'
+          }
+        }
+        this.handleSearch(this.sorting.createTime,this.sorting.inviteNum,this.sorting.score)
+      },
       selsChange: function (sels) {
         this.sels = sels;
       }
     },
     mounted(){
-      this.handleSearch(1);
+      this.handleSearch();
     }
   }
 </script>

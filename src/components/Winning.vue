@@ -22,18 +22,18 @@
           <el-date-picker
             v-model="filters.startTime"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期" style="width:202px;">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="至" label-width="68px" style="margin-left:-44px;">
           <el-date-picker
             v-model="filters.endTime"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期" style="width:202px;">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="filters.mailType" placeholder="请选择">
+          <el-select v-model="filters.mailType" placeholder="请选择" clearable style="width:202px;">
             <el-option
             v-for="item in options"
             :key="item.value"
@@ -48,14 +48,14 @@
       </el-form>
     </el-col>
 
-    <!-- 收货地址列表-->
+    <!-- 列表-->
     <el-table :data="address" highlight-current-row style="width:100%;" id="out-table">
-      <el-table-column prop="name" label="游戏ID" width="160" sortable></el-table-column>
-      <el-table-column prop="desc" label="昵称" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="手机号码" width="120" sortable></el-table-column>
-      <el-table-column prop="type" label="奖励备注" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="奖励类型" width="120" sortable></el-table-column>
-      <el-table-column prop="taskName" label="奖励数量" width="120" sortable></el-table-column>
+      <el-table-column prop="name" label="游戏ID" width="160"></el-table-column>
+      <el-table-column prop="desc" label="昵称" width="120"></el-table-column>
+      <el-table-column prop="taskName" label="手机号码" width="120"></el-table-column>
+      <el-table-column prop="type" label="奖励备注" width="120"></el-table-column>
+      <el-table-column prop="taskName" label="奖励类型" width="120"></el-table-column>
+      <el-table-column prop="taskName" label="奖励数量" width="120"></el-table-column>
       <el-table-column prop="taskName" label="中奖时间" width="auto" sortable></el-table-column>
     </el-table>
   </el-row>

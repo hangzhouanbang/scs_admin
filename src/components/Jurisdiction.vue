@@ -25,8 +25,8 @@
                 style="width: 100%;">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="privilege" label="权限名称" width="auto" sortable></el-table-column>
-        <el-table-column prop="uri" label="URI" width="auto" sortable></el-table-column>
+        <el-table-column prop="privilege" label="权限名称" width="230"></el-table-column>
+        <el-table-column prop="uri" label="URI" width="260"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="small" @click="showEditPrivilege(scope.$index,scope.row)">编辑</el-button>

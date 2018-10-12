@@ -4,7 +4,7 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>推广员管理</b></el-breadcrumb-item>
-        <el-breadcrumb-item>会员卡记录</el-breadcrumb-item>
+        <el-breadcrumb-item>会员卡使用记录</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -19,7 +19,7 @@
             <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item label="类型" label-width="50px">
-            <el-select v-model="filters.mailType" placeholder="请选择" clearable>
+            <el-select v-model="filters.mailType" placeholder="请选择" clearable style="width:202px;">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -32,30 +32,31 @@
             <el-date-picker
               v-model="filters.startTime"
               type="date"
-              placeholder="选择日期">
+              placeholder="选择日期" style="width:202px;">
             </el-date-picker>
           </el-form-item>
           <el-form-item label="至" label-width="68px" style="margin-left:-44px;">
             <el-date-picker
               v-model="filters.endTime"
               type="date"
-              placeholder="选择日期">
+              placeholder="选择日期" style="width:202px;">
             </el-date-picker>
           </el-form-item>
-          <el-button type="primary" @click="handleSearch(1)">查询</el-button>
+          <el-button type="primary" @click="handleSearch()">查询</el-button>
         </el-form>
       </el-col>
 
       <!-- 推广员操作记录列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
-        <el-table-column prop="agentId" label="推广员ID" width="120" sortable></el-table-column>
-        <el-table-column prop="agent" label="推广员昵称" width="120" sortable></el-table-column>
-        <el-table-column prop="product" label="商品名称" width="120" sortable></el-table-column>
-        <el-table-column prop="accountingAmount" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="summary.text" label="类型" width="100" sortable></el-table-column>
+                style="width: 100%;" @sort-change="sort">
+        <el-table-column type="index" width="60"></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
+        <el-table-column prop="product" label="商品名称" width="120"></el-table-column>
+        <el-table-column prop="accountingAmount" label="数量" width="100"></el-table-column>
+        <el-table-column prop="summary.text" label="类型" width="100"></el-table-column>
         <el-table-column prop="accountingTime" label="使用时间" width="100" sortable></el-table-column>
-        <el-table-column prop="receiver" label="使用对象" width="100" sortable></el-table-column>
+        <el-table-column prop="receiver" label="使用对象" width="100"></el-table-column>
         <el-table-column prop="balanceAfterZhou" label="剩余周卡" width="100" sortable></el-table-column>
         <el-table-column prop="balanceAfterYue" label="剩余月卡" width="100" sortable></el-table-column>
         <el-table-column prop="balanceAfterJi" label="剩余季卡" sortable></el-table-column>
@@ -97,7 +98,9 @@
         centerDialogVisible: false,
         relieveDialogVisible: false,
         tabPosition: 'left',
-        state:[]
+        state:[],
+        sorting:{},
+        page:1
       }
     },
     methods: {
@@ -121,12 +124,8 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      handleCurrentChange(val) {
-        this.page = val;
-        this.memberCardBuy(this.page);
-      },
       //查询会员卡购买记录
-      handleSearch(page) {
+      handleSearch(accountingTimeSort,balanceAfterZhouSort,balanceAfterYueSort,balanceAfterJiSort) {
         if(this.filters.startTime){
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
@@ -148,13 +147,17 @@
           },
           params: {
             'size': '10',//每页数量
-            'page': page,//当前页
+            'page': this.page,//当前页
             'agentId':this.trim(this.filters.id),
             'agent':this.trim(this.filters.nickname),
             'type':this.filters.mailType,
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime':this.state.endTime,
-            'token':sessionStorage.getItem('token')
+            'token':sessionStorage.getItem('token'),
+            'accountingTimeSort':accountingTimeSort,
+            'balanceAfterZhouSort':balanceAfterZhouSort,
+            'balanceAfterYueSort':balanceAfterYueSort,
+            'balanceAfterJiSort':balanceAfterJiSort
           }
         })
           .then((res) => {
@@ -195,16 +198,53 @@
           }
         });
       },
+      sort(a){
+        console.log(this.page)
+        this.sorting = a;
+        if(this.sorting.prop == 'accountingTime'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.accountingTime = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.accountingTime = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'balanceAfterZhou'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.balanceAfterZhou = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.balanceAfterZhou = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'balanceAfterYue'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.balanceAfterYue = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.balanceAfterYue = 'DESC'
+          }
+        }
+        if(this.sorting.prop == 'balanceAfterJi'){
+          if(this.sorting.order == 'ascending'){
+            this.sorting.balanceAfterJi = 'ASC'
+          }
+          if(this.sorting.order == 'descending'){
+            this.sorting.balanceAfterJi = 'DESC'
+          }
+        }
+        this.handleSearch(this.sorting.accountingTime,this.sorting.balanceAfterZhou,this.sorting.balanceAfterYue,this.sorting.balanceAfterJi)
+      },
       handleCurrentChange(val){
         this.page = val;
-        this.handleSearch(this.page);
+        this.sort(this.sorting);
       },
       selsChange: function (sels) {
         this.sels = sels;
       }
     },
     mounted(){
-      this.handleSearch(1)
+      this.handleSearch()
     }
   }
 </script>

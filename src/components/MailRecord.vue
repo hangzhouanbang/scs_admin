@@ -25,7 +25,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="类型" label-width="68px">
-          <el-select v-model="filters.mailType" placeholder="请选择">
+          <el-select v-model="filters.mailType" placeholder="请选择" clearable>
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -35,7 +35,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="操作人" label-width="68px">
-          <el-select v-model="nickname" placeholder="请选择">
+          <el-select v-model="nickname" placeholder="请选择" clearable>
             <el-option
               v-for="item in this.adminList"
               :key="item.nickname"
@@ -52,35 +52,34 @@
 
     <!-- 邮件列表-->
     <el-table :data="items" highlight-current-row style="width: 100%;">
-      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="memberId" label="用户ID" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.file" label="邮件内容" width="auto" sortable>
+      <el-table-column prop="memberId" label="用户ID" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.file" label="邮件内容" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.systemMail.file" alt="" style="width: 50px;height: 50px">
         </template>
       </el-table-column>
-      <el-table-column prop="systemMail.mailType" label="类型" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.number" label="玉石" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.integral" label="礼券" width="auto" sortable></el-table-column>
-      <el-table-column prop="vipCardName" label="会员卡" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.validTime" label="有效时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="systemMail.createtime" label="发送时间" width="auto" sortable></el-table-column>
-      <el-table-column prop="receive" label="是否领取" width="160" sortable>
+      <el-table-column prop="systemMail.mailType" label="类型" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.number" label="玉石" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.integral" label="礼券" width="auto"></el-table-column>
+      <el-table-column prop="vipCardName" label="会员卡" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.validTime" label="有效时间" width="auto"></el-table-column>
+      <el-table-column prop="systemMail.createtime" label="发送时间" width="auto"></el-table-column>
+      <el-table-column prop="receive" label="是否领取" width="160">
         <template slot-scope="scope">
           <el-button type="text" v-if="scope.row.receive === '0'">已领取</el-button>
           <el-button type="text" v-if="scope.row.receive === '1'">未领取</el-button>
           <el-button type="text" v-if="scope.row.receive === '2'">没有附件奖励</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="rewardTime" label="领取时间" width="160" sortable>
+      <el-table-column prop="rewardTime" label="领取时间" width="160">
         <template slot-scope="scope">
           <el-button type="text" v-if="scope.row.rewardTime === '1970-01-01 08:00:00'"></el-button>
           <el-button type="text" v-if="scope.row.rewardTime !== '1970-01-01 08:00:00'">{{scope.row.rewardTime}}
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="systemMail.adminname" label="发送人" width="auto" sortable></el-table-column>
+      <el-table-column prop="systemMail.adminname" label="发送人" width="auto"></el-table-column>
     </el-table>
 
     <!--工具条-->
