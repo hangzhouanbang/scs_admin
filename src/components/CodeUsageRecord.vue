@@ -41,12 +41,13 @@
                 style="width: 100%;" @sort-change="sort">
         <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
         <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
-        <el-table-column prop="invitationCode" label="推广码" width="auto"></el-table-column>
-        <el-table-column prop="memberId" label="邀请ID" width="100"></el-table-column>
+        <el-table-column prop="invitationCode" label="推广码" width="120"></el-table-column>
+        <el-table-column prop="memberId" label="邀请玩家ID" width="100"></el-table-column>
+        <el-table-column prop="nickname" label="邀请玩家昵称" width="150"></el-table-column>
         <el-table-column prop="createTime" label="绑定时间" width="160" sortable></el-table-column>
         <el-table-column prop="rewardScore" label="获得积分" width="100"></el-table-column>
         <el-table-column prop="inviteNum" label="邀请总人数" width="150" sortable></el-table-column>
-        <el-table-column prop="score" label="累计得分" sortable></el-table-column>
+        <el-table-column prop="score" label="当前积分" sortable></el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">

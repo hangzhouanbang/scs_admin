@@ -56,7 +56,7 @@
         <el-table-column prop="accountingAmount" label="数量" width="100"></el-table-column>
         <el-table-column prop="summary.text" label="类型" width="100"></el-table-column>
         <el-table-column prop="accountingTime" label="使用时间" width="100" sortable></el-table-column>
-        <el-table-column prop="receiver" label="使用对象" width="100"></el-table-column>
+        <el-table-column prop="receiverId" label="使用对象" width="100"></el-table-column>
         <el-table-column prop="balanceAfterZhou" label="剩余周卡" width="100" sortable></el-table-column>
         <el-table-column prop="balanceAfterYue" label="剩余月卡" width="100" sortable></el-table-column>
         <el-table-column prop="balanceAfterJi" label="剩余季卡" sortable></el-table-column>

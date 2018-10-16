@@ -43,8 +43,8 @@
         <el-table-column prop="agentId" label="推广员ID" width="140"></el-table-column>
         <el-table-column prop="agent" label="推广员昵称" width="140"></el-table-column>
         <el-table-column prop="product" label="会员卡名称" width="120"></el-table-column>
-        <el-table-column prop="number" label="数量" width="100"></el-table-column>
-        <el-table-column prop="accountingAmount" label="购买金额" width="120"></el-table-column>
+        <el-table-column prop="accountingAmount" label="数量" width="100"></el-table-column>
+        <el-table-column prop="totalamount" label="购买金额" width="120"></el-table-column>
         <el-table-column prop="accountingTime" label="购买时间" width="160" sortable></el-table-column>
         <el-table-column prop="summary.text" label="说明" width="100"></el-table-column>
         <el-table-column prop="cost" label="累积消费" width="auto" sortable></el-table-column>

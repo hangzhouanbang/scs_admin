@@ -23,7 +23,7 @@
             <el-date-picker
               v-model="filters.endTime"
               type="date"
-              placeholder="结束时间">
+              placeholder="结束时间" default-value>
             </el-date-picker>
           </el-form-item>
           <el-button type="primary" @click="seek">搜索</el-button>
@@ -65,14 +65,15 @@
       return {
         loading: false,//隐藏加载条
         filters: {
-          name: ''
+          startTime: new Date(),
+          endTime:new Date()
         },
         items: [],
         total: 0,
         value1: '',//开始时间
         value2: '',//结束时间
         po: false,//隐藏表单
-        state: []
+        state: [],
       }
     },
     methods: {
@@ -95,16 +96,19 @@
       //搜索
       seek() {
         if (this.filters.startTime) {
+          this.filters.startTime = new Date(this.filters.startTime)
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
+        }else{
+          this.state.startTime = new Date().getTime();
         }
         if (this.filters.endTime) {
           let date = new Date(this.filters.endTime);
           this.state.endTime = date.getTime();
+        }else{
+          this.state.endTime = new Date().getTime();
         }
-        if (this.filters.startTime &&
-          this.filters.endTime &&
-          this.state.endTime - this.state.startTime <= 0) {
+        if (this.state.endTime - this.state.startTime < 0) {
           this.$message({
             showClose: true,
             message: '时间段选择有误',
@@ -169,6 +173,9 @@
       selsChange: function (sels) {
         this.sels = sels;
       },
+    },
+    mounted(){
+      this.seek();
     }
   }
 </script>

@@ -59,6 +59,7 @@
           </el-form-item>
           <el-button type="primary" @click="showgold">赠送玉石</el-button>
           <el-button type="primary" @click="showintegral">赠送礼券</el-button>
+          <el-button type="primary" @click="handleSearch()">查询</el-button>
         </el-form>
       </el-col>
 

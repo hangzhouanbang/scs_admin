@@ -25,7 +25,8 @@
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
         <el-table-column prop="repertory" label="库存数量" width="100" sortable></el-table-column>
         <el-table-column prop="remain" label="剩余数量" width="100" sortable></el-table-column>
-        <el-table-column prop="price" label="价格" width="100" sortable></el-table-column>
+        <el-table-column prop="firstPrice" label="一级价格" width="100" sortable></el-table-column>
+        <el-table-column prop="secordPrice" label="二级价格" width="100" sortable></el-table-column>
         <el-table-column prop="productPic" label="ICON图" width="100">
           <template slot-scope="scope">
             <img :src="scope.row.productPic" alt="" style="width: 50px;height: 50px;">
@@ -79,8 +80,11 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="价格" prop="price">
-          <el-input v-model="normalForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
+        <el-form-item label="一级价格" prop="firstPrice">
+          <el-input v-model="normalForm.firstPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
+        </el-form-item>
+        <el-form-item label="二级价格" prop="secordPrice">
+          <el-input v-model="normalForm.secordPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
         </el-form-item>
         <el-form-item label="权重" prop="weight">
           <el-input v-model="normalForm.weight" auto-complete="off" style="width:217px;" placeholder="请输入数字"></el-input>
@@ -134,8 +138,11 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="价格" prop="price">
-            <el-input v-model="adjustForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
+          <el-form-item label="一级价格" prop="firstPrice">
+            <el-input v-model="adjustForm.firstPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
+          </el-form-item>
+          <el-form-item label="二级价格" prop="secordPrice">
+            <el-input v-model="adjustForm.secordPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
           </el-form-item>
           <el-form-item label="权重" prop="weight">
             <el-input v-model="adjustForm.weight" auto-complete="off" style="width:217px;"></el-input>
@@ -181,7 +188,9 @@
             list:[],
             img:true,
             normalForm:{},
+            normalForm1:{},
             adjustForm:{},
+            adjustForm1:{},
             filters: {},
             radioData:'',
             // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
@@ -310,6 +319,12 @@
           this.addFormVisible = true;
         },
         issue:function() {
+          if(this.normalForm.payType == '微信支付'){
+            this.normalForm1.payType = 'wxpay'
+          }
+          if(this.normalForm.payType == '积分兑换'){
+            this.normalForm1.payType = 'scorepay'
+          }
           axios({
             method: 'post',
             url: this.global.mPath + '/agent/addagentclubcard',
@@ -319,9 +334,10 @@
             params: {
               product:this.normalForm.product,
               number:this.trim(this.normalForm.number),
-              price:this.trim(this.normalForm.price),
+              firstPrice:this.normalForm.firstPrice,
+              secordPrice:this.trim(this.normalForm.secordPrice),
               repertory:this.trim(this.normalForm.repertory),
-              payType:this.normalForm.payType,
+              payType:this.normalForm1.payType,
               productPic:this.imageUrl,
               weight:this.normalForm.weight,
               token:sessionStorage.getItem('token')
@@ -386,6 +402,13 @@
           }
         },
         Adjust:function(){
+          console.log(this.adjustForm.payType)
+          if(this.adjustForm.payType == '微信支付'){
+            this.adjustForm1.payType = 'wxpay'
+          }
+          if(this.adjustForm.payType == '积分兑换'){
+            this.adjustForm1.payType = 'scorepay'
+          }
             this.loading = true;
             axios({
               method: 'post',
@@ -397,9 +420,10 @@
                 id:this.adjustForm.id,
                 product:this.adjustForm.product,
                 number:this.adjustForm.number,
-                price:this.adjustForm.price,
+                firstPrice:this.adjustForm.firstPrice,
+                secordPrice:this.adjustForm.secordPrice,
                 repertory:this.adjustForm.repertory,
-                payType:this.adjustForm.payType,
+                payType:this.adjustForm1.payType,
                 productPic:this.imageUrl,
                 sale:this.radioData,
                 weight:this.adjustForm.weight,

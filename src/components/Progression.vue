@@ -51,7 +51,11 @@
       name: "Progression",
       data() {
         return {
-          filters:{},
+          filters:{
+            startTime:new Date(),
+            endTime:new Date(),
+            pay_type:'瑞安麻将'
+          },
           state:{},
           currentMember:[],
           gameNum:[],
@@ -80,14 +84,16 @@
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
+          }else{
+            this.state.startTime = new Date().getTime();
           }
           if(this.filters.endTime){
             let date = new Date(this.filters.endTime);
             this.state.endTime = date.getTime();
+          }else{
+            this.state.endTime = new Date().getTime();
           }
-          if(this.filters.startTime &&
-            this.filters.endTime &&
-            this.state.endTime - this.state.startTime < 0){
+          if(this.state.endTime - this.state.startTime < 0){
             return;
           }
           axios({
@@ -180,6 +186,9 @@
             ]
           })
         }
+      },
+      mounted(){
+        this.handleSearch()
       }
     }
 </script>

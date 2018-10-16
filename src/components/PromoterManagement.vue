@@ -112,6 +112,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="MembershipAdjustment">会员卡调整</el-button>
         <el-button @click="IntegralAdjustment">积分调整</el-button>
+        <el-button @click="Code">查看二维码</el-button>
         <router-link :to="{path:'/membershipCardPurchaseRecord'}">
           <el-button>会员卡购买记录</el-button>
         </router-link>
@@ -196,6 +197,11 @@
       </el-form>
     </el-dialog>
 
+    <!--查看二维码-->
+    <el-dialog title="查看二维码" :visible.sync="codeVisible" :close-on-click-modal="false">
+      <img :src="src" id="erweima" style="width:200px;height:200px;border:1px solid #000;">
+    </el-dialog>
+
     <!--操作-->
     <el-dialog title="" :visible.sync="operateVisible" :close-on-click-modal="false">
       <div class="left">
@@ -278,6 +284,7 @@
             notarizeVisible:false,
             integralVisible:false,
             sureVisible:false,
+            codeVisible:false,
             state:'',
             seniorAmount:'',
             juniorAmount:'',
@@ -289,7 +296,8 @@
             id:'',
             integralForm:{},
             score:'',
-            publishForm1:{}
+            publishForm1:{},
+            src:''
           }
         },
         methods:{
@@ -435,7 +443,7 @@
               method:'post',
               params:{
                 agentId:this.form.id,
-                bossId:this.form.bossId,
+                bossId:this.form.bossId1,
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
@@ -701,11 +709,16 @@
                 }
               }
             });
+          },
+          Code:function(){
+            this.centerDialogVisible = false;
+            this.codeVisible = true;
+            this.src = this.global.mPath + '/agent/qrcode?token='+sessionStorage.getItem('token')+'&agentId='+this.id
           }
         },
         mounted(){
             this.handleSearch();
-        }
+        },
     }
 </script>
 

@@ -37,6 +37,8 @@ import Lottery from '@/components/Lottery.vue'
 import Record from '@/components/Record.vue'
 import Winning from '@/components/Winning.vue'
 import ReCharge from '@/components/ReCharge.vue'
+import LimitLogin from '@/components/LimitLogin.vue'
+import MapManagement from '@/components/MapManagement.vue'
 
 Vue.use(Router)
 
@@ -80,41 +82,18 @@ export default new Router({
         {path: '/memberRules', component: MemberRules, name: '会员权益', menuShow: true},
         {path: '/memberCard', component: MemberCard, name: '会员卡', menuShow: true},
         {path: '/memberLevel', component: MemberLevel, name: 'vip等级', menuShow: true},
+        {path: '/limitLogin', component: LimitLogin, name: '限制登录', menuShow: true},
       ]
     },
     {
       path: '/home',
       component: Home,
-      name: '系统设置',
+      name: '充值系统',
       menuShow: true,
-      iconCls: 'iconfont icon-xitongshezhi',
+      iconCls: 'iconfont icon-chongzhi',
       children: [
-        {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
-        {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true},
-        {path: '/systemNotice', component: SystemNotice, name: '系统公告', menuShow: true},
-        {path: '/Microservice', component: Microservice, name: '微服务', menuShow: true}
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      redirect: '/jurisdiction',
-      menuShow: true,
-      leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-ic_opt_feature', // 图标样式class
-      children: [
-        {path: '/jurisdiction', component: Jurisdiction, name: '权限管理', menuShow: true}
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      redirect: '/server',
-      menuShow: true,
-      leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-server', // 图标样式class
-      children: [
-        {path: '/server', component: Server, name: '服务器管理', menuShow: true}
+        {path: '/orderManagement', component: OrderManagement, name: '订单管理', menuShow: true},
+        {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
       ]
     },
     {
@@ -165,7 +144,8 @@ export default new Router({
         {path: '/integralRecord', component: IntegralRecord, name: '积分记录', menuShow: true},
         {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '会员卡使用记录', menuShow: true},
         {path: '/mallManagement', component: MallManagement, name: '推广员商城管理', menuShow: true},
-        {path: '/codeUsageRecord', component: CodeUsageRecord, name: '推广码使用记录', menuShow: true}
+        {path: '/codeUsageRecord', component: CodeUsageRecord, name: '推广码使用记录', menuShow: true},
+        {path: '/mapManagement', component: MapManagement, name: '推广图管理', menuShow: true}
       ]
     },
     {
@@ -204,12 +184,36 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      name: '充值系统',
+      name: '系统设置',
       menuShow: true,
-      iconCls: 'iconfont icon-chongzhi',
+      iconCls: 'iconfont icon-xitongshezhi',
       children: [
-        {path: '/orderManagement', component: OrderManagement, name: '订单管理', menuShow: true},
-        {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
+        {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
+        {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true},
+        {path: '/systemNotice', component: SystemNotice, name: '系统公告', menuShow: true},
+        {path: '/Microservice', component: Microservice, name: '微服务', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/jurisdiction',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-ic_opt_feature', // 图标样式class
+      children: [
+        {path: '/jurisdiction', component: Jurisdiction, name: '权限管理', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/server',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-server', // 图标样式class
+      children: [
+        {path: '/server', component: Server, name: '服务器管理', menuShow: true}
       ]
     },
   ]
