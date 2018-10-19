@@ -43,6 +43,9 @@
       <el-form-item label="房间存活小时数" prop="planMemberRoomsAliveHours">
         <el-input v-model="normalForm.planMemberRoomsAliveHours"></el-input>
       </el-form-item>
+      <el-form-item label="绑定邀请码后赠送玉石数" prop="goldForAgentInvite">
+        <el-input v-model="normalForm.goldForAgentInvite"></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('normalForm')">立即设置</el-button>
         <el-button @click="change('普通用户')">重置</el-button>
@@ -210,6 +213,7 @@
               planMemberRoomsCount:this.normalForm.planMemberRoomsCount,
               planMemberMaxCreateRoomDaily:this.normalForm.planMemberMaxCreateRoomDaily,
               planMemberRoomsAliveHours:this.normalForm.planMemberRoomsAliveHours,
+              goldForAgentInvite:this.normalForm.goldForAgentInvite,
               token:sessionStorage.getItem('token')
             }
           })

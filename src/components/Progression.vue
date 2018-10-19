@@ -106,6 +106,10 @@
               token:sessionStorage.getItem('token')
             }
           }).then((res) => {
+            this.currentMember=[]
+            this.gameNum=[]
+            this.loginMember=[]
+            this.Time=[]
               for(let i = 0;i < res.data.data.length;i++){
                 this.currentMember.push(res.data.data[i].currentMember);
                 this.gameNum.push(res.data.data[i].gameNum);

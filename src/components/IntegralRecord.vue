@@ -139,7 +139,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '10',//每页数量
+            'size': '15',//每页数量
             'page': this.page,//当前页
             'agentId': this.trim(this.filters.id),
             'agent': this.trim(this.filters.agent),

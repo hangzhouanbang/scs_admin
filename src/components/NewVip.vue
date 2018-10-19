@@ -59,6 +59,7 @@
           </el-form-item>
           <el-button type="primary" @click="showgold">赠送玉石</el-button>
           <el-button type="primary" @click="showintegral">赠送礼券</el-button>
+          <el-button type="primary" @click="showcard">赠送会员卡</el-button>
           <el-button type="primary" @click="handleSearch()">查询</el-button>
         </el-form>
       </el-col>
@@ -128,6 +129,25 @@
           <el-form-item>
             <el-button type="primary" @click="giveintegral">赠送</el-button>
             <el-button type="primary" @click.native="givefromintegral = false">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
+      <!--赠送会员卡-->
+      <el-dialog title="赠送会员卡" :visible.sync="givefromcard" :close-on-click-modal="false">
+        <el-form :model="cardForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+          <el-form-item label="会员卡类型" prop="score">
+            <el-select v-model="cardForm.mold" placeholder="请选择" clearable>
+              <el-option
+                v-for="item in mold"
+                :key="item.value"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="givecard">赠送</el-button>
+            <el-button type="primary" @click.native="givefromcard = false">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -203,7 +223,7 @@
               <el-table-column
                 prop="no"
                 label="游戏房间号"
-                width="180">
+                width="150">
               </el-table-column>
               <el-table-column
                 prop="game"
@@ -246,6 +266,7 @@
         activeName: 'first',//选项卡默认显示第一页
         giveFormVisible: false,//隐藏金币弹窗
         givefromintegral: false,//隐藏积分弹窗
+        givefromcard:false,
         other: false,//隐藏其他信息弹窗
         rules: {
           gold: [
@@ -310,7 +331,15 @@
         noVipAmount:'',
         vipAmount:'',
         amount:'',
-        sorting:{}
+        sorting:{},
+        mold:[
+          {value:'日卡'},
+          {value:'周卡'},
+          {value:'月卡'},
+          {value:'季卡'},
+        ],
+        cardForm:{},
+        cardForm1:{}
       }
     },
     methods: {
@@ -402,7 +431,7 @@
       givegold() {
         let ids = this.sels.map(item => item.id).toString();
         let that = this;
-        this.$confirm('确认赠送金币吗？', '提示', {
+        this.$confirm('确认赠送玉石吗？', '提示', {
           type: 'warning'
         }).then(() => {
           if (this.normalForm.gold == undefined || this.normalForm.gold == "") {
@@ -482,7 +511,7 @@
         });
       },
       //赠送金币弹窗
-      showgold: function (index, row) {
+      showgold: function () {
         this.giveFormVisible = true;
         this.addForm = {
           name: '',
@@ -494,8 +523,9 @@
       //赠送金币
       giveintegral() {
         let ids = this.sels.map(item => item.id).toString();
+        console.log(ids)
         let that = this;
-        this.$confirm('确认赠送金币吗？', '提示', {
+        this.$confirm('确认赠送礼券吗？', '提示', {
           type: 'warning'
         }).then(() => {
           if (this.normalForm.score == undefined || this.normalForm.score == "") {
@@ -529,7 +559,7 @@
                   if (res.data.success == true) {
                     that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
                     this.normalForm.score = '';//清空内容
-                    this.givefromintegral = false;//关闭弹窗
+                    this.givefromcard = false;//关闭弹窗
                   } else {
                     that.$message.error({showClose: true, message: err.toString(), duration: 2000});
                   }
@@ -582,6 +612,88 @@
           publishAt: '',
           description: ''
         };
+      },
+      //赠送会员卡
+      showcard:function(){
+        this.givefromcard = true;
+      },
+      givecard:function(){
+        if(this.cardForm.mold == '日卡'){
+          this.cardForm1.mold = 1;
+        }
+        if(this.cardForm.mold == '周卡'){
+          this.cardForm1.mold = 7;
+        }
+        if(this.cardForm.mold == '月卡'){
+          this.cardForm1.mold = 30;
+        }
+        if(this.cardForm.mold == '季卡'){
+          this.cardForm1.mold = 90;
+        }
+        let ids = this.sels.map(item => item.id).toString();
+        let that = this;
+        this.$confirm('确认赠送会员卡吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          that.loading = true;
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/member/give_reward_clubcard',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'vipTime':this.cardForm1.mold,
+              'id': ids,
+              'token': sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            that.loading = false;
+            if (res.data.success == true) {
+              that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
+              this.cardForm.mold = '';//清空内容
+              this.givefromcard = false;//关闭弹窗
+              this.handleSearch()
+            } else {
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break;
+                case 400:
+                  this.$message({
+                    showClose: true,
+                    message: '请按要求输入',
+                    type: 'warning'
+                  });
+                  break;
+              }
+            }
+          })
+        })
       },
       ChangePage(val) {
         this.page = val;

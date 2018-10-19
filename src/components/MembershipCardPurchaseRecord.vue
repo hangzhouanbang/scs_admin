@@ -88,7 +88,7 @@
         state: [],
         number:'',
         sorting:{},
-        page:1
+        page:1,
       }
     },
     methods: {
@@ -227,8 +227,22 @@
   .warp-main {
     margin-top: 30px;
   }
-
   .memberInput {
     width: 220px;
+  }
+  .bg-purple{
+    width:200px;
+    height:100px;
+    text-align: center;
+    background-color: #eee;
+    border-radius: 5px;
+    border:1px solid #eee;
+  }
+  .bg-purple div:nth-child(1){
+    margin-top:20px;
+    font-size:20px;
+  }
+  .bg-purple div:nth-child(2){
+    margin-top:10px;
   }
 </style>

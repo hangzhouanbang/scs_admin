@@ -66,7 +66,7 @@
                   type: 'warning'
                 });
               } else {
-                this.$router.replace('/newVip');
+                this.$router.replace('/index');
                 this.$message({
                   showClose: true,
                   message: '登录成功',

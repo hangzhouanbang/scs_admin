@@ -23,8 +23,6 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="product" label="商品类型" width="100"></el-table-column>
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="repertory" label="库存数量" width="100" sortable></el-table-column>
-        <el-table-column prop="remain" label="剩余数量" width="100" sortable></el-table-column>
         <el-table-column prop="firstPrice" label="一级价格" width="100" sortable></el-table-column>
         <el-table-column prop="secordPrice" label="二级价格" width="100" sortable></el-table-column>
         <el-table-column prop="productPic" label="ICON图" width="100">
@@ -66,9 +64,6 @@
         </el-form-item>
         <el-form-item label="商品数量" prop="number" style="width:317px;">
           <el-input v-model="normalForm.number" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="库存数量" prop="repertory" style="width:317px;">
-          <el-input v-model="normalForm.repertory" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="支付方式" prop="payType">
           <el-select v-model="normalForm.payType" placeholder="请选择">
@@ -124,9 +119,6 @@
           </el-form-item>
           <el-form-item label="商品数量" prop="number" style="width:317px;">
             <el-input v-model="adjustForm.number" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="库存数量" prop="repertory" style="width:317px;">
-            <el-input v-model="adjustForm.repertory" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="支付方式" prop="payType">
             <el-select v-model="adjustForm.payType" placeholder="请选择">
@@ -210,6 +202,7 @@
             },
             imageUrl: '',
             options:[
+              {value:'日卡'},
               {value:'周卡'},
               {value:'月卡'},
               {value:'季卡'}
@@ -336,7 +329,6 @@
               number:this.trim(this.normalForm.number),
               firstPrice:this.normalForm.firstPrice,
               secordPrice:this.trim(this.normalForm.secordPrice),
-              repertory:this.trim(this.normalForm.repertory),
               payType:this.normalForm1.payType,
               productPic:this.imageUrl,
               weight:this.normalForm.weight,
@@ -422,7 +414,6 @@
                 number:this.adjustForm.number,
                 firstPrice:this.adjustForm.firstPrice,
                 secordPrice:this.adjustForm.secordPrice,
-                repertory:this.adjustForm.repertory,
                 payType:this.adjustForm1.payType,
                 productPic:this.imageUrl,
                 sale:this.radioData,

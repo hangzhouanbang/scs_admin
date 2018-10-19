@@ -39,6 +39,7 @@ import Winning from '@/components/Winning.vue'
 import ReCharge from '@/components/ReCharge.vue'
 import LimitLogin from '@/components/LimitLogin.vue'
 import MapManagement from '@/components/MapManagement.vue'
+import Index from '@/components/Index.vue'
 
 Vue.use(Router)
 
@@ -48,6 +49,17 @@ export default new Router({
       path: '/',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/admin',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-shouye', // 图标样式class
+      children: [
+        {path: '/index', component: Index, name: '首页', menuShow: true}
+      ]
     },
     {
       path: '/home',

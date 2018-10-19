@@ -55,8 +55,9 @@
         <el-table-column prop="product" label="商品名称" width="120"></el-table-column>
         <el-table-column prop="accountingAmount" label="数量" width="100"></el-table-column>
         <el-table-column prop="summary.text" label="类型" width="100"></el-table-column>
-        <el-table-column prop="accountingTime" label="使用时间" width="100" sortable></el-table-column>
-        <el-table-column prop="receiverId" label="使用对象" width="100"></el-table-column>
+        <el-table-column prop="accountingTime" label="使用时间" width="160" sortable></el-table-column>
+        <el-table-column prop="receiverId" label="使用对象" width="140"></el-table-column>
+        <el-table-column prop="balanceAfterRi" label="剩余日卡" width="100" sortable></el-table-column>
         <el-table-column prop="balanceAfterZhou" label="剩余周卡" width="100" sortable></el-table-column>
         <el-table-column prop="balanceAfterYue" label="剩余月卡" width="100" sortable></el-table-column>
         <el-table-column prop="balanceAfterJi" label="剩余季卡" sortable></el-table-column>
@@ -100,7 +101,8 @@
         tabPosition: 'left',
         state:[],
         sorting:{},
-        page:1
+        page:1,
+        filters1:{}
       }
     },
     methods: {
@@ -139,6 +141,21 @@
           this.state.endTime - this.state.startTime < 0){
           return;
         }
+        if(this.filters.mailType == '充值'){
+          this.filters1.mailType = 'recharge'
+        }
+        if(this.filters.mailType == '购买'){
+          this.filters1.mailType = 'buy'
+        }
+        if(this.filters.mailType == '上级转增'){
+          this.filters1.mailType = 'boss'
+        }
+        if(this.filters.mailType == '转增下级'){
+          this.filters1.mailType = 'junior'
+        }
+        if(this.filters.mailType == '积分兑换'){
+          this.filters1.mailType = 'score'
+        }
         axios({
           method: 'post',
           url: this.global.mPath + '/agent/queryclubcardrecord',
@@ -146,11 +163,11 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '10',//每页数量
+            'size': '15',//每页数量
             'page': this.page,//当前页
             'agentId':this.trim(this.filters.id),
             'agent':this.trim(this.filters.nickname),
-            'type':this.filters.mailType,
+            'type':this.filters1.mailType,
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime':this.state.endTime,
             'token':sessionStorage.getItem('token'),
@@ -253,7 +270,6 @@
   .warp-main {
     margin-top: 30px;
   }
-
   .img {
     float: left;
     margin-right: 40px;

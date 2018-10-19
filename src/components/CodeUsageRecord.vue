@@ -39,6 +39,7 @@
       <!-- 推广员操作记录列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;" @sort-change="sort">
+        <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
         <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
         <el-table-column prop="invitationCode" label="推广码" width="120"></el-table-column>
@@ -123,7 +124,7 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '10',//每页数量
+            'size': '15',//每页数量
             'page': this.page,//当前页
             'agentId':this.trim(this.filters.id),
             'agent':this.trim(this.filters.nickname),

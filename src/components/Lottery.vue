@@ -350,7 +350,6 @@
             .then((res) => {
                 this.loading = false;//隐藏加载条
                 this.lottery = res.data.data;
-                //console.log(res.data.data)
               },
             ).catch((e) => {
             if (e && e.response) {
@@ -397,7 +396,7 @@
             params: {
               id:this.adjustForm.id,
               name:this.adjustForm.name,
-              type:this.adjustForm.name,
+              type:this.adjustForm.type,
               singleNum:this.adjustForm.singleNum,
               storeNum:this.adjustForm.storeNum,
               iconUrl:this.imageUrl1,
@@ -418,7 +417,6 @@
               },
             ).catch((e) => {
             this.loading = false;
-            console.log(error);
             this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         },
@@ -428,7 +426,7 @@
           }).then(() => {
             axios({
               method: 'post',
-              url: this.global.mPath + '/signin/releasesigninprize ',
+              url: this.global.mPath + '/signin/releasesigninprize',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -469,13 +467,13 @@
             },
             params: {
               name:this.addForm.name,
-              type:this.value,
+              type:this.addForm.type,
               singleNum:this.addForm.singleNum,
               storeNum:this.addForm.storeNum,
               iconUrl:this.imageUrl,
               prizeProb:this.addForm.prizeProb,
               firstPrizeProb:this.addForm.firstPrizeProb,
-              overstep:this.value1,
+              overstep:this.addForm.overstep,
               token:sessionStorage.getItem('token')
             }
           })
@@ -523,7 +521,6 @@
                 },
               ).catch((e) => {
               this.loading = false;
-              console.log(error);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           })

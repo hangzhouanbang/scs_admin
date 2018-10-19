@@ -135,7 +135,6 @@
         total: 0,
         page: 1,
         limit: 10,
-        roles:'',
         loading: false,
         sels: [], //列表选中列
         //编辑相关数据

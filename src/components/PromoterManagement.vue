@@ -80,14 +80,14 @@
       <el-table-column label="状态" prop="state"  sortable="custom"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto">
         <template slot-scope="scope">
-          <el-button type="text" @click="particulars(scope.$index,scope.row)">详情</el-button>
-          <el-button type="text" @click="operation(scope.$index,scope.row)">操作</el-button>
+          <el-button type="text" @click.native="particulars(scope.$index,scope.row)">详情</el-button>
+          <el-button type="text" @click.native="operation(scope.$index,scope.row)">操作</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!--详情-->
-    <el-dialog title="" :visible.sync="centerDialogVisible" :close-on-click-modal="false">
+    <el-dialog title="详情" :visible.sync="centerDialogVisible" :close-on-click-modal="false">
       <el-table :data="roles" style="width: 100%;">
         <el-table-column label="头像">
           <template slot-scope="scope">
@@ -99,9 +99,10 @@
         <el-table-column label="性别" prop="gender"></el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
         <el-table-column label="注册时间" prop="createTime"></el-table-column>
+        <el-table-column label="推广员等级" prop="level"></el-table-column>
       </el-table>
       <el-table :data="roles" style="width: 100%;">
-        <el-table-column label="推广员等级" prop="level"></el-table-column>
+        <el-table-column label="日卡剩余" prop="clubCardRi"></el-table-column>
         <el-table-column label="周卡剩余" prop="clubCardZhou"></el-table-column>
         <el-table-column label="月卡剩余" prop="clubCardYue"></el-table-column>
         <el-table-column label="季卡剩余" prop="clubCardJi" sortabl></el-table-column>
@@ -110,9 +111,10 @@
         <el-table-column label="邀请码" prop="invitationCode"></el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="MembershipAdjustment">会员卡调整</el-button>
-        <el-button @click="IntegralAdjustment">积分调整</el-button>
-        <el-button @click="Code">查看二维码</el-button>
+        <el-button @click.native="MembershipAdjustment">会员卡调整</el-button>
+        <el-button @click.native="IntegralAdjustment">积分调整</el-button>
+        <el-button @click.native="Code">查看二维码</el-button>
+        <el-button @click.native="Players(1)">查看绑定玩家</el-button>
         <router-link :to="{path:'/membershipCardPurchaseRecord'}">
           <el-button>会员卡购买记录</el-button>
         </router-link>
@@ -144,7 +146,7 @@
           <el-input class="memberInput" v-model="publishForm.afternumber" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="notarizeVisible = true,publishVisible =false">确认调整</el-button>
+          <el-button type="primary" @click.native="notarizeVisible = true,publishVisible =false">确认调整</el-button>
           <el-button type="primary" @click.native="publishVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -158,7 +160,7 @@
         </div>
         <br/>
         <div align="center">
-          <el-button type="primary" @click="sure">确认调整</el-button>
+          <el-button type="primary" @click.native="sure">确认调整</el-button>
           <el-button type="primary" @click.native="notarizeVisible = false,publishVisible = true">返回修改</el-button>
         </div>
       </el-form>
@@ -177,7 +179,7 @@
           <el-input class="memberInput" v-model="integralForm.afterAmount" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="sureVisible = true,integralVisible =false">确认调整</el-button>
+          <el-button type="primary" @click.native="sureVisible = true,integralVisible =false">确认调整</el-button>
           <el-button type="primary" @click.native="integralVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -191,7 +193,7 @@
         </div>
         <br/>
         <div align="center">
-          <el-button type="primary" @click="Confirm">确认调整</el-button>
+          <el-button type="primary" @click.native="Confirm">确认调整</el-button>
           <el-button type="primary" @click.native="sureVisible = false,integralVisible = true">返回修改</el-button>
         </div>
       </el-form>
@@ -199,14 +201,91 @@
 
     <!--查看二维码-->
     <el-dialog title="查看二维码" :visible.sync="codeVisible" :close-on-click-modal="false">
-      <img :src="src" id="erweima" style="width:200px;height:200px;border:1px solid #000;">
+      <img :src="src" style="width:200px;height:200px;border:1px solid #000;">
+    </el-dialog>
+
+    <!--查看绑定玩家-->
+    <el-dialog title="查看绑定玩家" :visible.sync="playersVisible" :close-on-click-modal="false">
+      <el-table :data="player" style="width: 100%;">
+        <el-table-column label="玩家ID" prop="memberId"></el-table-column>
+        <el-table-column label="玩家昵称" prop="nickname"></el-table-column>
+        <el-table-column label="绑定时间" prop="createTime"></el-table-column>
+        <el-table-column prop="systemMail.createtime" label="操作" width="auto">
+          <template slot-scope="scope">
+            <el-button type="text" @click.native="showother(scope.$index,scope.row)">详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!--查看会员详情-->
+    <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false" class="other">
+      <!-- 其他信息-->
+      <el-form ref="details" :model="details" label-width="150px">
+        <el-form-item label="真实姓名：">
+          <el-button type="text" style="color:#000;">{{details.realName}}</el-button>
+        </el-form-item>
+        <el-form-item label="性别：">
+          <el-button type="text" style="color:#000;">{{details.gender}}</el-button>
+        </el-form-item>
+        <el-form-item label="手机号码：">
+          <el-button type="text" style="color:#000;">{{details.phone}}</el-button>
+        </el-form-item>
+        <el-form-item label="身份证号：">
+          <el-button type="text" style="color:#000;">{{details.verifyUser}}</el-button>
+        </el-form-item>
+        <el-form-item label="会员总消费：">
+          <el-button type="text" style="color:#000;">{{details.cost}}元</el-button>
+        </el-form-item>
+        <el-form-item label="登录时间：">
+          <el-button type="text" style="color:#000;">{{details.loginTime}}</el-button>
+        </el-form-item>
+        <el-form-item label="登录ip：">
+          <el-button type="text" style="color:#000;">{{details.loginIp}}</el-button>
+        </el-form-item>
+        <el-form-item label="在线时间：">
+          <el-button type="text" style="color:#000;">{{details.onlineTime}}</el-button>
+        </el-form-item>
+        <el-form-item label="正在游戏的房间：">
+          <el-table
+            :data="tableData"
+            style="width: 100%;">
+            <el-table-column
+              prop="no"
+              label="游戏房间号"
+              width="150">
+            </el-table-column>
+            <el-table-column
+              prop="game"
+              label="游戏名称"
+              width="180">
+            </el-table-column>
+            <el-table-column
+              prop="vip"
+              label="是否VIP房间">
+            </el-table-column>
+            <el-table-column
+              prop="playersCount"
+              label="玩家人数">
+            </el-table-column>
+            <el-table-column
+              prop="panCountPerJu"
+              label="每局盘数">
+            </el-table-column>
+            <el-table-column
+              prop="currentPanNum"
+              label="当前盘数">
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+      </el-form>
     </el-dialog>
 
     <!--操作-->
     <el-dialog title="" :visible.sync="operateVisible" :close-on-click-modal="false">
       <div class="left">
         <el-button class="bound" type="primary" @click="pinless()">绑定</el-button><br>
-        <el-button class="levelup" @click="levelup()">调整等级</el-button>
+        <el-button class="levelup" @click.native="levelup()">调整等级</el-button>
       </div>
       <el-form ref="form" :model="form" label-width="100px" class="form" v-if="boundVisible">
         <el-form-item label="上级推广员ID">
@@ -216,8 +295,8 @@
           <el-input v-model="form.id"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="bound()">绑定</el-button>
-          <el-button @click="unbound()">解除绑定</el-button>
+          <el-button type="primary" @click.native="bound()">绑定</el-button>
+          <el-button @click.native="unbound()">解除绑定</el-button>
         </el-form-item>
       </el-form>
       <el-form ref="form" :model="form" label-width="100px" class="form" v-if="LevelUpVisible">
@@ -238,7 +317,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click="makeSure()">确认修改</el-button>
+          <el-button @click.native="makeSure()">确认修改</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -269,6 +348,7 @@
               {value: '二级推广员'}
             ],
             types:[
+              {value:'日卡'},
               {value:'周卡'},
               {value:'月卡'},
               {value:'季卡'},
@@ -285,6 +365,8 @@
             integralVisible:false,
             sureVisible:false,
             codeVisible:false,
+            playersVisible:false,
+            other:false,
             state:'',
             seniorAmount:'',
             juniorAmount:'',
@@ -297,7 +379,10 @@
             integralForm:{},
             score:'',
             publishForm1:{},
-            src:''
+            src:'',
+            player:[],
+            details:{},
+            tableData:[]
           }
         },
         methods:{
@@ -420,6 +505,7 @@
                 row.clubCardYue = res.data.data.clubCardYue;
                 row.clubCardJi = res.data.data.clubCardJi;
                 row.clubCardZhou = res.data.data.clubCardZhou;
+                row.clubCardRi = res.data.data.clubCardRi;
                 row.score = res.data.data.score;
                 this.roles = [Object.assign({}, row)];
                 this.state = res.data.data.agent.state;
@@ -512,7 +598,6 @@
               if(res.data.success){
                 this.$message.success({showClose: true, message: '等级修改成功', duration: 1500});
                 this.operateVisible = false;
-                // this.relieveDialogVisible = false;
                 this.handleSearch(1)
               }else{
                 this.$message.error({showClose: true, message: err.toString(), duration: 2000});
@@ -577,6 +662,9 @@
           },
           //确认调整会员卡
           sure() {
+            if(this.publishForm.product == '日卡'){
+              this.publishForm1.product = 'ri'
+            }
             if(this.publishForm.product == '周卡'){
               this.publishForm1.product = 'zhou'
             }
@@ -714,7 +802,92 @@
             this.centerDialogVisible = false;
             this.codeVisible = true;
             this.src = this.global.mPath + '/agent/qrcode?token='+sessionStorage.getItem('token')+'&agentId='+this.id
-          }
+          },
+          Players:function(page){
+            this.playersVisible = true
+            this.centerDialogVisible = false;
+            axios({
+              url:this.global.mPath + '/agent/queryinvitatemember',
+              method:'post',
+              params:{
+                page:page,
+                size:'10',
+                agentId:this.id,
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              console.log(res.data.data.listPage.items)
+              this.player = res.data.data.listPage.items;
+              for(let i = 0;i < this.player.length;i++){
+                this.player[i].createTime = this.dateTimeFormat(this.player[i].createTime)
+              }
+            }).catch((e) => {
+              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            })
+          },
+          //查看会员详情
+          showother: function (index,row) {
+            this.other = true;
+            this.playersVisible = false;
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/member/querymemberdetail',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'memberId': row.memberId,
+                'token':sessionStorage.getItem('token'),
+              }
+            })
+              .then((res) => {
+                  this.loading = false;//隐藏加载条
+                  this.details = res.data.data;
+                  this.tableData = res.data.data.roomList;
+                  for(var i = 0;i < this.tableData.length;i++){
+                    if(this.tableData[i].vip == true){
+                      this.tableData[i].vip = '是'
+                    }else{
+                      this.tableData[i].vip = '否'
+                    }
+                  }
+                },
+              ).catch((e) => {
+              if (e && e.response) {
+                switch (e.response.status) {
+                  case 504:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break
+                  case 500:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break
+                  case 405:
+                    this.$message({
+                      showClose: true,
+                      message: '请先登录',
+                      type: 'warning'
+                    });
+                    break
+                }
+              }
+            });
+            this.addForm = {
+              name: '',
+              author: '',
+              publishAt: '',
+              description: ''
+            };
+          },
         },
         mounted(){
             this.handleSearch();
@@ -770,5 +943,8 @@
   }
   .bg-purple div:nth-child(2){
     margin-top:10px;
+  }
+  .el-button{
+    padding:12px;
   }
 </style>

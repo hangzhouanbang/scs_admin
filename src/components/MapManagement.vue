@@ -246,7 +246,7 @@
   }
   .btn{
     position: absolute;
-    top:130px;
+    top:325px;
     left:-33px;
   }
   .avatar{
