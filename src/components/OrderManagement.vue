@@ -17,7 +17,7 @@
       <el-col :span="6">
         <div class="grid-content bg-purple">
           <div class="type">未支付</div>
-          <div class="num">{{notPayCost}} {{notPayAmount}}单</div>
+          <div class="num">{{notPayCost}}元 {{notPayAmount}}单</div>
         </div>
       </el-col>
     </el-row>

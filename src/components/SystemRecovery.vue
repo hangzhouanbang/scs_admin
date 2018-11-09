@@ -365,7 +365,7 @@
     width: 50%;
   }
 
-  .warp-main {
+  .toolbar {
     margin-top: 20px;
   }
 

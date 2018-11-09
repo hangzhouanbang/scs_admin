@@ -34,6 +34,7 @@
       <el-table-column prop="phone" label="手机号码" width="auto"></el-table-column>
       <el-table-column prop="userName" label="姓名" width="auto"></el-table-column>
       <el-table-column prop="area" label="地区" width="auto"></el-table-column>
+      <el-table-column prop="bossId" label="推荐人邀请码" width="auto"></el-table-column>
       <el-table-column prop="desc" label="备注" width="auto"></el-table-column>
       <el-table-column prop="state" label="操作" width="auto">
         <template slot-scope="scope">
@@ -47,7 +48,15 @@
     <el-dialog title="申请记录" :visible.sync="recordDialogVisible" width="37%" center v-model="applicationRecord">
       <p>申请人：{{nickname}}</p>
       <p>手机号码：{{phone}}</p>
-      <p>是否同意申请？</p>
+      <span style="margin-left:140px;">选择代理级别：</span>
+      <el-select v-model="level" placeholder="请选择" style="width:115px;height:30px;">
+        <el-option
+          v-for="item in options"
+          :key="item.type"
+          :label="item.label"
+          :value="item.type">
+        </el-option>
+      </el-select>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="pass()" class="agree">同意</el-button>
         <el-button type="primary" @click="unpass()">拒绝</el-button>
@@ -83,7 +92,10 @@
             recordDialogVisible:false,
             applicationRecord:{},
             AGRDAgreed:false,
-            operator:true
+            operator:true,
+            level:'',
+            options:[],
+            typeId:''
           }
         },
         methods:{
@@ -141,14 +153,24 @@
             this.nickname = row.nickname;
             this.phone = row.phone;
             this.idCard = row.idCard;
+            axios({
+              url:this.global.mPath + '/agent/queryagenttype',
+              method:'post',
+              params:{
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              console.log(res.data.data)
+              this.options = res.data.data.listPage.items;
+            })
           },
           pass:function(){
-            console.log(this.applicationRecord.id)
             axios({
               url:this.global.mPath + '/agent/applypass',
               method:'post',
               params:{
                 recordId:this.applicationRecord.id,
+                type:this.level,
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {

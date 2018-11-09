@@ -23,8 +23,7 @@
         <el-table-column type="index" width="60"></el-table-column>
         <el-table-column prop="product" label="商品类型" width="100"></el-table-column>
         <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="firstPrice" label="一级价格" width="100" sortable></el-table-column>
-        <el-table-column prop="secordPrice" label="二级价格" width="100" sortable></el-table-column>
+        <el-table-column prop="price" label="价格" width="100" sortable></el-table-column>
         <el-table-column prop="productPic" label="ICON图" width="100">
           <template slot-scope="scope">
             <img :src="scope.row.productPic" alt="" style="width: 50px;height: 50px;">
@@ -75,11 +74,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="一级价格" prop="firstPrice">
-          <el-input v-model="normalForm.firstPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
-        </el-form-item>
-        <el-form-item label="二级价格" prop="secordPrice">
-          <el-input v-model="normalForm.secordPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
+        <el-form-item label="设置价格" prop="price">
+          <el-input v-model="normalForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
         </el-form-item>
         <el-form-item label="权重" prop="weight">
           <el-input v-model="normalForm.weight" auto-complete="off" style="width:217px;" placeholder="请输入数字"></el-input>
@@ -130,11 +126,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="一级价格" prop="firstPrice">
-            <el-input v-model="adjustForm.firstPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
-          </el-form-item>
-          <el-form-item label="二级价格" prop="secordPrice">
-            <el-input v-model="adjustForm.secordPrice" auto-complete="off" style="width:217px;"></el-input> 元/积分
+          <el-form-item label="价格" prop="price">
+            <el-input v-model="adjustForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
           </el-form-item>
           <el-form-item label="权重" prop="weight">
             <el-input v-model="adjustForm.weight" auto-complete="off" style="width:217px;"></el-input>
@@ -327,8 +320,7 @@
             params: {
               product:this.normalForm.product,
               number:this.trim(this.normalForm.number),
-              firstPrice:this.normalForm.firstPrice,
-              secordPrice:this.trim(this.normalForm.secordPrice),
+              price:this.normalForm.price,
               payType:this.normalForm1.payType,
               productPic:this.imageUrl,
               weight:this.normalForm.weight,
@@ -412,8 +404,7 @@
                 id:this.adjustForm.id,
                 product:this.adjustForm.product,
                 number:this.adjustForm.number,
-                firstPrice:this.adjustForm.firstPrice,
-                secordPrice:this.adjustForm.secordPrice,
+                price:this.adjustForm.price,
                 payType:this.adjustForm1.payType,
                 productPic:this.imageUrl,
                 sale:this.radioData,

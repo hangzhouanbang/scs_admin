@@ -27,19 +27,20 @@
       <el-table :data="list" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="adminname" label="管理员名称" width="160"></el-table-column>
-        <el-table-column prop="notice" label="公告内容" width="300"></el-table-column>
-        <el-table-column prop="place" label="发布地方" width="160">
+        <el-table-column prop="adminName" label="管理员名称" width="160"></el-table-column>
+        <el-table-column prop="content" label="公告内容" width="300"></el-table-column>
+        <el-table-column prop="place" label="发布地方" width="160"></el-table-column>
+        <el-table-column prop="state" label="状态" width="100">
           <template slot-scope="scope">
-            <el-button type="text" v-if="scope.row.place === '0'">游戏大厅</el-button>
-            <el-button type="text" v-if="scope.row.place === '1'">游戏房间</el-button>
-            <el-button type="text" v-if="scope.row.place === '2'">游戏大厅和房间</el-button>
+            <el-button type="text" v-if="scope.row.state === 'START'">启用</el-button>
+            <el-button type="text" v-if="scope.row.state === 'STOP'">禁用</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="state" label="状态">
+        <el-table-column prop="" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" v-if="scope.row.state === 1" :disabled="false" @click="off(scope.$index,scope.row)">启用</el-button>
-            <el-button type="info" v-if="scope.row.state === 0" @click="open(scope.$index,scope.row)">禁用</el-button>
+            <el-button type="primary" v-if="scope.row.state === 'STOP'" @click="open(scope.$index,scope.row)">启用</el-button>
+            <el-button type="info" v-if="scope.row.state === 'START'" @click="off(scope.$index,scope.row)">禁用</el-button>
+            <el-button type="danger" v-if="scope.row.state === 'STOP'" @click="del(scope.$index,scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -64,9 +65,7 @@
           </el-form-item>
           <el-form-item label="发布位置" prop="place">
             <template>
-              <el-radio v-model="place" label="0">游戏大厅</el-radio>
-              <el-radio v-model="place" label="1">游戏房间</el-radio>
-              <el-radio v-model="place" label="2">游戏大厅和房间</el-radio>
+              <el-checkbox v-for="place in places" :label="place" :key="place" @change="handleCheckedChange(place)" :checked="false">{{place}}</el-checkbox>
             </template>
           </el-form-item>
           <el-form-item>
@@ -86,7 +85,8 @@
     name: "History",
     data() {
       return {
-        place: '1',
+        place:[],
+        places:['游戏大厅', '游戏房间'],
         normalForm: {},
         rules: {
           notice: [
@@ -109,24 +109,29 @@
           return str.replace(/(^\s+)|(\s+$)/g, "");
         }
       },
+      //数组去重
+      uniq(array){
+        let temp = []; //一个新的临时数组
+        for(let i = 0; i < array.length; i++){
+          if(temp.indexOf(array[i]) == -1){
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      },
       //点击启用按钮
-      off(index, row) {
-        sessionStorage.setItem('id', this.list[index].id);//保存id
+      open(index, row) {
         axios({
           method: 'post',
-          url: this.global.mPath + '/noticectrl/updatenotice',
+          url: this.global.mPath + '/sysnotice/startnotice',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'id': sessionStorage.getItem('id'),
-            'token':sessionStorage.getItem('token'),
-            'notice': row.notice,//公告信息
-            'place': row.place,//发布位置:0-游戏大厅，1-游戏房间，2-游戏大厅加游戏房间同时显示
-            'state': 1
+            'id': row.id,
+            'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
+        }).then((res) => {
               this.handleSearch()
             },
           ).catch((e) => {
@@ -160,20 +165,16 @@
         });
       },
       //点击禁用按钮
-      open(index, row) {
-        sessionStorage.setItem('id', this.list[index].id);//保存id
+      off(index, row) {
         axios({
           method: 'post',
-          url: this.global.mPath + '/noticectrl/updatenotice',
+          url: this.global.mPath + '/sysnotice/stopnotice',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'id': sessionStorage.getItem('id'),
+            'id': row.id,
             'token':sessionStorage.getItem('token'),
-            'notice': row.notice,//公告信息
-            'place': row.place,//发布位置:0-游戏大厅，1-游戏房间，2-游戏大厅加游戏房间同时显示
-            'state': 0
           }
         })
           .then((res) => {
@@ -209,92 +210,21 @@
           }
         });
       },
-      //发布公告
-      issue() {
-        if (this.normalForm.notice == undefined || this.normalForm.notice == "") {
-          this.$message({
-            showClose: true,
-            message: '公告内容不能为空',
-            type: 'warning'
-          });
-        } else {
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/noticectrl/addnotice',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              'status': '0',
-              'notice': this.trim(this.normalForm.notice),
-              'place': this.trim(this.place),
-              'token':sessionStorage.getItem('token')
-            }
-          })
-            .then((res) => {
-                this.$message({
-                  showClose: true,
-                  message: '发布成功',
-                  type: 'success'
-                });
-                this.normalForm.notice = ''
-                this.addFormVisible = false;//关闭弹窗
-                this.handleSearch();
-              },
-            ).catch((e) => {
-            if (e && e.response) {
-              switch (e.response.status) {
-                case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
-                  break
-              }
-            }
-          });
-        }
-      },
-      handleCurrentChange(val) {
-        this.page = val;
-        this.handleSearch(this.page);
-      },
-      handleSearch() {
-        this.loading = true;//显示加载条
-        axios({//根据管理员昵称查询
+      //删除
+      del(index,row){
+        axios({
           method: 'post',
-          url: this.global.mPath + '/noticectrl/querynotice',
+          url: this.global.mPath + '/sysnotice/removenotice',
           headers: {
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '15',//每页数量
-            'page': this.page,//当前页
-            'adminname': this.trim(this.filters.adminname),
-            'token':sessionStorage.getItem('token')
+            'id': row.id,
+            'token':sessionStorage.getItem('token'),
           }
         })
           .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.list = res.data.list;
-              this.total = res.data.count;//总页数
+              this.handleSearch()
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -326,18 +256,136 @@
           }
         });
       },
-      selsChange: function (sels) {
-        this.sels = sels;
+      handleCheckedChange(val){
+        this.place.push(val)
       },
       showAddDialog: function () {
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
-      }
+      },
+      //发布公告
+      issue() {
+        this.place = this.uniq(this.place);
+        if (this.normalForm.notice == undefined || this.normalForm.notice == "") {
+          this.$message({
+            showClose: true,
+            message: '公告内容不能为空',
+            type: 'warning'
+          });
+        } else {
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/sysnotice/addnotice',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'content': this.trim(this.normalForm.notice),
+              'place': this.trim(this.place.toString()),
+              'token':sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+                this.$message({
+                  showClose: true,
+                  message: '发布成功',
+                  type: 'success'
+                });
+                this.normalForm.notice = ''
+                this.place = []
+                let checkbox = document.getElementsByClassName('el-checkbox__input');
+                for(let i = 0;i < checkbox.length;i++){
+                  checkbox[i].classList.remove("is-checked")
+                }
+                this.addFormVisible = false;//关闭弹窗
+                this.handleSearch();
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        }
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.handleSearch(this.page);
+      },
+      handleSearch() {
+        // this.loading = true;//显示加载条
+        axios({//根据管理员昵称查询
+          method: 'post',
+          url: this.global.mPath + '/sysnotice/querynotice',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+            'adminName': this.trim(this.filters.adminname),
+            'token':sessionStorage.getItem('token')
+          }
+        })
+          .then((res) => {
+              this.loading = false;//隐藏加载条
+              this.list = res.data.data.listPage.items;
+              this.total = res.data.count;//总页数
+            },
+          ).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break;
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break;
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      },
+      selsChange: function (sels) {
+        this.sels = sels;
+      },
     },
     mounted() { //初始化页面
       this.handleSearch()
@@ -346,7 +394,7 @@
 </script>
 
 <style scoped>
-  .warp-main {
+  .toolbar {
     margin-top: 20px;
   }
 </style>

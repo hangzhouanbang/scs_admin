@@ -3,7 +3,7 @@
     <!--头部-->
     <el-col :span="24" class="topbar-wrap">
       <div class="topbar-logo topbar-btn">
-        <a href="/"><img src="../assets/logo.png" style="padding-left:8px;"></a>
+        <router-link to="/"><img src="../assets/logo.png" style="padding-left:8px;"></router-link>
       </div>
       <div class="topbar-title">
         <span style="font-size: 18px;color: #fff;">后台管理系统</span>

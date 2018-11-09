@@ -40,6 +40,10 @@ import ReCharge from '@/components/ReCharge.vue'
 import LimitLogin from '@/components/LimitLogin.vue'
 import MapManagement from '@/components/MapManagement.vue'
 import Index from '@/components/Index.vue'
+import PromotionOfEarnings from '@/components/PromotionOfEarnings.vue'
+import DestoonFinanceCash from '@/components/DestoonFinanceCash.vue'
+import ProxyLevelManagement from '@/components/ProxyLevelManagement.vue'
+import OperatingRecord from '@/components/OperatingRecord.vue'
 
 Vue.use(Router)
 
@@ -95,6 +99,7 @@ export default new Router({
         {path: '/memberCard', component: MemberCard, name: '会员卡', menuShow: true},
         {path: '/memberLevel', component: MemberLevel, name: 'vip等级', menuShow: true},
         {path: '/limitLogin', component: LimitLogin, name: '限制登录', menuShow: true},
+        {path: '/operatingRecord', component: OperatingRecord, name: '操作纪录', menuShow: true},
       ]
     },
     {
@@ -157,7 +162,10 @@ export default new Router({
         {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '会员卡使用记录', menuShow: true},
         {path: '/mallManagement', component: MallManagement, name: '推广员商城管理', menuShow: true},
         {path: '/codeUsageRecord', component: CodeUsageRecord, name: '推广码使用记录', menuShow: true},
-        {path: '/mapManagement', component: MapManagement, name: '推广图管理', menuShow: true}
+        {path: '/mapManagement', component: MapManagement, name: '推广图管理', menuShow: true},
+        {path: '/promotionOfEarnings', component: PromotionOfEarnings, name: '查看推广收益', menuShow: true},
+        {path: '/destoonFinanceCash', component: DestoonFinanceCash, name: '提现申请', menuShow: true},
+        {path: '/proxyLevelManagement', component: ProxyLevelManagement, name: '代理级别管理', menuShow: true}
       ]
     },
     {

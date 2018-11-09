@@ -82,16 +82,16 @@
       <!--角色权限管理弹窗-->
       <el-dialog title="角色权限管理" :visible.sync="chooseFormVisible" :close-on-click-modal="false">
         <el-form :model="chooseForm" label-width="100px">
-          <el-table :data="privilege" highlight-current-row @selection-change="selsChange"
-                    style="width: 100%;">
-            <el-table-column type="selection" width="55"></el-table-column>
+          <el-table :data="privilege" highlight-current-row @selection-change="selsChange1"
+                    style="width: 100%;" ref="table">
+            <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
             <el-table-column type="index" width="60"></el-table-column>
             <el-table-column prop="privilege" label="权限列表"></el-table-column>
           </el-table>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="chooseFormVisible = false">取消</el-button>
-          <el-button type="danger" @click.native="chooseSubmit" :disabled="this.sels.length===0">保存</el-button>
+          <el-button type="danger" @click.native="chooseSubmit" :disabled="this.sels1.length===0">保存</el-button>
         </div>
       </el-dialog>
 
@@ -101,9 +101,11 @@
 
 <script>
   import axios from 'axios'
+  import vue from 'vue'
 
   export default {
     name: "Admin",
+    inject:["reload"],
     data() {
       return {
         role: [],//角色
@@ -116,6 +118,7 @@
         limit: 10,
         loading: false,
         sels: [], //列表选中列
+        sels1: [], //列表选中列
 
         //编辑相关数据
         editFormVisible: false,//编辑界面是否显示
@@ -152,7 +155,7 @@
           author: '',
           publishAt: '',
           description: ''
-        }
+        },
       }
     },
     methods: {
@@ -207,6 +210,9 @@
       },
       selsChange: function (sels) {
         this.sels = sels;
+      },
+      selsChange1: function (sels) {
+        this.sels1 = sels;
       },
       //删除角色
       delBook: function (index, row) {
@@ -306,7 +312,6 @@
           description: ''
         };
       },
-
       //显示角色管理界面
       showchoose: function (index, row) {
         //查询所有权限
@@ -317,11 +322,17 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params:{
+            'roleId':row.id,
             'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
               this.privilege = res.data.data;
+              for(let i = 0;i < this.privilege.length;i++){
+                if(this.privilege[i].selected == true){
+                  this.$refs.table.toggleRowSelection(this.privilege[i],true)
+                }
+              }
             },
           ).catch((e) => {
           if (e && e.response) {
@@ -343,13 +354,13 @@
             }
           }
         });
-
         this.chooseFormVisible = true;
         this.editForm = Object.assign({}, row);
       },
       //编辑角色权限
       chooseSubmit: function () {
-        let ids = this.sels.map(item => item.id).toString();
+        let ids = this.sels1.map(item => item.id).toString();
+        // console.log(ids)
         let that = this;
         this.$confirm('确认保存选中记录吗？', '提示', {
           type: 'warning'
@@ -370,6 +381,7 @@
             .then((res) => {
                 that.loading = false;
                 if (res.data.success == true) {
+                  that.reload();
                   that.$message.success({showClose: true, message: '保存成功', duration: 1500});
                   this.chooseFormVisible = false;//关闭弹窗
                   this.handleSearch();
@@ -384,7 +396,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });

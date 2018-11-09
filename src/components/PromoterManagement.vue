@@ -10,14 +10,8 @@
     <el-row :gutter="20" style="margin-top:30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="type">一级推广员</div>
-          <div class="num">{{seniorAmount}}人</div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="grid-content bg-purple">
-          <div class="type">二级推广员</div>
-          <div class="num">{{juniorAmount}}人</div>
+          <div class="type">推广员总数</div>
+          <div class="num">{{amount}}人</div>
         </div>
       </el-col>
     </el-row>
@@ -25,16 +19,19 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="推广员ID">
-          <el-input v-model="filters.id" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model="filters.id" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="推广员昵称">
-          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
+        </el-form-item>
+        <el-form-item label="上级推广员ID">
+          <el-input v-model="filters.bossId" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-input v-model="filters.phone" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model="filters.phone" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="filters.userName" placeholder="姓名" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model="filters.userName" placeholder="姓名" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="注册时间" label-width="68px">
           <el-date-picker
@@ -61,7 +58,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-on:click="handleSearch()">查询</el-button>
+          <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -69,25 +66,29 @@
     <!-- 推广员管理列表-->
     <el-table :data="record" highlight-current-row style="width: 100%;" @sort-change="sort">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="id" label="推广员ID" width="auto"></el-table-column>
-      <el-table-column prop="nickname" label="推广员昵称" width="auto"></el-table-column>
-      <el-table-column prop="level" label="推广员等级" width="auto"  sortable="custom"></el-table-column>
-      <el-table-column prop="createTime" label="注册时间" width="auto"  sortable="custom"></el-table-column>
-      <el-table-column prop="bossId" label="上级推广员ID" width="auto"></el-table-column>
-      <el-table-column prop="bossName" label="上级推广员昵称" width="auto"></el-table-column>
-      <el-table-column prop="phone" label="手机号码" width="auto"></el-table-column>
-      <el-table-column prop="userName" label="姓名" width="auto"></el-table-column>
-      <el-table-column label="状态" prop="state"  sortable="custom"></el-table-column>
+      <el-table-column prop="headimgurl" label="推广员头像" width="120">
+        <template slot-scope="scope">
+          <img :src="scope.row.headimgurl" alt="" style="width: 50px;height: 50px">
+        </template>
+      </el-table-column>
+      <el-table-column prop="id" label="推广员ID" width="120"></el-table-column>
+      <el-table-column prop="nickname" label="推广员昵称" width="150"></el-table-column>
+      <el-table-column prop="createTime" label="注册时间" width="160"  sortable="custom"></el-table-column>
+      <el-table-column prop="inviteMemberNum" label="邀请玩家数" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="juniorNum" label="下级数量" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="agentType.type" label="当前级别" width="120"></el-table-column>
+      <el-table-column prop="bossId" label="上级推广员ID" width="120"></el-table-column>
+      <el-table-column prop="agentType.memberReward" label="充值返利" width="120"></el-table-column>
+      <el-table-column prop="agentType.juniorReward" label="下级返利" width="120"></el-table-column>
+      <el-table-column label="状态" prop="state"  sortable="custom" width="120"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto">
         <template slot-scope="scope">
-          <el-button type="text" @click.native="particulars(scope.$index,scope.row)">详情</el-button>
-          <el-button type="text" @click.native="operation(scope.$index,scope.row)">操作</el-button>
+          <el-button type="text" @click.native="particulars(scope.$index,scope.row)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
-
     <!--详情-->
-    <el-dialog title="详情" :visible.sync="centerDialogVisible" :close-on-click-modal="false">
+    <el-dialog title="详情" :visible.sync="centerDialogVisible" :close-on-click-modal="false" class="see">
       <el-table :data="roles" style="width: 100%;">
         <el-table-column label="头像">
           <template slot-scope="scope">
@@ -96,23 +97,26 @@
         </el-table-column>
         <el-table-column label="昵称" prop="nickname"></el-table-column>
         <el-table-column label="ID" prop="id"></el-table-column>
-        <el-table-column label="性别" prop="gender"></el-table-column>
         <el-table-column label="状态" prop="state"></el-table-column>
+        <el-table-column label="手机号" prop="phone"></el-table-column>
+        <el-table-column label="姓名" prop="userName"></el-table-column>
+        <el-table-column label="地区" prop="area"></el-table-column>
         <el-table-column label="注册时间" prop="createTime"></el-table-column>
-        <el-table-column label="推广员等级" prop="level"></el-table-column>
+        <el-table-column label="邀请玩家数" prop="inviteMemberNum"></el-table-column>
       </el-table>
       <el-table :data="roles" style="width: 100%;">
+        <el-table-column label="下级数" prop="juniorNum"></el-table-column>
+        <el-table-column label="代理级别" prop="agentType.type"></el-table-column>
+        <el-table-column label="上级ID" prop="bossId"></el-table-column>
+        <el-table-column label="充值返利" prop="agentType.memberReward"></el-table-column>
+        <el-table-column label="下级返利" prop="agentType.juniorReward"></el-table-column>
         <el-table-column label="日卡剩余" prop="clubCardRi"></el-table-column>
         <el-table-column label="周卡剩余" prop="clubCardZhou"></el-table-column>
         <el-table-column label="月卡剩余" prop="clubCardYue"></el-table-column>
         <el-table-column label="季卡剩余" prop="clubCardJi" sortabl></el-table-column>
-        <el-table-column label="积分剩余" prop="score" sortabl></el-table-column>
-        <el-table-column label="充值金额" prop="cost"></el-table-column>
         <el-table-column label="邀请码" prop="invitationCode"></el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="MembershipAdjustment">会员卡调整</el-button>
-        <el-button @click.native="IntegralAdjustment">积分调整</el-button>
         <el-button @click.native="Code">查看二维码</el-button>
         <el-button @click.native="Players(1)">查看绑定玩家</el-button>
         <router-link :to="{path:'/membershipCardPurchaseRecord'}">
@@ -123,6 +127,12 @@
         </router-link>
         <el-button @click.native="CancelSubmit" v-if="state === '正常'">取消推广员资格</el-button>
         <el-button @click.native="relieveSubmit" v-if="state === '封禁'">解除封停状态</el-button>
+        <br>
+        <br>
+        <el-button @click.native="LevelAdjustment">代理等级调整</el-button>
+        <el-button @click.native="BindingAdjustment">上级绑定调整</el-button>
+        <el-button @click.native="MembershipAdjustment">会员卡调整</el-button>
+        <el-button @click.native="IntegralAdjustment">积分调整</el-button>
       </div>
     </el-dialog>
 
@@ -200,8 +210,8 @@
     </el-dialog>
 
     <!--查看二维码-->
-    <el-dialog title="查看二维码" :visible.sync="codeVisible" :close-on-click-modal="false">
-      <img :src="src" style="width:200px;height:200px;border:1px solid #000;">
+    <el-dialog title="查看二维码" :visible.sync="codeVisible" :close-on-click-modal="false" class="code">
+      <img :src="src" style="width:200px;height:200px;border:1px solid #000;margin-left:29%;">
     </el-dialog>
 
     <!--查看绑定玩家-->
@@ -281,43 +291,43 @@
       </el-form>
     </el-dialog>
 
-    <!--操作-->
-    <el-dialog title="" :visible.sync="operateVisible" :close-on-click-modal="false">
-      <div class="left">
-        <el-button class="bound" type="primary" @click="pinless()">绑定</el-button><br>
-        <el-button class="levelup" @click.native="levelup()">调整等级</el-button>
-      </div>
-      <el-form ref="form" :model="form" label-width="100px" class="form" v-if="boundVisible">
-        <el-form-item label="上级推广员ID">
-          <el-input v-model="form.bossId1"></el-input>
-        </el-form-item>
-        <el-form-item label="推广员ID">
-          <el-input v-model="form.id"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click.native="bound()">绑定</el-button>
-          <el-button @click.native="unbound()">解除绑定</el-button>
-        </el-form-item>
-      </el-form>
-      <el-form ref="form" :model="form" label-width="100px" class="form" v-if="LevelUpVisible">
+    <!--代理等级调整-->
+    <el-dialog title="代理等级调整" :visible.sync="levelVisible" :close-on-click-modal="false">
+      <el-form ref="form" :model="form" label-width="100px" class="form">
         <el-form-item label="推广员ID">
           <el-input v-model="form.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="当前等级">
-          <el-input v-model="form.level" disabled></el-input>
+          <el-input v-model="type" disabled></el-input>
         </el-form-item>
         <el-form-item label="调整等级">
           <el-select v-model="form.upgrade" placeholder="请选择">
             <el-option
               v-for="item in options"
-              :key="item.value"
+              :key="item.id"
               :label="item.label"
-              :value="item.value">
+              :value="item.type">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button @click.native="makeSure()">确认修改</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!--上级绑定调整-->
+    <el-dialog title="上级绑定调整" :visible.sync="bindingVisible" :close-on-click-modal="false">
+      <el-form ref="form" :model="form" label-width="100px" class="form">
+        <el-form-item label="上级推广员ID">
+          <el-input v-model="form.bossId"></el-input>
+        </el-form-item>
+        <el-form-item label="推广员ID">
+          <el-input v-model="form.id" disabled></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click.native="bound()">绑定</el-button>
+          <el-button @click.native="unbound()">解除绑定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -343,10 +353,7 @@
             roles:[],
             total:0,
             upgrade:'',
-            options: [
-              {value: '一级推广员'},
-              {value: '二级推广员'}
-            ],
+            options: [],
             types:[
               {value:'日卡'},
               {value:'周卡'},
@@ -355,9 +362,8 @@
             ],
             centerDialogVisible:false,
             relieveDialogVisible:false,
-            LevelUpVisible:false,
-            boundVisible:false,
-            operateVisible:false,
+            bindingVisible:false,
+            levelVisible:false,
             disqualifyDialogVisible:true,
             unlockingDialogVisible:false,
             publishVisible:false,
@@ -382,7 +388,9 @@
             src:'',
             player:[],
             details:{},
-            tableData:[]
+            tableData:[],
+            type:'',
+            amount:''
           }
         },
         methods:{
@@ -401,13 +409,7 @@
             let seconds = time.getSeconds();
             return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
           },
-          handleSearch(levelSort,createTimeSort,stateSort){
-            if(this.filters.mailType == '一级推广员'){
-              this.filters.mailType1 = 1;
-            }
-            if(this.filters.mailType == '二级推广员'){
-              this.filters.mailType1 = 2;
-            }
+          handleSearch(page,inviteMemberNumSort,juniorNumSort,createTimeSort,stateSort){
             if(this.filters.startTime){
               let date = new Date(this.filters.startTime);
               this.state1.startTime = date.getTime();
@@ -425,50 +427,50 @@
               url:this.global.mPath + '/agent/queryagent',
               method:'post',
               params:{
-                page:this.page,
+                page:page,
                 size:10,
                 token:sessionStorage.getItem('token'),
                 id:this.filters.id,
+                bossId:this.filters.bossId,
                 nickname:this.filters.nickname,
                 phone:this.filters.phone,
                 userName:this.filters.userName,
                 startTime:this.state1.startTime,
                 endTime:this.state1.endTime,
-                level:this.filters.mailType1,
-                levelSort:levelSort,
+                inviteMemberNumSort:inviteMemberNumSort,
+                juniorNumSort:juniorNumSort,
                 createTimeSort:createTimeSort,
                 stateSort:stateSort
               }
             }).then((res) => {
                 console.log(res.data)
-                this.juniorAmount = res.data.data.juniorAmount
-                this.seniorAmount = res.data.data.seniorAmount
+                this.amount = res.data.data.amount
                 this.record = res.data.data.agentList.items;
                 this.total = res.data.data.agentList.pageCount;
                 for(let i = 0;i < this.record.length;i++){
                   this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
-                  if(this.record[i].level == 1){
-                    this.record[i].level = '一级推广员';
-                    this.record[i].bossId1 = this.record[i].id;
-                  }
-                  if(this.record[i].level == 2){
-                    this.record[i].level = '二级推广员';
-                    this.record[i].bossId1 = this.record[i].bossId;
-                  }
                 }
               }
             ).catch((e) => {
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
           },
-          sort(a){
+          sort(a,page){
             this.sorting = a;
-            if(this.sorting.prop == 'level'){
+            if(this.sorting.prop == 'inviteMemberNum'){
               if(this.sorting.order == 'ascending'){
-                this.sorting.level = 'ASC'
+                this.sorting.inviteMemberNum = 'ASC'
               }
               if(this.sorting.order == 'descending'){
-                this.sorting.level = 'DESC'
+                this.sorting.inviteMemberNum = 'DESC'
+              }
+            }
+            if(this.sorting.prop == 'juniorNum'){
+              if(this.sorting.order == 'ascending'){
+                this.sorting.juniorNum = 'ASC'
+              }
+              if(this.sorting.order == 'descending'){
+                this.sorting.juniorNum = 'DESC'
               }
             }
             if(this.sorting.prop == 'createTime'){
@@ -487,12 +489,16 @@
                 this.sorting.state = 'DESC'
               }
             }
-            this.handleSearch(this.sorting.level,this.sorting.createTime,this.sorting.state)
+            this.handleSearch(page,this.sorting.inviteMemberNum,this.sorting.juniorNum,this.sorting.createTime,this.sorting.state)
+          },
+          handleCurrentChange(val){
+            this.page = val;
+            this.sort(this.sorting,this.page);
           },
           //详情
           particulars:function(index,row){
             this.centerDialogVisible = true;
-            // console.log(row)
+            this.form = row
             axios({
               url:this.global.mPath + '/agent/agentdetail',
               method:'post',
@@ -515,12 +521,52 @@
                 this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
           },
-          //操作
-          operation:function(index,row){
-            this.operateVisible = true;
-            this.boundVisible = true;
-            this.LevelUpVisible = false;
-            this.form = Object.assign({}, row);
+          //代理等级调整
+          LevelAdjustment:function(){
+            console.log(this.form)
+            this.levelVisible = true;
+            this.centerDialogVisible = false;
+            if(this.form.agentType){
+              this.type = this.form.agentType.type
+            }
+            axios({
+              url:this.global.mPath + '/agent/queryagenttype',
+              method:'post',
+              params:{
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              console.log(res.data.data)
+              this.options = res.data.data.listPage.items;
+            })
+          },
+          //确认修改
+          makeSure:function(){
+            axios({
+              url:this.global.mPath + '/agent/settype',
+              method:'post',
+              params:{
+                agentId:this.form.id,
+                type:this.form.upgrade,
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              console.log(res.data)
+              if(res.data.success){
+                this.$message.success({showClose: true, message: '等级修改成功', duration: 1500});
+                this.levelVisible = false;
+                this.handleSearch(this.page)
+              }else{
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
+              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            })
+          },
+          //上级绑定调整
+          BindingAdjustment:function(){
+            this.bindingVisible = true;
+            this.centerDialogVisible = false;
           },
           //绑定
           bound:function(){
@@ -529,15 +575,15 @@
               method:'post',
               params:{
                 agentId:this.form.id,
-                bossId:this.form.bossId1,
+                bossId:this.form.bossId,
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
               console.log(res.data)
               if(res.data.success){
                 this.$message.success({showClose: true, message: '绑定成功', duration: 1500});
-                this.operateVisible = false;
-                this.handleSearch(1)
+                this.bindingVisible = false;
+                this.handleSearch(this.page)
               }else{
                 this.$message.error({showClose: true, message: err.toString(), duration: 2000});
               }
@@ -558,8 +604,8 @@
               console.log(res.data)
               if(res.data.success){
                 this.$message.success({showClose: true, message: '解除绑定成功', duration: 1500});
-                this.operateVisible = false;
-                this.handleSearch(1)
+                this.bindingVisible = false;
+                this.handleSearch(this.page)
               }else{
                 this.$message.error({showClose: true, message: err.toString(), duration: 2000});
               }
@@ -567,45 +613,7 @@
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
           },
-          //绑定按钮
-          pinless:function(){
-            this.LevelUpVisible = false;
-            this.boundVisible = true;
-          },
-          //调整等级
-          levelup:function(){
-            this.LevelUpVisible = true;
-            this.boundVisible = false;
-          },
-          //确认修改
-          makeSure:function(){
-            if(this.form.upgrade == '一级推广员'){
-              this.upgrade = 1;
-            }
-            if(this.form.upgrade == '二级推广员'){
-              this.upgrade = 2;
-            }
-            axios({
-              url:this.global.mPath + '/agent/setlevel',
-              method:'post',
-              params:{
-                agentId:this.form.id,
-                level:this.upgrade,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              console.log(res.data)
-              if(res.data.success){
-                this.$message.success({showClose: true, message: '等级修改成功', duration: 1500});
-                this.operateVisible = false;
-                this.handleSearch(1)
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            }).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
+          //取消推广员资格
           CancelSubmit:function(){
             axios({
               url:this.global.mPath + '/agent/ban',
@@ -621,7 +629,7 @@
                 this.disqualifyDialogVisible = false;
                 this.roles[0].state = res.data.data
                 this.state = '封禁'
-                this.handleSearch(1)
+                this.handleSearch(this.page)
               }else{
                 this.$message.error({showClose: true, message: err.toString(), duration: 2000});
               }
@@ -629,6 +637,7 @@
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
           },
+          //解除封停状态
           relieveSubmit:function(){
             axios({
               url:this.global.mPath + '/agent/liberate',
@@ -644,7 +653,7 @@
                 this.disqualifyDialogVisible = true;
                 this.roles[0].state = res.data.data
                 this.state = '正常'
-                this.handleSearch(1)
+                this.handleSearch(this.page)
               }else{
                 this.$message.error({showClose: true, message: err.toString(), duration: 2000});
               }
@@ -652,10 +661,7 @@
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
           },
-          handleCurrentChange(val){
-            this.page = val;
-            this.sort(this.sorting);
-          },
+          //会员卡调整
           MembershipAdjustment: function () {
             this.centerDialogVisible = false;
             this.publishVisible = true;
@@ -701,7 +707,7 @@
                   });
                   this.centerDialogVisible = false;
                   this.notarizeVisible = false;
-                  this.handleSearch();
+                  this.handleSearch(this.page)
                 }
               },
             ).catch((e) => {
@@ -734,6 +740,7 @@
               }
             });
           },
+          //积分调整
           IntegralAdjustment:function(){
             this.centerDialogVisible = false;
             this.integralVisible = true;
@@ -765,7 +772,7 @@
                   });
                   this.centerDialogVisible = false;
                   this.sureVisible = false;
-                  this.handleSearch();
+                  this.handleSearch(this.page)
                 }
               },
             ).catch((e) => {
@@ -798,11 +805,13 @@
               }
             });
           },
+          //查看二维码
           Code:function(){
             this.centerDialogVisible = false;
             this.codeVisible = true;
             this.src = this.global.mPath + '/agent/qrcode?token='+sessionStorage.getItem('token')+'&agentId='+this.id
           },
+          //查看玩家
           Players:function(page){
             this.playersVisible = true
             this.centerDialogVisible = false;
@@ -890,12 +899,12 @@
           },
         },
         mounted(){
-            this.handleSearch();
+            this.handleSearch(1);
         },
     }
 </script>
 
-<style scoped>
+<style lang="scss">
   .toolbar{
     margin-top:30px;
   }
@@ -946,5 +955,10 @@
   }
   .el-button{
     padding:12px;
+  }
+  .code{
+    .el-dialog{
+      width:32%;
+    }
   }
 </style>

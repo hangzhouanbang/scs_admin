@@ -11,10 +11,10 @@
     <el-row :gutter="20" style="margin:10px 0 0 30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_duliyonghu.png" alt="">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters.amount}}人</div>
             <div class="type">玩家总数</div>
           </div>
@@ -22,10 +22,10 @@
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_vip.png" alt="">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters.vipAmount}}人</div>
             <div class="type red">会员玩家</div>
           </div>
@@ -47,10 +47,10 @@
     <el-row :gutter="20" style="margin:70px 0 0 30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_rika.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters.memberRiAmount}}张</div>
             <div class="type grey">日卡</div>
           </div>
@@ -58,10 +58,10 @@
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_zhouka.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters.memberZhouAmount}}张</div>
             <div class="type grey">周卡</div>
           </div>
@@ -69,10 +69,10 @@
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_yueka.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters.memberYueAmount}}张</div>
             <div class="type grey">月卡</div>
           </div>
@@ -80,10 +80,10 @@
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_jika.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters.memberJiAmount}}张</div>
             <div class="type grey">季卡</div>
           </div>
@@ -97,23 +97,12 @@
     <el-row :gutter="20" style="margin:10px 0 0 30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_yiji.png" alt="">
           </div>
-          <div class="right">
-            <div class="num">{{filters1.seniorAmount}}人</div>
-            <div class="type">一级推广员</div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="grid-content bg-purple">
-          <div class="left">
-            <img src="../assets/images/icon_erji.png" alt="">
-          </div>
-          <div class="right">
-            <div class="num">{{filters1.juniorAmount}}人</div>
-            <div class="type red">二级推广员</div>
+          <div class="rightText">
+            <div class="num">{{filters1.amount}}人</div>
+            <div class="type">推广员总数</div>
           </div>
         </div>
       </el-col>
@@ -133,10 +122,10 @@
     <el-row :gutter="20" style="margin:70px 0 70px 30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_rika.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters1.agentRiAmount}}张</div>
             <div class="type grey">日卡</div>
           </div>
@@ -144,10 +133,10 @@
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_zhouka.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters1.agentZhouAmount}}张</div>
             <div class="type grey">周卡</div>
           </div>
@@ -155,10 +144,10 @@
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_yueka.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters1.agentYueAmount}}张</div>
             <div class="type grey">月卡</div>
           </div>
@@ -166,10 +155,10 @@
       </el-col>
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="left">
+          <div class="leftImg">
             <img src="../assets/images/icon_jika.png" alt="" class="card">
           </div>
-          <div class="right">
+          <div class="rightText">
             <div class="num">{{filters1.agentJiAmount}}张</div>
             <div class="type grey">季卡</div>
           </div>
@@ -248,7 +237,7 @@
             }
             axios({
               method: 'post',
-              url: this.global.mPath + '/login/memberindex',
+              url: this.global.mPath + '/index/memberindex',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -333,7 +322,7 @@
           }
           axios({
             method: 'post',
-            url: this.global.mPath + '/login/agentindex',
+            url: this.global.mPath + '/index/agentindex',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
@@ -425,30 +414,30 @@
     font-size: 14px;
     font-weight:bold;
   }
-  .left,
-  .right{
+  .leftImg,
+  .rightText{
     float:left;
   }
-  .left img{
+  .leftImg img{
     width:45px;
     height:45px;
     margin:13px 0 0 30px;
   }
-  .left .card{
+  .leftImg .card{
     width:33px;
     height:45px;
   }
-  .right{
+  .rightText{
     margin-left:30px;
   }
-  .right div:nth-child(2){
+  .rightText div:nth-child(2){
     font-size: 14px;
     color: #3688FF;
   }
-  .right div.red{
+  .rightText div.red{
    color:#E13743;
   }
-  .right div.grey{
+  .rightText div.grey{
     color: #778CA2;
   }
 </style>

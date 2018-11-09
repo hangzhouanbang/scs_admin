@@ -85,6 +85,7 @@
         <el-table-column prop="vipScore" label="会员积分" width="100" sortable="custom"></el-table-column>
         <el-table-column prop="onlineState" label="在线状态" width="100" sortable="custom"></el-table-column>
         <el-table-column prop="verifyUser" label="是否通过实名认证" width="160" sortable="custom"></el-table-column>
+        <el-table-column prop="agentId" label="绑定推广员" width="100"></el-table-column>
         <el-table-column label="流水" width="80">
           <template slot-scope="scope">
             <el-button type="primary" @click="goldwathercourse(scope.row.id)" style="margin:0;">玉石</el-button>
@@ -107,9 +108,9 @@
 
       <!--赠送玉石弹窗-->
       <el-dialog title="赠送玉石" :visible.sync="giveFormVisible" :close-on-click-modal="false">
-        <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+        <el-form :model="normalForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="玉石数量" prop="gold">
-            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.gold"
+            <el-input type="number" min="0" placeholder="请输入整数" v-model="normalForm.amount"
                       auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
@@ -121,9 +122,9 @@
 
       <!--赠送礼券弹窗-->
       <el-dialog title="赠送礼券" :visible.sync="givefromintegral" :close-on-click-modal="false">
-        <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+        <el-form :model="normalForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="礼券数量" prop="score">
-            <el-input type="number" min="0" placeholder="请输入正整数" v-model="normalForm.score"
+            <el-input type="number" min="0" placeholder="请输入整数" v-model="normalForm.amount"
                       auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
@@ -135,7 +136,7 @@
 
       <!--赠送会员卡-->
       <el-dialog title="赠送会员卡" :visible.sync="givefromcard" :close-on-click-modal="false">
-        <el-form :model="cardForm" label-width="100px" :rules="rules" class="demo-ruleForm">
+        <el-form :model="cardForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="会员卡类型" prop="score">
             <el-select v-model="cardForm.mold" placeholder="请选择" clearable>
               <el-option
@@ -268,14 +269,6 @@
         givefromintegral: false,//隐藏积分弹窗
         givefromcard:false,
         other: false,//隐藏其他信息弹窗
-        rules: {
-          gold: [
-            {required: true, message: '请输入金币数量', trigger: 'blur'}
-          ],
-          score: [
-            {required: true, message: '请输入积分数量', trigger: 'blur'}
-          ],
-        },
         normalForm: {},
         options: [{
           value: '会员用户'
@@ -382,7 +375,7 @@
               this.loading = false;//隐藏加载条
               this.details = res.data.data;
               this.tableData = res.data.data.roomList;
-              for(var i = 0;i < this.tableData.length;i++){
+              for(let i = 0;i < this.tableData.length;i++){
                 if(this.tableData[i].vip == true){
                   this.tableData[i].vip = '是'
                 }else{
@@ -427,50 +420,43 @@
           description: ''
         };
       },
-      //赠送金币
+      //赠送玉石
       givegold() {
         let ids = this.sels.map(item => item.id).toString();
         let that = this;
         this.$confirm('确认赠送玉石吗？', '提示', {
           type: 'warning'
         }).then(() => {
-          if (this.normalForm.gold == undefined || this.normalForm.gold == "") {
+          if (this.normalForm.amount == undefined || this.normalForm.amount == "") {
             this.$message({
               showClose: true,
               message: '不能为空',
               type: 'warning'
             });
-          } else if (this.normalForm.gold < 0) {
-            this.$message({
-              showClose: true,
-              message: '请输入正整数',
-              type: 'warning'
-            });
-          } else {
+          }else {
             that.loading = true;
             axios({
               method: 'post',
-              url: this.global.mPath + '/member/give_reward',
+              url: this.global.mPath + '/member/give_reward_gold',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'gold': this.trim(this.normalForm.gold),
+                'amount': this.normalForm.amount,
                 'id': ids,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  that.loading = false;
-                  if (res.data.success == true) {
-                    that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
-                    this.normalForm.gold = '';//清空内容
-                    this.giveFormVisible = false;//关闭弹窗
-                  } else {
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              that.loading = false;
+              if (res.data.success == true) {
+                that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
+                this.normalForm.amount = '';//清空内容
+                this.giveFormVisible = false;//关闭弹窗
+                this.handleSearch()
+              } else {
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
@@ -506,9 +492,9 @@
                     break;
                 }
               }
-            });
+            })
           }
-        });
+        })
       },
       //赠送金币弹窗
       showgold: function () {
@@ -520,7 +506,7 @@
           description: ''
         };
       },
-      //赠送金币
+      //赠送礼券
       giveintegral() {
         let ids = this.sels.map(item => item.id).toString();
         console.log(ids)
@@ -528,43 +514,36 @@
         this.$confirm('确认赠送礼券吗？', '提示', {
           type: 'warning'
         }).then(() => {
-          if (this.normalForm.score == undefined || this.normalForm.score == "") {
+          if (this.normalForm.amount == undefined || this.normalForm.amount == "") {
             this.$message({
               showClose: true,
               message: '不能为空',
               type: 'warning'
             });
-          } else if (this.normalForm.score < 0) {
-            this.$message({
-              showClose: true,
-              message: '请输入正整数',
-              type: 'warning'
-            });
-          } else {
+          }else {
             that.loading = true;
             axios({
               method: 'post',
-              url: this.global.mPath + '/member/give_reward',
+              url: this.global.mPath + '/member/give_reward_score',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'score': this.trim(this.normalForm.score),
+                'amount': this.normalForm.amount,
                 'id': ids,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  that.loading = false;
-                  if (res.data.success == true) {
-                    that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
-                    this.normalForm.score = '';//清空内容
-                    this.givefromcard = false;//关闭弹窗
-                  } else {
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              that.loading = false;
+              if (res.data.success == true) {
+                that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
+                this.normalForm.amount = '';//清空内容
+                this.givefromintegral = false;//关闭弹窗
+                this.handleSearch()
+              } else {
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
@@ -599,9 +578,9 @@
                     break;
                 }
               }
-            });
+            })
           }
-        });
+        })
       },
       //赠送积分弹窗
       showintegral: function (index, row) {
@@ -705,9 +684,9 @@
       },
       //按金币筛选
       goldwathercourse(id) {
-        sessionStorage.setItem('id',id)
+        sessionStorage.setItem('id',id);
         this.watercourse = true;
-        this.jade(id,1)
+        this.jade(id,1);
         this.page = 1;
       },
       jade(memberId,page){
@@ -723,16 +702,14 @@
             'memberId':memberId,  //0023
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.page = res.data.data.pageCount;//总页数
-              for (let i = 0; i < this.items.length; i++) {
-                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.items = res.data.data.items;
+          this.page = res.data.data.pageCount;//总页数
+          for (let i = 0; i < this.items.length; i++) {
+            this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
@@ -742,7 +719,7 @@
                   type: 'warning'
                 });
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({
                   showClose: true,
@@ -750,7 +727,7 @@
                   type: 'warning'
                 });
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({
                   showClose: true,
@@ -764,7 +741,7 @@
       },
       //按积分筛选
       integral(id) {
-        sessionStorage.setItem('ID',id)
+        sessionStorage.setItem('ID',id);
         this.giftcourse = true;
         this.certificate(id,1);
         this.page1 = 1;
@@ -782,16 +759,14 @@
             'memberId': memberId,//0023
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.page1 = res.data.data.pageCount;//总页数
-              for (let i = 0; i < this.items.length; i++) {
-                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.items = res.data.data.items;
+          this.page1 = res.data.data.pageCount;//总页数
+          for (let i = 0; i < this.items.length; i++) {
+            this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
@@ -801,7 +776,7 @@
                   type: 'warning'
                 });
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({
                   showClose: true,
@@ -809,7 +784,7 @@
                   type: 'warning'
                 });
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({
                   showClose: true,
@@ -866,30 +841,28 @@
             'onlineStateSort':onlineStateSort,
             'verifyUserSort':verifyUserSort
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.amount = res.data.data.amount;
-              this.vipAmount = res.data.data.vipAmount;
-              this.noVipAmount = res.data.data.noVipAmount;
-              this.vip = res.data.data.memberList.items;
-              this.total = res.data.data.memberList.pageCount;//总页数
-              for (let i = 0; i < this.vip.length; i++) {
-                this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
-                this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
-                if(this.vip[i].vip == true){
-                  this.vip[i].vip = '是'
-                }else{
-                  this.vip[i].vip = '否'
-                }
-                if(this.vip[i].verifyUser == true){
-                  this.vip[i].verifyUser = '是'
-                }else{
-                  this.vip[i].verifyUser = '否'
-                }
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.amount = res.data.data.amount;
+          this.vipAmount = res.data.data.vipAmount;
+          this.noVipAmount = res.data.data.noVipAmount;
+          this.vip = res.data.data.memberList.items;
+          this.total = res.data.data.memberList.pageCount;//总页数
+          for (let i = 0; i < this.vip.length; i++) {
+            this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
+            this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
+            if(this.vip[i].vip == true){
+              this.vip[i].vip = '是'
+            }else{
+              this.vip[i].vip = '否'
+            }
+            if(this.vip[i].verifyUser == true){
+              this.vip[i].verifyUser = '是'
+            }else{
+              this.vip[i].verifyUser = '否'
+            }
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
@@ -899,7 +872,7 @@
                   type: 'warning'
                 });
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({
                   showClose: true,
@@ -907,7 +880,7 @@
                   type: 'warning'
                 });
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({
                   showClose: true,

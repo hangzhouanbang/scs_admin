@@ -10,9 +10,6 @@
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
-        <!--<el-form-item>-->
-          <!--<el-button type="primary" v-on:click="viewPreview">查看预览</el-button>-->
-        <!--</el-form-item>-->
         <el-form-item>
           <el-button type="primary" @click="showAddDialog">发布</el-button>
         </el-form-item>
@@ -54,9 +51,17 @@
           <el-input v-model="adjustForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="奖励类别" prop="type" required>
-          <el-select v-model="adjustForm.type" placeholder="请选择">
+          <el-select v-model="adjustForm.type" placeholder="请选择" @change="select">
             <el-option
               v-for="item in types"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-select v-model="adjustForm.cardType" placeholder="请选择" v-if="show">
+            <el-option
+              v-for="item in cards"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -112,9 +117,17 @@
           <el-input v-model="addForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="奖励类别" prop="type" required>
-          <el-select v-model="addForm.type" placeholder="请选择">
+          <el-select v-model="addForm.type" placeholder="请选择" @change="select1">
             <el-option
               v-for="item in types"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-select v-model="addForm.cardType" placeholder="请选择" v-if="display">
+            <el-option
+              v-for="item in cards"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -271,6 +284,12 @@
               {value:'是'},
               {value:'否'},
             ],
+            cards:[
+              {value:'日卡'},
+              {value:'周卡'},
+              {value:'月卡'},
+              {value:'季卡'},
+            ],
             lottery:[],
             filters:{},
             // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
@@ -283,150 +302,65 @@
             tip3Visible:false,
             tip4Visible:false,
             previewVisible:false,
+            show:false,
+            display:false
           }
         },
-      methods:{
-        // 上传文件到七牛云
-        upqiniu(req) {
-          console.log(req)
-          const config = {
-            headers: {'Content-Type': 'multipart/form-data'}
-          }
-          let filetype = ''
-          if (req.file.type === 'image/png') {
-            filetype = 'png'
-          } else {
-            filetype = 'jpg'
-          }
-          // 重命名要上传的文件
-          const keyname = 'anbang' + Math.random() + '.' + filetype
-          // 从后端获取上传凭证token
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/mailctrl/uptoken',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params:{
-              'token':sessionStorage.getItem('token')
+        methods:{
+          // 上传文件到七牛云
+          upqiniu(req) {
+            console.log(req)
+            const config = {
+              headers: {'Content-Type': 'multipart/form-data'}
             }
-          }).then(res => {
-            const formdata = new FormData()
-            formdata.append('file', req.file)
-            formdata.append('token', res.data.data)
-            formdata.append('key', keyname)
-            // 获取到凭证之后再将文件上传到七牛云空间
-            axios.post(this.domain, formdata, config).then(res => {
-              this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
-              this.imageUrl1 = 'http://' + this.qiniuaddr + '/' + res.data.key
-              this.img = false;
-              console.log(this.imageUrl)
-            })
-          })
-        },
-        // 验证文件合法性
-        beforeUpload(file) {
-          const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-          const isLt2M = file.size / 1024 / 1024 < 2
-          if (!isJPG) {
-            this.$message.error('上传头像图片只能是 JPG 格式!')
-          }
-          if (!isLt2M) {
-            this.$message.error('上传头像图片大小不能超过 2MB!')
-          }
-          return isJPG && isLt2M
-        },
-        handleSearch:function(){
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/signin/querysigninprize',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              'token':sessionStorage.getItem('token')
+            let filetype = ''
+            if (req.file.type === 'image/png') {
+              filetype = 'png'
+            } else {
+              filetype = 'jpg'
             }
-          })
-            .then((res) => {
-                this.loading = false;//隐藏加载条
-                this.lottery = res.data.data;
-              },
-            ).catch((e) => {
-            if (e && e.response) {
-              switch (e.response.status) {
-                case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
-                  break
-              }
-            }
-          });
-        },
-        adjustmentDialog:function(index,row){
-          this.adjustmentVisible = true;
-          this.adjustForm = Object.assign({}, row);
-          this.imageUrl1 = this.adjustForm.iconUrl
-        },
-        adjustSubmit:function(){
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/signin/updatesigninprize',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              id:this.adjustForm.id,
-              name:this.adjustForm.name,
-              type:this.adjustForm.type,
-              singleNum:this.adjustForm.singleNum,
-              storeNum:this.adjustForm.storeNum,
-              iconUrl:this.imageUrl1,
-              prizeProb:this.adjustForm.prizeProb,
-              firstPrizeProb:this.adjustForm.firstPrizeProb,
-              overstep:this.adjustForm.overstep,
-              token:sessionStorage.getItem('token')
-            }
-          })
-            .then((res) => {
-              if (res.data.success == true) {
-                this.adjustmentVisible = false;
-                this.$message.success({showClose: true, message: '调整成功', duration: 1500});
-                this.handleSearch(1);
-              } else {
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-              },
-            ).catch((e) => {
-            this.loading = false;
-            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        },
-        showAddDialog:function(){
-          this.$confirm('确认发布吗？', '提示', {
-            type: 'warning'
-          }).then(() => {
+            // 重命名要上传的文件
+            const keyname = 'anbang' + Math.random() + '.' + filetype
+            // 从后端获取上传凭证token
             axios({
               method: 'post',
-              url: this.global.mPath + '/signin/releasesigninprize',
+              url: this.global.mPath + '/mailctrl/uptoken',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params:{
+                'token':sessionStorage.getItem('token')
+              }
+            }).then(res => {
+              const formdata = new FormData()
+              formdata.append('file', req.file)
+              formdata.append('token', res.data.data)
+              formdata.append('key', keyname)
+              // 获取到凭证之后再将文件上传到七牛云空间
+              axios.post(this.domain, formdata, config).then(res => {
+                this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
+                this.imageUrl1 = 'http://' + this.qiniuaddr + '/' + res.data.key
+                this.img = false;
+                console.log(this.imageUrl)
+              })
+            })
+          },
+          // 验证文件合法性
+          beforeUpload(file) {
+            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+            const isLt2M = file.size / 1024 / 1024 < 2
+            if (!isJPG) {
+              this.$message.error('上传头像图片只能是 JPG 格式!')
+            }
+            if (!isLt2M) {
+              this.$message.error('上传头像图片大小不能超过 2MB!')
+            }
+            return isJPG && isLt2M
+          },
+          handleSearch:function(){
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/signin/querysigninprize',
               headers: {
                 'Content-type': 'application/x-www-form-urlencoded'
               },
@@ -435,49 +369,154 @@
               }
             })
               .then((res) => {
-                  if (res.data.success == true) {
-                    this.tip3Visible = true;
-                    this.$message.success({showClose: true, message: '发布成功', duration: 1500});
-                    this.handleSearch(1);
-                  } else {
-                    if(res.data.msg == 'notEnough'){
-                      this.tipVisible = true;
-                    }else if(res.data.msg == 'PrizeProbOverstep'){
-                      this.tip1Visible = true;
-                    }else if(res.data.msg == 'FirstPrizeProbOverstep'){
-                      this.tip2Visible = true;
-                    }
-                  }
+                  this.loading = false;//隐藏加载条
+                  this.lottery = res.data.data;
                 },
               ).catch((e) => {
-              this.loading = false;
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+              if (e && e.response) {
+                switch (e.response.status) {
+                  case 504:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break
+                  case 500:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break
+                  case 405:
+                    this.$message({
+                      showClose: true,
+                      message: '请先登录',
+                      type: 'warning'
+                    });
+                    break
+                }
+              }
             });
-          })
-        },
-        AddDialog:function(){
-          this.addVisible = true;
-        },
-        publishSubmit:function(){
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/signin/addsigninprize',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              name:this.addForm.name,
-              type:this.addForm.type,
-              singleNum:this.addForm.singleNum,
-              storeNum:this.addForm.storeNum,
-              iconUrl:this.imageUrl,
-              prizeProb:this.addForm.prizeProb,
-              firstPrizeProb:this.addForm.firstPrizeProb,
-              overstep:this.addForm.overstep,
-              token:sessionStorage.getItem('token')
+          },
+          select:function(){
+            if(this.adjustForm.type == '会员卡'){
+              this.show = true;
+            }else{
+              this.show = false;
             }
-          })
-            .then((res) => {
+          },
+          adjustmentDialog:function(index,row){
+            this.adjustmentVisible = true;
+            this.adjustForm = Object.assign({}, row);
+            this.imageUrl1 = this.adjustForm.iconUrl
+            if(this.adjustForm.cardType){
+              this.show = true;
+            }else{
+              this.show = false;
+            }
+          },
+          adjustSubmit:function(){
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/signin/updatesigninprize',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                id:this.adjustForm.id,
+                name:this.adjustForm.name,
+                type:this.adjustForm.type,
+                cardType:this.adjustForm.cardType,
+                singleNum:this.adjustForm.singleNum,
+                storeNum:this.adjustForm.storeNum,
+                iconUrl:this.imageUrl1,
+                prizeProb:this.adjustForm.prizeProb,
+                firstPrizeProb:this.adjustForm.firstPrizeProb,
+                overstep:this.adjustForm.overstep,
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              if (res.data.success == true) {
+                this.adjustmentVisible = false;
+                this.$message.success({showClose: true, message: '调整成功', duration: 1500});
+                this.handleSearch(1);
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+              }).catch((e) => {
+                this.loading = false;
+                this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+            });
+          },
+          showAddDialog:function(){
+            this.$confirm('确认发布吗？', '提示', {
+              type: 'warning'
+            }).then(() => {
+              axios({
+                method: 'post',
+                url: this.global.mPath + '/signin/releasesigninprize',
+                headers: {
+                  'Content-type': 'application/x-www-form-urlencoded'
+                },
+                params: {
+                  'token':sessionStorage.getItem('token')
+                }
+              })
+                .then((res) => {
+                    if (res.data.success == true) {
+                      this.tip3Visible = true;
+                      this.$message.success({showClose: true, message: '发布成功', duration: 1500});
+                      this.handleSearch(1);
+                    } else {
+                      if(res.data.msg == 'notEnough'){
+                        this.tipVisible = true;
+                      }else if(res.data.msg == 'PrizeProbOverstep'){
+                        this.tip1Visible = true;
+                      }else if(res.data.msg == 'FirstPrizeProbOverstep'){
+                        this.tip2Visible = true;
+                      }
+                    }
+                  },
+                ).catch((e) => {
+                this.loading = false;
+                this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+              });
+            })
+          },
+          select1:function(){
+            if(this.addForm.type == '会员卡'){
+              this.display = true;
+            }else{
+              this.display = false;
+            }
+          },
+          AddDialog:function(){
+            this.addVisible = true;
+          },
+          publishSubmit:function(){
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/signin/addsigninprize',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                name:this.addForm.name,
+                type:this.addForm.type,
+                cardType: this.addForm.cardType,
+                singleNum:this.addForm.singleNum,
+                storeNum:this.addForm.storeNum,
+                iconUrl:this.imageUrl,
+                prizeProb:this.addForm.prizeProb,
+                firstPrizeProb:this.addForm.firstPrizeProb,
+                overstep:this.addForm.overstep,
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
                 if (res.data.success == true) {
                   this.addVisible = false;
                   this.$message.success({showClose: true, message: '添加成功', duration: 1500});
@@ -489,47 +528,45 @@
                     this.$message.error({showClose: true, message: err.toString(), duration: 2000});
                   }
                 }
-              },
-            ).catch((e) => {
-            this.loading = false;
-            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        },
-        delBook:function(index,row){
-          this.$confirm('确认删除选中记录吗？', '提示', {
-            type: 'warning'
-          }).then(() => {
-            axios({
-              method: 'post',
-              url: this.global.mPath + '/signin/deletesigninprizebyid',
-              headers: {
-                'Content-type': 'application/x-www-form-urlencoded'
-              },
-              params: {
-                id: row.id,
-                token:sessionStorage.getItem('token')
-              }
-            })
-              .then((res) => {
-                  if (res.data.success == true) {
-                    this.addVisible = false;
-                    this.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    this.handleSearch(1);
-                  } else {
-                    this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
-              this.loading = false;
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+              }).catch((e) => {
+                this.loading = false;
+                this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
-          })
-        }
-      },
-      mounted(){
-       this.handleSearch();
-      },
-
+          },
+          delBook:function(index,row){
+            this.$confirm('确认删除选中记录吗？', '提示', {
+              type: 'warning'
+            }).then(() => {
+              axios({
+                method: 'post',
+                url: this.global.mPath + '/signin/deletesigninprizebyid',
+                headers: {
+                  'Content-type': 'application/x-www-form-urlencoded'
+                },
+                params: {
+                  id: row.id,
+                  token:sessionStorage.getItem('token')
+                }
+              })
+                .then((res) => {
+                    if (res.data.success == true) {
+                      this.addVisible = false;
+                      this.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                      this.handleSearch(1);
+                    } else {
+                      this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+                    }
+                  },
+                ).catch((e) => {
+                this.loading = false;
+                this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+              });
+            })
+          }
+        },
+        mounted(){
+         this.handleSearch();
+        },
     }
 </script>
 
@@ -540,10 +577,10 @@
   .el-input{
     width:300px;
   }
- .avatar-uploader img{
-   width:150px;
-   height:100px;
- }
+  .avatar-uploader img{
+     width:150px;
+     height:100px;
+  }
   .title{
     width: 400px;
     height: 43px;
