@@ -44,6 +44,11 @@ import PromotionOfEarnings from '@/components/PromotionOfEarnings.vue'
 import DestoonFinanceCash from '@/components/DestoonFinanceCash.vue'
 import ProxyLevelManagement from '@/components/ProxyLevelManagement.vue'
 import OperatingRecord from '@/components/OperatingRecord.vue'
+import BasicStatistic from '@/components/BasicStatistic.vue'
+import PaidStatistic from '@/components/PaidStatistic.vue'
+import SilentPlayerStatistics from '@/components/SilentPlayerStatistics.vue'
+import PersonalInfo from '@/components/PersonalInfo.vue'
+import Housekeeping from '@/components/Housekeeping.vue'
 
 Vue.use(Router)
 
@@ -68,28 +73,6 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      redirect: '/admin',
-      menuShow: true,
-      leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-guanliyuan', // 图标样式class
-      children: [
-        {path: '/admin', component: Admin, name: '管理员管理', menuShow: true}
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      redirect: '/role',
-      menuShow: true,
-      leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-navicon-jsgl', // 图标样式class
-      children: [
-        {path: '/role', component: Role, name: '角色管理', menuShow: true}
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
       name: '会员中心',
       menuShow: true,
       iconCls: 'iconfont icon-huiyuanzhongxin',
@@ -100,51 +83,7 @@ export default new Router({
         {path: '/memberLevel', component: MemberLevel, name: 'vip等级', menuShow: true},
         {path: '/limitLogin', component: LimitLogin, name: '限制登录', menuShow: true},
         {path: '/operatingRecord', component: OperatingRecord, name: '操作纪录', menuShow: true},
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      name: '充值系统',
-      menuShow: true,
-      iconCls: 'iconfont icon-chongzhi',
-      children: [
-        {path: '/orderManagement', component: OrderManagement, name: '订单管理', menuShow: true},
-        {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      name: '报表统计',
-      menuShow: true,
-      iconCls: 'iconfont icon-baobiaotongji',
-      children: [
-        {path: '/platformOperation', component: PlatformOperation, name: '平台运营日报', menuShow: true},
-        {path: '/progression', component: Progression, name: '游戏数据日报', menuShow: true},
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      name: '任务管理',
-      menuShow: true,
-      iconCls: 'iconfont icon-renwuguanli',
-      children: [
-        {path: '/pendingReleaseTask', component: PendingReleaseTask, name: '待发布任务', menuShow: true},
-        {path: '/publishedTask', component: PublishedTask, name: '已发布任务', menuShow: true},
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      name: '邮件管理',
-      menuShow: true,
-      iconCls: 'iconfont icon-mailmanagement',
-      children: [
-        {path: '/mailingList', component: MailingList, name: '邮件列表', menuShow: true},
-        {path: '/mailing', component: Mailing, name: '邮件发送', menuShow: true},
-        {path: '/mailRecord', component: MailRecord, name: '邮件记录', menuShow: true},
+        {path: '/housekeeping', component: Housekeeping, name: '房间管理', menuShow: true},
       ]
     },
     {
@@ -165,7 +104,43 @@ export default new Router({
         {path: '/mapManagement', component: MapManagement, name: '推广图管理', menuShow: true},
         {path: '/promotionOfEarnings', component: PromotionOfEarnings, name: '查看推广收益', menuShow: true},
         {path: '/destoonFinanceCash', component: DestoonFinanceCash, name: '提现申请', menuShow: true},
-        {path: '/proxyLevelManagement', component: ProxyLevelManagement, name: '代理级别管理', menuShow: true}
+        {path: '/proxyLevelManagement', component: ProxyLevelManagement, name: '代理级别管理', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '充值系统',
+      menuShow: true,
+      iconCls: 'iconfont icon-chongzhi',
+      children: [
+        {path: '/orderManagement', component: OrderManagement, name: '订单管理', menuShow: true},
+        {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '报表统计',
+      menuShow: true,
+      iconCls: 'iconfont icon-baobiaotongji',
+      children: [
+        {path: '/basicStatistic', component: BasicStatistic, name: '基础数据统计', menuShow: true},
+        {path: '/paidStatistic', component: PaidStatistic, name: '付费数据统计', menuShow: true},
+        {path: '/silentPlayerStatistics', component: SilentPlayerStatistics, name: '沉默玩家统计', menuShow: true},
+        {path: '/platformOperation', component: PlatformOperation, name: '平台运营日报', menuShow: true},
+        {path: '/progression', component: Progression, name: '游戏数据日报', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '任务管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-renwuguanli',
+      children: [
+        {path: '/pendingReleaseTask', component: PendingReleaseTask, name: '待发布任务', menuShow: true},
+        {path: '/publishedTask', component: PublishedTask, name: '已发布任务', menuShow: true},
       ]
     },
     {
@@ -176,17 +151,6 @@ export default new Router({
       iconCls: 'iconfont icon-huodongguanli',
       children: [
         {path: '/activity', component: Activity, name: '活动配置', menuShow: true},
-      ]
-    },
-    {
-      path: '/home',
-      component: Home,
-      name: '玩法管理',
-      menuShow: true,
-      iconCls: 'iconfont icon-wanfa',
-      children: [
-        {path: '/gamePlay', component: GamePlay, name: '玩法', menuShow: true},
-        {path: '/playTheMutex', component: PlayTheMutex, name: '玩法互斥', menuShow: true},
       ]
     },
     {
@@ -204,6 +168,18 @@ export default new Router({
     {
       path: '/home',
       component: Home,
+      name: '邮件管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-mailmanagement',
+      children: [
+        {path: '/mailingList', component: MailingList, name: '邮件列表', menuShow: true},
+        {path: '/mailing', component: Mailing, name: '邮件发送', menuShow: true},
+        {path: '/mailRecord', component: MailRecord, name: '邮件记录', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
       name: '系统设置',
       menuShow: true,
       iconCls: 'iconfont icon-xitongshezhi',
@@ -212,6 +188,39 @@ export default new Router({
         {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true},
         {path: '/systemNotice', component: SystemNotice, name: '系统公告', menuShow: true},
         {path: '/Microservice', component: Microservice, name: '微服务', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '玩法管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-wanfa',
+      children: [
+        {path: '/gamePlay', component: GamePlay, name: '玩法', menuShow: true},
+        {path: '/playTheMutex', component: PlayTheMutex, name: '玩法互斥', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/role',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-navicon-jsgl', // 图标样式class
+      children: [
+        {path: '/role', component: Role, name: '角色管理', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/admin',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-guanliyuan', // 图标样式class
+      children: [
+        {path: '/admin', component: Admin, name: '管理员管理', menuShow: true}
       ]
     },
     {
@@ -234,6 +243,17 @@ export default new Router({
       iconCls: 'iconfont icon-server', // 图标样式class
       children: [
         {path: '/server', component: Server, name: '服务器管理', menuShow: true}
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      redirect: '/personalInfo',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont', // 图标样式class
+      children: [
+        {path: '/personalInfo', component: PersonalInfo, name: '', menuShow: true}
       ]
     },
   ]

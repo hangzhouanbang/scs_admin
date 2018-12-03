@@ -79,16 +79,16 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="id" label="订单编号" width="120"></el-table-column>
       <el-table-column prop="transaction_id" label="支付流水" width="120"></el-table-column>
-      <el-table-column prop="payerId" label="付款人ID" width="120"></el-table-column>
+      <el-table-column prop="payerId" label="付款人ID" width="90"></el-table-column>
       <el-table-column prop="payerName" label="付款人昵称" width="120"></el-table-column>
       <el-table-column prop="productId" label="会员卡ID" width="120"></el-table-column>
-      <el-table-column prop="productName" label="会员卡名称" width="120"></el-table-column>
-      <el-table-column prop="productPrice" label="会员卡价格" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="productName" label="会员卡名称" width="100"></el-table-column>
+      <el-table-column prop="productPrice" label="会员卡价格" width="120" sortable="custom"></el-table-column>
       <el-table-column prop="number" label="购买数量" width="120"  sortable="custom"></el-table-column>
       <el-table-column prop="gold" label="单张会员卡赠送玉石" width="120"></el-table-column>
       <el-table-column prop="score" label="单张会员卡赠送礼券" width="120"></el-table-column>
       <el-table-column prop="vipTime" label="单张会员卡赠送VIP时间" width="120"></el-table-column>
-      <el-table-column prop="totalamount" label="总金额" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="totalamount" label="总金额" width="100"  sortable="custom"></el-table-column>
       <el-table-column prop="createTime" label="下单时间" width="110"  sortable="custom"></el-table-column>
       <el-table-column prop="status" label="订单状态" width="120"  sortable="custom"></el-table-column>
       <el-table-column prop="pay_type" label="支付方式" width="120"  sortable="custom"></el-table-column>

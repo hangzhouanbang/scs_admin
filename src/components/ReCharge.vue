@@ -68,7 +68,7 @@
       <el-table-column prop="payerName" label="玩家昵称" width="120"></el-table-column>
       <el-table-column prop="productPrice" label="订单金额" width="120" sortable="custom"></el-table-column>
       <el-table-column prop="productName" label="购买道具" width="120"></el-table-column>
-      <el-table-column prop="reqIP" label="充值地址IP" width="120"></el-table-column>
+      <el-table-column prop="reqIP" label="充值地址IP" width="150"></el-table-column>
       <el-table-column prop="createTime" label="充值时间" width="auto" sortable="custom"></el-table-column>
     </el-table>
 

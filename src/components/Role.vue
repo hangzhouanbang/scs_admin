@@ -362,6 +362,10 @@
         let ids = this.sels1.map(item => item.id).toString();
         // console.log(ids)
         let that = this;
+        let param = new URLSearchParams()
+        param.append('roleId', this.trim(this.editForm.id))
+        param.append('privilegeId', ids)
+        param.append('token', sessionStorage.getItem('token'))
         this.$confirm('确认保存选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
@@ -372,13 +376,8 @@
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
-            params: {
-              'roleId': this.trim(this.editForm.id),//角色id
-              'privilegeId': ids,//权限id数组
-              'token':sessionStorage.getItem('token')
-            }
-          })
-            .then((res) => {
+            data: param,
+          }).then((res) => {
                 that.loading = false;
                 if (res.data.success == true) {
                   that.reload();

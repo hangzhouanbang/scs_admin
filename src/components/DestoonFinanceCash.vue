@@ -29,7 +29,7 @@
       </el-form>
     </el-col>
 
-    <!-- 中奖记录列表-->
+    <!-- 列表-->
     <el-table :data="list" highlight-current-row style="width:100%;" id="out-table">
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="agentId" label="推广员ID" width="160"></el-table-column>
@@ -52,6 +52,13 @@
       </el-table-column>
     </el-table>
 
+    <!--工具条-->
+    <el-col :span="24" class="toolbar">
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
+                     style="float:right;">
+      </el-pagination>
+    </el-col>
+
     <!--点击通过后提示-->
     <el-dialog title="" :visible.sync="passVisible" :close-on-click-modal="false" class="tip">
       <div class="content">
@@ -66,9 +73,9 @@
     <el-dialog title="" :visible.sync="rejectVisible" :close-on-click-modal="false" class="tip">
       <div class="content">
         <div class="result">驳回理由</div>
-        <el-input type="textarea" class="textarea" v-model="textarea" style="height:100px;"></el-input>
+        <el-input type="textarea" class="textarea" v-model="textarea" style="height:100px;width:258px"></el-input>
         <el-button size="small" class="anniu cancel" @click.native="rejectVisible = false">取消</el-button>
-        <el-button size="small" type="primary" class="anniu" @click.native="reject">通过</el-button>
+        <el-button size="small" type="primary" class="anniu" @click.native="reject">驳回</el-button>
       </div>
     </el-dialog>
 
@@ -113,7 +120,9 @@
         id:'',
         textarea:'',
         desc:'',
-        msg:''
+        msg:'',
+        total:0,
+        page:''
       }
     },
     methods:{
@@ -132,7 +141,7 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      handleSearch(){
+      handleSearch(page){
         if(this.filters.upgrade == '待处理'){
           this.filters1.upgrade = 'APPLYING'
         }
@@ -152,6 +161,8 @@
             'agentId':this.filters.agentId,
             'state':this.filters1.upgrade,
             'token':sessionStorage.getItem('token'),
+            'page':page,
+            'size':10
           }
         })
           .then((res) => {
@@ -159,6 +170,7 @@
               console.log(res.data.data)
               this.amount = res.data.data.amount;
               this.list = res.data.data.listPage.items;
+              this.total = res.data.data.listPage.pageCount;
               for(let i = 0;i < this.list.length;i++){
                 this.list[i].accountingTime = this.dateTimeFormat(this.list[i].accountingTime)
                 if(this.list[i].state == 'APPLYING'){
@@ -202,6 +214,10 @@
           }
         });
       },
+      handleCurrentChange(val){
+        this.page = val
+        this.handleSearch(this.page)
+      },
       pass:function (index,row) {
         this.passVisible = true;
         this.id = row.id
@@ -222,7 +238,7 @@
           this.msg = res.data.msg
           if (res.data.success == true) {
             this.passVisible = false;//关闭弹窗
-            this.handleSearch()
+            this.handleSearch(this.page)
           } else {
             this.unpassVisible = true;
             that.$message.error({showClose: true, message: err.toString(), duration: 2000});
@@ -286,7 +302,7 @@
           if (res.data.success == true) {
             // that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
             this.rejectVisible = false;//关闭弹窗
-            this.handleSearch()
+            this.handleSearch(this.page)
           } else {
             that.$message.error({showClose: true, message: err.toString(), duration: 2000});
           }
@@ -333,7 +349,7 @@
       }
     },
     mounted(){
-      this.handleSearch()
+      this.handleSearch(1)
     }
   }
 </script>
@@ -369,11 +385,11 @@
       font-size:20px;
     }
     .matter{
-      height:100px;
-      line-height: 100px;
-      border-bottom:1px solid #000;
+      height: 50px;
+      border-bottom: 1px solid #000;
       text-align: center;
-      font-size:18px;
+      font-size: 18px;
+      padding: 25px;
     }
     .anniu{
       margin-top:8px;
@@ -402,6 +418,7 @@
     height:100px;
     .el-textarea__inner {
       height: 100px;
+      width:260px;
     }
   }
 

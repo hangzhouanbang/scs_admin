@@ -64,7 +64,9 @@
           options:[
             {value:'瑞安麻将'},
             {value:'温州麻将'},
-            {value:'放炮麻将'}
+            {value:'放炮麻将'},
+            {value:'点炮麻将'},
+            {value:'温州双扣'}
           ]
         }
       },

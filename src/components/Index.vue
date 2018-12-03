@@ -35,14 +35,22 @@
 
     <div class="sks">商城售卡数</div>
     <el-col :span="24" class="toolbar" style="padding-bottom: 0;margin-top:20px;">
-        <el-select v-model="value" clearable placeholder="请选择月份" style="margin-left:40px;" @change="handleSearch(value)">
-          <el-option
-            v-for="item in month"
-            :key="item.value"
-            :label="item.value"
-            :value="item.value">
-          </el-option>
-        </el-select>
+      <el-select v-model="year" placeholder="请选择年份" clearable style="margin-left:40px;" @change="handleSearch1(value1)">
+        <el-option
+          v-for="item in years"
+          :key="item.value"
+          :label="item.value"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-select v-model="value" clearable placeholder="请选择月份" style="margin-left:40px;" @change="handleSearch(value)">
+        <el-option
+          v-for="item in month"
+          :key="item.value"
+          :label="item.value"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </el-col>
     <el-row :gutter="20" style="margin:70px 0 0 30px;">
       <el-col :span="6">
@@ -110,14 +118,22 @@
 
     <div class="sks">代理购卡数</div>
     <el-col :span="24" class="toolbar" style="padding-bottom: 0;margin-top:20px;">
-        <el-select v-model="value1" placeholder="请选择月份" clearable style="margin-left:40px;" @change="handleSearch1(value1)">
-          <el-option
-            v-for="item in month"
-            :key="item.value"
-            :label="item.value"
-            :value="item.value">
-          </el-option>
-        </el-select>
+      <el-select v-model="year" placeholder="请选择年份" clearable style="margin-left:40px;" @change="handleSearch1(value1)">
+        <el-option
+          v-for="item in years"
+          :key="item.value"
+          :label="item.value"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-select v-model="value1" placeholder="请选择月份" clearable style="margin-left:40px;" @change="handleSearch1(value1)">
+        <el-option
+          v-for="item in month"
+          :key="item.value"
+          :label="item.value"
+          :value="item.value">
+        </el-option>
+      </el-select>
     </el-col>
     <el-row :gutter="20" style="margin:70px 0 70px 30px;">
       <el-col :span="6">
@@ -174,6 +190,16 @@
         name: "Index",
         data(){
           return{
+            years:[
+              {value:'2018年'},
+              {value:'2019年'},
+              {value:'2020年'},
+              {value:'2021年'},
+              {value:'2022年'},
+              {value:'2023年'},
+              {value:'2024年'},
+              {value:'2025年'},
+            ],
             month:[
               {value:'1月'},
               {value:'2月'},
@@ -191,7 +217,8 @@
             filters:[],
             filters1:[],
             value:'',
-            value1:''
+            value1:'',
+            year:''
           }
         },
       methods:{
@@ -403,17 +430,6 @@
     border-radius: 4px;
     border:1px solid #f8fafb;
   }
-  .bg-purple div:nth-child(1){
-    margin-top:15px;
-    font-size: 26px;
-    color: #252631;
-    font-weight:bold;
-  }
-  .bg-purple div:nth-child(2){
-    margin-top:5px;
-    font-size: 14px;
-    font-weight:bold;
-  }
   .leftImg,
   .rightText{
     float:left;
@@ -421,14 +437,14 @@
   .leftImg img{
     width:45px;
     height:45px;
-    margin:13px 0 0 30px;
+    margin:23px 0 0 30px;
   }
   .leftImg .card{
     width:33px;
     height:45px;
   }
   .rightText{
-    margin-left:30px;
+    margin:27px 0 0 30px;
   }
   .rightText div:nth-child(2){
     font-size: 14px;

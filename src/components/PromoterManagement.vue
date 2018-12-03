@@ -51,9 +51,9 @@
           <el-select v-model="filters.mailType" placeholder="请选择" style="width:202px;" clearable>
             <el-option
               v-for="item in options"
-              :key="item.value"
+              :key="item.id"
               :label="item.label"
-              :value="item.value">
+              :value="item.type">
             </el-option>
           </el-select>
         </el-form-item>
@@ -129,6 +129,7 @@
         <el-button @click.native="relieveSubmit" v-if="state === '封禁'">解除封停状态</el-button>
         <br>
         <br>
+        <el-button @click.native="LookLower">查看下级</el-button>
         <el-button @click.native="LevelAdjustment">代理等级调整</el-button>
         <el-button @click.native="BindingAdjustment">上级绑定调整</el-button>
         <el-button @click.native="MembershipAdjustment">会员卡调整</el-button>
@@ -226,6 +227,12 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-col :span="24" class="toolbar">
+        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange1" :page-size="1" :total="num"
+                       style="float:right;">
+        </el-pagination>
+      </el-col>
     </el-dialog>
 
     <!--查看会员详情-->
@@ -390,7 +397,8 @@
             details:{},
             tableData:[],
             type:'',
-            amount:''
+            amount:'',
+            num:''
           }
         },
         methods:{
@@ -437,6 +445,7 @@
                 userName:this.filters.userName,
                 startTime:this.state1.startTime,
                 endTime:this.state1.endTime,
+                type:this.filters.mailType,
                 inviteMemberNumSort:inviteMemberNumSort,
                 juniorNumSort:juniorNumSort,
                 createTimeSort:createTimeSort,
@@ -529,16 +538,7 @@
             if(this.form.agentType){
               this.type = this.form.agentType.type
             }
-            axios({
-              url:this.global.mPath + '/agent/queryagenttype',
-              method:'post',
-              params:{
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              console.log(res.data.data)
-              this.options = res.data.data.listPage.items;
-            })
+
           },
           //确认修改
           makeSure:function(){
@@ -827,12 +827,16 @@
             }).then((res) => {
               console.log(res.data.data.listPage.items)
               this.player = res.data.data.listPage.items;
+              this.num = res.data.data.listPage.pageCount;
               for(let i = 0;i < this.player.length;i++){
                 this.player[i].createTime = this.dateTimeFormat(this.player[i].createTime)
               }
             }).catch((e) => {
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
+          },
+          handleCurrentChange1(val){
+              this.Players(val)
           },
           //查看会员详情
           showother: function (index,row) {
@@ -897,9 +901,25 @@
               description: ''
             };
           },
+        //  查看下级
+          LookLower:function(){
+            this.centerDialogVisible = false;
+            this.filters.bossId = this.id;
+            this.handleSearch(1);
+          },
         },
         mounted(){
             this.handleSearch(1);
+            axios({
+              url:this.global.mPath + '/agent/queryagenttype',
+              method:'post',
+              params:{
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              console.log(res.data.data.listPage.items)
+              this.options = res.data.data.listPage.items;
+            })
         },
     }
 </script>

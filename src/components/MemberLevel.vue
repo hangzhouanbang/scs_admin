@@ -29,7 +29,7 @@
           <el-input v-model="addCard.vip5" auto-complete="off" type="number"></el-input>
           元，等级为v5
         </el-form-item>
-        <el-button @click.native="addFormVisible = false" class="btn">取消</el-button>
+        <el-button @click.native="addFormVisible = false" class="button">取消</el-button>
         <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
       </el-form>
   </el-row>
@@ -134,7 +134,7 @@
   .el-input{
     width:100px;
   }
-  .btn{
+  .button{
     margin-left:130px;
   }
 </style>

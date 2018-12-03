@@ -193,6 +193,10 @@
       <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false" class="other">
           <!-- 其他信息-->
         <el-form ref="details" :model="details" label-width="150px">
+          <el-form-item label="绑定推广员：">
+            <el-button type="text" style="color:#000;">{{details.agentId}}</el-button>
+            <el-button type="text" style="color:#409EFF;" @click="Bindingadjust(details.agentId)">绑定调整</el-button>
+          </el-form-item>
           <el-form-item label="真实姓名：">
             <el-button type="text" style="color:#000;">{{details.realName}}</el-button>
           </el-form-item>
@@ -203,7 +207,7 @@
             <el-button type="text" style="color:#000;">{{details.phone}}</el-button>
           </el-form-item>
           <el-form-item label="身份证号：">
-            <el-button type="text" style="color:#000;">{{details.verifyUser}}</el-button>
+            <el-button type="text" style="color:#000;">{{details.IDcard}}</el-button>
           </el-form-item>
           <el-form-item label="会员总消费：">
             <el-button type="text" style="color:#000;">{{details.cost}}元</el-button>
@@ -248,6 +252,22 @@
                 label="当前盘数">
               </el-table-column>
             </el-table>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
+      <!--绑定调整-->
+      <el-dialog title="推广员绑定调整" :visible.sync="Bindingtoadjust" :close-on-click-modal="false" class="bdtz">
+        <el-form :model="bindForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="当前绑定" prop="score" style="width:300px;">
+            <el-input v-model="bindForm.agentId" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="调整绑定" prop="score" style="width:300px;">
+            <el-input v-model="bindForm.id"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="bindsure">确认</el-button>
+            <el-button type="primary" @click.native="Bindingtoadjust = false">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -332,7 +352,9 @@
           {value:'季卡'},
         ],
         cardForm:{},
-        cardForm1:{}
+        cardForm1:{},
+        Bindingtoadjust:false,
+        bindForm:{}
       }
     },
     methods: {
@@ -358,6 +380,7 @@
       },
       //弹窗显示其他信息
       showother: function (index, row) {
+        this.other = true;
         sessionStorage.setItem('id', this.vip[index].id);//保存id
         //console.log(this.vip[index].id)
         axios({
@@ -372,6 +395,7 @@
           }
         })
           .then((res) => {
+            console.log(res.data.data)
               this.loading = false;//隐藏加载条
               this.details = res.data.data;
               this.tableData = res.data.data.roomList;
@@ -412,7 +436,6 @@
             }
           }
         });
-        this.other = true;
         this.addForm = {
           name: '',
           author: '',
@@ -595,6 +618,7 @@
       //赠送会员卡
       showcard:function(){
         this.givefromcard = true;
+        this.other = false;
       },
       givecard:function(){
         if(this.cardForm.mold == '日卡'){
@@ -796,6 +820,63 @@
           }
         });
       },
+      //绑定调整
+      Bindingadjust:function(agentId){
+        this.Bindingtoadjust = true;
+        this.other = false;
+        this.bindForm.agentId = agentId
+      },
+      bindsure:function(){
+        axios({
+          method: 'post',
+          url: this.global.mPath + '/member/update_agent_bind',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'memberId':sessionStorage.getItem('id'),
+            'agentId': this.bindForm.id,//0023
+            'token':sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+         console.log(res.data)
+          if(res.data.success){
+            this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+            this.Bindingtoadjust = false;
+            this.handleSearch(this.page)
+          }else{
+            this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          }
+        }).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break;
+              case 500:
+                this.$message({
+                  showClose: true,
+                  message: '服务器异常',
+                  type: 'warning'
+                });
+                this.loading = false;//隐藏加载条
+                break;
+              case 405:
+                this.$message({
+                  showClose: true,
+                  message: '请先登录',
+                  type: 'warning'
+                });
+                break
+            }
+          }
+        });
+      },
       handleCurrentChange(val) {
         this.page = val;
         this.sort(this.sorting);
@@ -842,6 +923,7 @@
             'verifyUserSort':verifyUserSort
           }
         }).then((res) => {
+          console.log(res.data)
           this.loading = false;//隐藏加载条
           this.amount = res.data.data.amount;
           this.vipAmount = res.data.data.vipAmount;
@@ -1017,6 +1099,10 @@
   }
   .bg-purple div:nth-child(2){
     margin-top:10px;
+  }
+  .bdtz{
+    width:53%;
+    left:25%;
   }
 </style>
 

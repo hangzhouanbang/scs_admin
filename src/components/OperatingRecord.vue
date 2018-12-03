@@ -39,7 +39,7 @@
       <el-table-column prop="memberName" label="用户昵称" width="120"></el-table-column>
       <el-table-column prop="desc" label="操作类型" width="160"></el-table-column>
       <el-table-column prop="param" label="赠送数量" width="100"></el-table-column>
-      <el-table-column prop="operationTime" label="赠送时间" width="160"></el-table-column>
+      <el-table-column prop="operationTime" label="操作时间" width="160"></el-table-column>
       <el-table-column prop="operator" label="操作人"></el-table-column>
     </el-table>
 
