@@ -59,7 +59,7 @@
       <el-dialog title="新建活动" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="活动主题" prop="title">
-            <el-input v-model="normalForm.title" auto-complete="off"></el-input>
+            <el-input v-model="normalForm.title" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="图片" prop="file">
             <div class="upload">
@@ -75,7 +75,7 @@
             </div>
           </el-form-item>
           <el-form-item label="活动地址" prop="address">
-            <el-input v-model="normalForm.address" auto-complete="off"></el-input>
+            <el-input v-model="normalForm.address" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="issue">发布</el-button>
@@ -489,5 +489,6 @@
   img {
     width: 180px;
     height: 120px;
+    margin:0;
   }
 </style>

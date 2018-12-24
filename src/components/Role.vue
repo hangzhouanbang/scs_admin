@@ -57,7 +57,7 @@
       <el-dialog title="编辑角色" :visible.sync="editFormVisible" :close-on-click-modal="false">
         <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
           <el-form-item label="角色名称" prop="role">
-            <el-input v-model="editForm.role" auto-complete="off"></el-input>
+            <el-input v-model="editForm.role" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -70,7 +70,7 @@
       <el-dialog title="新增角色" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
           <el-form-item label="角色名称" prop="role">
-            <el-input v-model="addForm.role" auto-complete="off"></el-input>
+            <el-input v-model="addForm.role" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -83,7 +83,7 @@
       <el-dialog title="角色权限管理" :visible.sync="chooseFormVisible" :close-on-click-modal="false">
         <el-form :model="chooseForm" label-width="100px">
           <el-table :data="privilege" highlight-current-row @selection-change="selsChange1"
-                    style="width: 100%;" ref="table">
+                    style="width: 100%;height:540px;overflow-y: scroll;" ref="table">
             <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
             <el-table-column type="index" width="60"></el-table-column>
             <el-table-column prop="privilege" label="权限列表"></el-table-column>

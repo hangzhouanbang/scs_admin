@@ -40,10 +40,10 @@
     <el-dialog title="新增权限" :visible.sync="addprivilegeVisible" :close-on-click-modal="false">
       <el-form :model="addprivilege" label-width="80px" :rules="addFormRules" ref="addprivilege" id="cc">
         <el-form-item label="权限名称" prop="privilege">
-          <el-input v-model="addprivilege.privilege" auto-complete="off"></el-input>
+          <el-input v-model="addprivilege.privilege" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="URI" prop="uri">
-          <el-input v-model="addprivilege.uri" auto-complete="off"></el-input>
+          <el-input v-model="addprivilege.uri" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
       </el-form>
       <!--<i class="el-icon-circle-plus" @click="add"></i>-->
@@ -57,10 +57,10 @@
     <el-dialog title="编辑权限" :visible.sync="editprivilegeVisible" :close-on-click-modal="false">
       <el-form :model="editPrivilege" label-width="100px" :rules="editFormRules" ref="editPrivilege">
         <el-form-item label="权限名称" prop="privilege">
-          <el-input v-model="editPrivilege.privilege" auto-complete="off"></el-input>
+          <el-input v-model="editPrivilege.privilege" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="URI" prop="uri">
-          <el-input v-model="editPrivilege.uri" auto-complete="off"></el-input>
+          <el-input v-model="editPrivilege.uri" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

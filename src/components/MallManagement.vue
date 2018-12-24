@@ -198,7 +198,8 @@
               {value:'日卡'},
               {value:'周卡'},
               {value:'月卡'},
-              {value:'季卡'}
+              {value:'季卡'},
+              {value:'玉石'}
             ],
             payment:[
               {value:'微信支付'},
@@ -493,7 +494,7 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .toolbar{
     margin-top:30px;
   }
@@ -504,5 +505,6 @@
   .avatar{
     width:100px;
     height:100px;
+    margin:0;
   }
 </style>

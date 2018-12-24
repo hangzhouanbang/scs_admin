@@ -580,6 +580,7 @@
   .avatar-uploader img{
      width:150px;
      height:100px;
+     margin:0;
   }
   .title{
     width: 400px;

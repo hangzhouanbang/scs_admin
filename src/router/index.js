@@ -50,6 +50,7 @@ import SilentPlayerStatistics from '@/components/SilentPlayerStatistics.vue'
 import PersonalInfo from '@/components/PersonalInfo.vue'
 import Housekeeping from '@/components/Housekeeping.vue'
 
+Vue.config.devtools = true;
 Vue.use(Router)
 
 export default new Router({
@@ -94,7 +95,13 @@ export default new Router({
       iconCls: 'iconfont icon-yewurenyuanxinxiguanli',
       children: [
         {path: '/promoterManagement', component: PromoterManagement, name: '推广员管理', menuShow: true},
-        {path: '/promoterApplicationRecord', component: PromoterApplicationRecord, name: '推广员申请记录', menuShow: true},
+        {
+          path: '/promoterApplicationRecord',
+          component: PromoterApplicationRecord,
+          name: '推广员申请记录',
+          menuShow: true,
+          iconCls: 'iconfont icon-home',
+        },
         {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
         {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡兑换记录', menuShow: true},
         {path: '/integralRecord', component: IntegralRecord, name: '积分记录', menuShow: true},
@@ -103,7 +110,13 @@ export default new Router({
         {path: '/codeUsageRecord', component: CodeUsageRecord, name: '推广码使用记录', menuShow: true},
         {path: '/mapManagement', component: MapManagement, name: '推广图管理', menuShow: true},
         {path: '/promotionOfEarnings', component: PromotionOfEarnings, name: '查看推广收益', menuShow: true},
-        {path: '/destoonFinanceCash', component: DestoonFinanceCash, name: '提现申请', menuShow: true},
+        {
+          path: '/destoonFinanceCash',
+          component: DestoonFinanceCash,
+          name: '提现申请',
+          menuShow: true,
+          iconCls: 'iconfont icon-home1',
+        },
         {path: '/proxyLevelManagement', component: ProxyLevelManagement, name: '代理级别管理', menuShow: true},
       ]
     },

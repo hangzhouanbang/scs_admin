@@ -106,6 +106,10 @@
       },
       //搜索
       seek(accountingTimeSort,balanceAfterSort,numberSort) {
+        let id = window.location.href.slice(window.location.href.indexOf('id=')+3);
+        if(window.location.href.indexOf('id=') > -1){
+          this.filters.id = id;
+        }
         if (this.filters.startTime) {
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();

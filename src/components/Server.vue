@@ -27,7 +27,7 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="game" label="游戏名称" width="150"></el-table-column>
       <el-table-column prop="name" label="服务器名称" width="130"></el-table-column>
-      <el-table-column prop="httpUrl" label="httpUrl" width="150"></el-table-column>
+      <el-table-column prop="httpUrl" label="httpUrl" width="200"></el-table-column>
       <el-table-column prop="wsUrl" label="websocket URL" width="200"></el-table-column>
       <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column>
       <el-table-column label="操作">
@@ -43,16 +43,16 @@
     <el-dialog title="上线" :visible.sync="onlineVisible" :close-on-click-modal="false">
       <el-form :model="addonline" label-width="150px" :rules="addFormRules" ref="addonline" id="cc">
         <el-form-item label="游戏名称" prop="game">
-          <el-input v-model="addonline.game" auto-complete="off"></el-input>
+          <el-input v-model="addonline.game" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="服务器名称" prop="name">
-          <el-input v-model="addonline.name" auto-complete="off"></el-input>
+          <el-input v-model="addonline.name" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="httpURL" prop="httpUrl">
-          <el-input v-model="addonline.httpUrl" auto-complete="off"></el-input>
+          <el-input v-model="addonline.httpUrl" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="websocket URL" prop="wsUrl">
-          <el-input v-model="addonline.wsUrl" auto-complete="off"></el-input>
+          <el-input v-model="addonline.wsUrl" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

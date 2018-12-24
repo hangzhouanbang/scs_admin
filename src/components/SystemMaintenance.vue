@@ -51,7 +51,7 @@
       <el-dialog title="系统维护" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="标题" prop="title">
-            <el-input v-model="normalForm.title" auto-complete="off"></el-input>
+            <el-input v-model="normalForm.title" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="图片" prop="file">
             <div class="upload">
@@ -307,5 +307,6 @@
   img {
     width: 180px;
     height: 120px;
+    margin:0;
   }
 </style>

@@ -96,7 +96,7 @@
       //搜索
       seek() {
         if (this.filters.startTime) {
-          this.filters.startTime = new Date(this.filters.startTime)
+          this.filters.startTime = new Date(this.filters.startTime) - 24*60*60*1000
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
         }else{

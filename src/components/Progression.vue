@@ -52,8 +52,8 @@
       data() {
         return {
           filters:{
-            startTime:new Date(),
-            endTime:new Date(),
+            startTime:'',
+            endTime:'',
             pay_type:'瑞安麻将'
           },
           state:{},
@@ -82,18 +82,31 @@
             if(this.filters.pay_type == '放炮麻将'){
               this.state.pay_type = 'fangpaoMajiang'
             }
+            if(this.filters.pay_type == '点炮麻将'){
+              this.state.pay_type = 'dianpaoMajiang'
+            }
+            if(this.filters.pay_type == '温州双扣'){
+              this.state.pay_type = 'wenzhouShuangkou'
+            }
           }
           if(this.filters.startTime){
-            let date = new Date(this.filters.startTime);
-            this.state.startTime = date.getTime();
+            console.log(this.filters.startTime)
+            let date = new Date(this.filters.startTime).getTime();
+            this.filters.startTime = date
+            this.state.startTime = date;
           }else{
-            this.state.startTime = new Date().getTime();
+            let date = new Date(new Date() - 24*7*60*60*1000).getTime();
+            this.filters.startTime = date
+            this.state.startTime = date
           }
           if(this.filters.endTime){
-            let date = new Date(this.filters.endTime);
-            this.state.endTime = date.getTime();
+            let date = new Date(this.filters.endTime).getTime();
+            this.state.endTime = date;
+            this.filters.endTime = date;
           }else{
-            this.state.endTime = new Date().getTime();
+            let date = new Date().getTime();
+            this.filters.endTime = date
+            this.state.endTime = date
           }
           if(this.state.endTime - this.state.startTime < 0){
             return;

@@ -67,15 +67,15 @@
       <el-table-column prop="systemMail.createtime" label="发送时间" width="auto"></el-table-column>
       <el-table-column prop="receive" label="是否领取" width="160">
         <template slot-scope="scope">
-          <el-button type="text" v-if="scope.row.receive === '0'">已领取</el-button>
-          <el-button type="text" v-if="scope.row.receive === '1'">未领取</el-button>
-          <el-button type="text" v-if="scope.row.receive === '2'">没有附件奖励</el-button>
+          <el-button type="text" v-if="scope.row.receive === '0'" style="cursor:default;">已领取</el-button>
+          <el-button type="text" v-if="scope.row.receive === '1'" style="cursor:default;">未领取</el-button>
+          <el-button type="text" v-if="scope.row.receive === '2'" style="cursor:default;">没有附件奖励</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="rewardTime" label="领取时间" width="160">
         <template slot-scope="scope">
-          <el-button type="text" v-if="scope.row.rewardTime === '1970-01-01 08:00:00'"></el-button>
-          <el-button type="text" v-if="scope.row.rewardTime !== '1970-01-01 08:00:00'">{{scope.row.rewardTime}}
+          <el-button type="text" v-if="scope.row.rewardTime === '1970-01-01 08:00:00'" style="cursor:default;"></el-button>
+          <el-button type="text" v-if="scope.row.rewardTime !== '1970-01-01 08:00:00'" style="cursor:default;">{{scope.row.rewardTime}}
           </el-button>
         </template>
       </el-table-column>

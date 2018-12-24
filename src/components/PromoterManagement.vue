@@ -88,7 +88,7 @@
       </el-table-column>
     </el-table>
     <!--详情-->
-    <el-dialog title="详情" :visible.sync="centerDialogVisible" :close-on-click-modal="false" class="see">
+    <el-dialog title="详情" :visible.sync="centerDialogVisible" :close-on-click-modal="false" class="xiangqing">
       <el-table :data="roles" style="width: 100%;">
         <el-table-column label="头像">
           <template slot-scope="scope">
@@ -119,10 +119,10 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="Code">查看二维码</el-button>
         <el-button @click.native="Players(1)">查看绑定玩家</el-button>
-        <router-link :to="{path:'/membershipCardPurchaseRecord'}">
+        <router-link :to="{path:'/membershipCardPurchaseRecord?id='+id}">
           <el-button>会员卡购买记录</el-button>
         </router-link>
-        <router-link :to="{path:'/membershipCardConsumptionRecord'}">
+        <router-link :to="{path:'/membershipCardConsumptionRecord?id='+id}">
           <el-button>会员卡兑换记录</el-button>
         </router-link>
         <el-button @click.native="CancelSubmit" v-if="state === '正常'">取消推广员资格</el-button>
@@ -172,7 +172,7 @@
         <br/>
         <div align="center">
           <el-button type="primary" @click.native="sure">确认调整</el-button>
-          <el-button type="primary" @click.native="notarizeVisible = false,publishVisible = true">返回修改</el-button>
+          <el-button @click.native="notarizeVisible = false,publishVisible = true">返回修改</el-button>
         </div>
       </el-form>
     </el-dialog>
@@ -191,7 +191,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click.native="sureVisible = true,integralVisible =false">确认调整</el-button>
-          <el-button type="primary" @click.native="integralVisible = false">取消</el-button>
+          <el-button @click.native="integralVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -205,7 +205,7 @@
         <br/>
         <div align="center">
           <el-button type="primary" @click.native="Confirm">确认调整</el-button>
-          <el-button type="primary" @click.native="sureVisible = false,integralVisible = true">返回修改</el-button>
+          <el-button @click.native="sureVisible = false,integralVisible = true">返回修改</el-button>
         </div>
       </el-form>
     </el-dialog>
@@ -219,6 +219,7 @@
     <el-dialog title="查看绑定玩家" :visible.sync="playersVisible" :close-on-click-modal="false">
       <el-table :data="player" style="width: 100%;">
         <el-table-column label="玩家ID" prop="memberId"></el-table-column>
+        <el-table-column label="当前玉石" prop=""></el-table-column>
         <el-table-column label="玩家昵称" prop="nickname"></el-table-column>
         <el-table-column label="绑定时间" prop="createTime"></el-table-column>
         <el-table-column prop="systemMail.createtime" label="操作" width="auto">
@@ -228,74 +229,139 @@
         </el-table-column>
       </el-table>
 
-      <el-col :span="24" class="toolbar">
+      <el-col :span="24" class="wanjia">
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange1" :page-size="1" :total="num"
                        style="float:right;">
         </el-pagination>
       </el-col>
     </el-dialog>
 
-    <!--查看会员详情-->
+    <!--其他信息弹窗-->
     <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false" class="other">
-      <!-- 其他信息-->
-      <el-form ref="details" :model="details" label-width="150px">
-        <el-form-item label="真实姓名：">
-          <el-button type="text" style="color:#000;">{{details.realName}}</el-button>
-        </el-form-item>
-        <el-form-item label="性别：">
-          <el-button type="text" style="color:#000;">{{details.gender}}</el-button>
-        </el-form-item>
-        <el-form-item label="手机号码：">
-          <el-button type="text" style="color:#000;">{{details.phone}}</el-button>
-        </el-form-item>
-        <el-form-item label="身份证号：">
-          <el-button type="text" style="color:#000;">{{details.verifyUser}}</el-button>
-        </el-form-item>
-        <el-form-item label="会员总消费：">
-          <el-button type="text" style="color:#000;">{{details.cost}}元</el-button>
-        </el-form-item>
-        <el-form-item label="登录时间：">
-          <el-button type="text" style="color:#000;">{{details.loginTime}}</el-button>
-        </el-form-item>
-        <el-form-item label="登录ip：">
-          <el-button type="text" style="color:#000;">{{details.loginIp}}</el-button>
-        </el-form-item>
-        <el-form-item label="在线时间：">
-          <el-button type="text" style="color:#000;">{{details.onlineTime}}</el-button>
-        </el-form-item>
-        <el-form-item label="正在游戏的房间：">
-          <el-table
-            :data="tableData"
-            style="width: 100%;">
-            <el-table-column
-              prop="no"
-              label="游戏房间号"
-              width="150">
-            </el-table-column>
-            <el-table-column
-              prop="game"
-              label="游戏名称"
-              width="180">
-            </el-table-column>
-            <el-table-column
-              prop="vip"
-              label="是否VIP房间">
-            </el-table-column>
-            <el-table-column
-              prop="playersCount"
-              label="玩家人数">
-            </el-table-column>
-            <el-table-column
-              prop="panCountPerJu"
-              label="每局盘数">
-            </el-table-column>
-            <el-table-column
-              prop="currentPanNum"
-              label="当前盘数">
-            </el-table-column>
-          </el-table>
-        </el-form-item>
-      </el-form>
+      <div class="details">
+          <span class="every">
+            <label for="">绑定推广员:</label>
+            <span style="color:#000;">{{details.agentId}}</span>
+            <el-button type="text" style="color:#409EFF;" @click="Bindingadjust(details.agentId)">绑定调整</el-button>
+          </span>
+        <span class="every">
+            <label for="">真实姓名:</label>
+            <span style="color:#000;">{{details.realName}}</span>
+          </span>
+        <span class="every">
+            <label for="">性别:</label>
+            <span style="color:#000;">{{details.gender}}</span>
+          </span>
+        <span class="every">
+            <label for="">手机号码:</label>
+            <span style="color:#000;">{{details.phone}}</span>
+          </span>
+      </div>
+      <div class="details">
+          <span class="every">
+            <label for="">身份证号:</label>
+            <span style="color:#000;">{{details.IDcard}}</span>
+          </span>
+        <span class="every">
+            <label for="">会员总消费:</label>
+            <span style="color:#000;">{{details.cost}}</span>
+          </span>
+        <span class="every">
+            <label for="">登录ip:</label>
+             <span id="msg" style="color:#000;">{{details.loginIp}}</span>
+             <el-button type="text" data-clipboard-target="#msg" class="copy" @click="copy">点击复制</el-button>
+          </span>
+      </div>
+      <div class="details" style="margin-top:10px;">
+          <span class="every">
+            <label for="">登录时间:</label>
+            <span style="color:#000;">{{details.loginTime}}</span>
+          </span>
+        <span class="every">
+            <label for="">在线时间:</label>
+             <span style="color:#000;">{{details.onlineTime}}</span>
+          </span>
+        <span class="every">
+            <label for="">累计在线时长:</label>
+             <span style="color:#000;"></span>
+          </span>
+      </div>
+      <div class="details" style="margin-top:20px;">
+          <span class="every">
+            <label for="">正在游戏的房间:</label>
+             <el-table :data="tableData" style="width: 100%;">
+              <el-table-column prop="no" label="游戏房间号" width="150"></el-table-column>
+              <el-table-column prop="game" label="游戏名称" width="180"></el-table-column>
+              <el-table-column prop="vip" label="是否VIP房间"></el-table-column>
+              <el-table-column prop="playersCount" label="玩家人数"></el-table-column>
+              <el-table-column prop="panCountPerJu" label="每局盘数"></el-table-column>
+              <el-table-column prop="currentPanNum" label="当前盘数"></el-table-column>
+            </el-table>
+          </span>
+      </div>
+      <div class="details" style="margin-top:20px;">
+          <span class="every">
+            <label for="">历史战绩:</label>
+            <ul class="zj">
+                <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+               <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+            </ul>
+          </span>
+      </div>
     </el-dialog>
 
     <!--代理等级调整-->
@@ -318,7 +384,8 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click.native="makeSure()">确认修改</el-button>
+          <el-button type="primary" @click.native="makeSure()">确认修改</el-button>
+          <el-button @click.native="levelVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -339,6 +406,22 @@
       </el-form>
     </el-dialog>
 
+    <!--绑定调整-->
+    <el-dialog title="推广员绑定调整" :visible.sync="Bindingtoadjust" :close-on-click-modal="false" class="bdtz">
+      <el-form :model="bindForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="当前绑定" prop="score" style="width:300px;">
+          <el-input v-model="bindForm.agentId" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="调整绑定" prop="score" style="width:300px;">
+          <el-input v-model="bindForm.id"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="bindsure">确认</el-button>
+          <el-button type="primary" @click.native="Bindingtoadjust = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <!--工具条-->
     <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
@@ -350,6 +433,7 @@
 
 <script>
     import axios from 'axios'
+    import Clipboard from 'clipboard'
     export default {
         name: "PromoterManagement",
         data(){
@@ -398,7 +482,10 @@
             tableData:[],
             type:'',
             amount:'',
-            num:''
+            num:0,
+            Bindingtoadjust:false,
+            bindForm:{},
+            memberId:''
           }
         },
         methods:{
@@ -452,7 +539,7 @@
                 stateSort:stateSort
               }
             }).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 this.amount = res.data.data.amount
                 this.record = res.data.data.agentList.items;
                 this.total = res.data.data.agentList.pageCount;
@@ -516,7 +603,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 row.clubCardYue = res.data.data.clubCardYue;
                 row.clubCardJi = res.data.data.clubCardJi;
                 row.clubCardZhou = res.data.data.clubCardZhou;
@@ -526,13 +613,14 @@
                 this.state = res.data.data.agent.state;
                 this.id = res.data.data.agent.id;
                 this.score = res.data.data.score;
+                // console.log(this.id)
             }).catch((e) => {
                 this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             })
           },
           //代理等级调整
           LevelAdjustment:function(){
-            console.log(this.form)
+            // console.log(this.form)
             this.levelVisible = true;
             this.centerDialogVisible = false;
             if(this.form.agentType){
@@ -551,7 +639,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if(res.data.success){
                 this.$message.success({showClose: true, message: '等级修改成功', duration: 1500});
                 this.levelVisible = false;
@@ -579,7 +667,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if(res.data.success){
                 this.$message.success({showClose: true, message: '绑定成功', duration: 1500});
                 this.bindingVisible = false;
@@ -601,7 +689,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if(res.data.success){
                 this.$message.success({showClose: true, message: '解除绑定成功', duration: 1500});
                 this.bindingVisible = false;
@@ -623,7 +711,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if(res.data.success){
                 this.unlockingDialogVisible = true;
                 this.disqualifyDialogVisible = false;
@@ -647,7 +735,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if(res.data.success){
                 this.unlockingDialogVisible = false;
                 this.disqualifyDialogVisible = true;
@@ -825,7 +913,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data.data.listPage.items)
+              // console.log(res.data.data.listPage.items)
               this.player = res.data.data.listPage.items;
               this.num = res.data.data.listPage.pageCount;
               for(let i = 0;i < this.player.length;i++){
@@ -841,7 +929,9 @@
           //查看会员详情
           showother: function (index,row) {
             this.other = true;
-            this.playersVisible = false;
+            this.memberId = row.memberId
+            console.log(this.memberId)
+            // this.playersVisible = false;
             axios({
               method: 'post',
               url: this.global.mPath + '/member/querymemberdetail',
@@ -907,6 +997,76 @@
             this.filters.bossId = this.id;
             this.handleSearch(1);
           },
+          copy(){
+            let clipboard = new Clipboard('.copy');
+            clipboard.on('success', function(e) {
+              alert('复制成功')
+              clipboard.destroy()
+            });
+
+            clipboard.on('error', function(e) {
+              alert('复制失败，请手动复制')
+              clipboard.destroy()
+            });
+          },
+          //绑定调整
+          Bindingadjust:function(agentId){
+            this.Bindingtoadjust = true;
+            this.playersVisible = false;
+            this.other = false;
+            this.bindForm.agentId = agentId
+          },
+          bindsure:function() {
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/member/update_agent_bind',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'memberId': this.memberId,
+                'agentId': this.bindForm.id,//0023
+                'token': sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              console.log(res.data)
+              if (res.data.success) {
+                this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+                this.Bindingtoadjust = false;
+                this.handleSearch(this.page)
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
+              if (e && e.response) {
+                switch (e.response.status) {
+                  case 504:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break;
+                  case 500:
+                    this.$message({
+                      showClose: true,
+                      message: '服务器异常',
+                      type: 'warning'
+                    });
+                    this.loading = false;//隐藏加载条
+                    break;
+                  case 405:
+                    this.$message({
+                      showClose: true,
+                      message: '请先登录',
+                      type: 'warning'
+                    });
+                    break
+                }
+              }
+            })
+          }
         },
         mounted(){
             this.handleSearch(1);
@@ -980,5 +1140,57 @@
     .el-dialog{
       width:32%;
     }
+  }
+  .wanjia{
+    margin-top:0;
+  }
+
+  /*.other .el-dialog{*/
+    /*width:90%;*/
+  /*}*/
+  .bg-purple{
+    width:200px;
+    height:100px;
+    text-align: center;
+    background-color: #eee;
+    border-radius: 5px;
+    border:1px solid #eee;
+  }
+  .bg-purple div:nth-child(1){
+    margin-top:20px;
+    font-size:20px;
+  }
+  .bg-purple div:nth-child(2){
+    margin-top:10px;
+  }
+  .bdtz{
+    width:53%;
+    left:25%;
+  }
+  .every:not(:first-child){
+    margin-left:10%;
+  }
+  .zj{
+    list-style: none;
+    width:93%;
+    border:1px solid #000;
+    height:130px;
+    overflow-y: scroll;
+  }
+  .zj li{
+    margin-left:-6.7%;
+    background-color: #F5F5F5;
+  }
+  .zj li:not(:first-child){
+    margin-top:5px;
+  }
+  .zj .top{
+    border-bottom:1px solid #c9c9c9;
+  }
+  .zj .top span,
+  .zj .bottom span{
+    display:inline-block;
+    width:24%;
+    text-align: center;
   }
 </style>

@@ -54,7 +54,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="issue()">确定</el-button>
-            <el-button type="primary" @click.native="addFormVisible = false">取消</el-button>
+            <el-button @click.native="addFormVisible = false">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -73,7 +73,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="Adjust()">确认调整</el-button>
-            <el-button type="primary" @click.native="adjustmentVisible = false">取消</el-button>
+            <el-button @click.native="adjustmentVisible = false">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>

@@ -81,6 +81,8 @@
     methods: {
       handleSelect(index) {
         this.defaultActiveIndex = index;
+        this.handleSearch()
+        this.handleSearch1()
       },
       //折叠导航栏
       collapse: function () {
@@ -107,7 +109,69 @@
             },
           ).catch((e) => {
         });
-      }
+      },
+      css(t,s){
+        s=document.createElement('style');
+        s.innerText=t;
+        document.body.appendChild(s);
+      },
+      handleSearch(){
+        axios({
+          url:this.global.mPath + '/agent/queryapplyrecord',
+          method:'post',
+          params:{
+            startTime:'',
+            endTime:'',
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+            let number = res.data.data.totalItemsCount;
+            console.log(number)
+            if(number > 0){
+              let aa = document.getElementsByClassName('icon-home')[0]
+              aa.innerHTML = number;
+              aa.style.backgroundColor='#f56c6c';
+              aa.style.color='#fff';
+              this.css('.icon-yewurenyuanxinxiguanli:after{display:block}');
+            }
+          }
+        ).catch((e) => {
+        })
+      },
+      handleSearch1(){
+        axios({
+          method: 'post',
+          url: this.global.mPath + '/agent/queryagentrewardapply',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'agentId':'',
+            'state':'',
+            'token':sessionStorage.getItem('token'),
+            'page':1,
+            'size':10
+          }
+        })
+          .then((res) => {
+              this.amount = res.data.data.amount;
+              let aa = document.getElementsByClassName('icon-home1')[0]
+              if(this.amount > 0){
+                aa.innerHTML = this.amount;
+                aa.style.backgroundColor='#f56c6c';
+                aa.style.color='#fff';
+                this.css('.icon-yewurenyuanxinxiguanli:after{display:block}');
+              // }else{
+              //   aa.innerHTML = '';
+              //   aa.style.backgroundColor='#fff';
+              //   aa.style.color='#fff';
+              //   this.css('.icon-yewurenyuanxinxiguanli:after{display:none}');
+              }
+            },
+          ).catch((e) => {
+
+        });
+      },
     },
     mounted() {
       let user = localStorage.getItem('access-user');
@@ -115,6 +179,8 @@
         user = JSON.parse(user);
         this.nickname = user.nickname || '';
       }
+      this.handleSearch()
+      this.handleSearch1()
     }
 
   }

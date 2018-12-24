@@ -223,8 +223,9 @@
         },
       methods:{
           handleSearch(month){
+            let myDate = new Date();
+            this.year = myDate.getFullYear() + '年';
             if(!month){
-              var myDate = new Date();
               this.value = myDate.getMonth()+1 +'月';
             }
             if(month == '1月'){
@@ -430,6 +431,10 @@
     border-radius: 4px;
     border:1px solid #f8fafb;
   }
+  .bg-purple div:first-child{
+    margin-top: 20px;
+    font-size:20px;
+  }
   .leftImg,
   .rightText{
     float:left;
@@ -437,14 +442,16 @@
   .leftImg img{
     width:45px;
     height:45px;
-    margin:23px 0 0 30px;
+    margin:6px 0 0 30px;
   }
   .leftImg .card{
     width:33px;
     height:45px;
   }
-  .rightText{
-    margin:27px 0 0 30px;
+  .bg-purple{
+    .rightText{
+      margin:3px 0 0 30px;
+    }
   }
   .rightText div:nth-child(2){
     font-size: 14px;

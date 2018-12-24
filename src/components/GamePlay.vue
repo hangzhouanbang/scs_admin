@@ -92,7 +92,7 @@
     </el-dialog>
 
     <!--工具条-->
-    <el-col :span="24" class="toolbar">
+    <el-col :span="24" class="toolbar" style="margin-bottom:30px;">
       <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button>
       <el-button type="primary" @click="addplay">新增</el-button>
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"

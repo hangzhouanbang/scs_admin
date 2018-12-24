@@ -169,6 +169,15 @@
               this.loading = false;//隐藏加载条
               console.log(res.data.data)
               this.amount = res.data.data.amount;
+              localStorage.setItem('amount',this.amount)
+              let aa = document.getElementsByClassName('icon-home1')[0]
+              if(this.amount > 0){
+                aa.innerHTML = this.amount;
+                aa.style.backgroundColor='#f56c6c';
+                aa.style.color='#fff';
+              }else{
+                aa.style.display='none';
+              }
               this.list = res.data.data.listPage.items;
               this.total = res.data.data.listPage.pageCount;
               for(let i = 0;i < this.list.length;i++){

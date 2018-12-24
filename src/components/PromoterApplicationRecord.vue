@@ -127,6 +127,13 @@
                 console.log(res.data)
                 this.record = res.data.data.items;
                 this.total = res.data.data.pageCount;
+                let number = res.data.data.totalItemsCount;
+                if(number > 0){
+                  let aa = document.getElementsByClassName('icon-home')[0]
+                  aa.innerHTML = number;
+                  aa.style.backgroundColor='#f56c6c';
+                  aa.style.color='#fff';
+                }
                 for(let i = 0;i < this.record.length;i++){
                   this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
                   if(this.record[i].state == 'APPLYSUCCESS'){
@@ -203,7 +210,7 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .toolbar{
     margin-top:30px;
   }

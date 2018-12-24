@@ -58,19 +58,19 @@
       <el-dialog title="修改密码" :visible.sync="editFormVisible" :close-on-click-modal="false">
         <el-form :model="editForm" label-width="100px" ref="editForm">
           <el-form-item label="用户名" prop="nickname">
-            <el-input v-model="editForm.nickname" auto-complete="off"></el-input>
+            <el-input v-model="editForm.nickname" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="姓名" prop="user">
-            <el-input v-model="editForm.user" auto-complete="off"></el-input>
+            <el-input v-model="editForm.user" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="身份证号" prop="idCard">
-            <el-input v-model="editForm.idCard" :rows="8"></el-input>
+            <el-input v-model="editForm.idCard" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="添加时间" prop="createTime">
-            <el-input v-model="editForm.createTime" :rows="8"></el-input>
+            <el-input v-model="editForm.createTime" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
-          <el-form-item label="密码">
-            <el-input v-model="editForm.password" type='password' :rows="8"></el-input>
+          <el-form-item label="密码" required>
+            <el-input v-model="editForm.password" type='password' auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -95,16 +95,16 @@
       <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
           <el-form-item label="用户名" prop="nickname">
-            <el-input v-model="addForm.nickname" auto-complete="off"></el-input>
+            <el-input v-model="addForm.nickname" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="addForm.pass" auto-complete="off"></el-input>
+            <el-input type="password" v-model="addForm.pass" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="姓名" prop="user">
-            <el-input v-model="addForm.user" auto-complete="off"></el-input>
+            <el-input v-model="addForm.user" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="身份证号" prop="idCard">
-            <el-input v-model="addForm.idCard" auto-complete="off"></el-input>
+            <el-input v-model="addForm.idCard" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -197,7 +197,7 @@
           },
           params: {
             'page': this.page,
-            'size': '15',
+            'size': '10',
             'nickname': this.trim(this.filters.nickname),
             'token':sessionStorage.getItem('token')
           }

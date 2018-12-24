@@ -70,7 +70,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="issue">发布</el-button>
-            <el-button type="primary" @click.native="addFormVisible = false">取消</el-button>
+            <el-button @click.native="addFormVisible = false">取消</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>

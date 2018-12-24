@@ -191,69 +191,130 @@
 
       <!--其他信息弹窗-->
       <el-dialog title="详情" :visible.sync="other" :close-on-click-modal="false" class="other">
-          <!-- 其他信息-->
-        <el-form ref="details" :model="details" label-width="150px">
-          <el-form-item label="绑定推广员：">
-            <el-button type="text" style="color:#000;">{{details.agentId}}</el-button>
+        <div class="details">
+          <span class="every">
+            <label for="">绑定推广员:</label>
+            <span style="color:#000;">{{details.agentId}}</span>
             <el-button type="text" style="color:#409EFF;" @click="Bindingadjust(details.agentId)">绑定调整</el-button>
-          </el-form-item>
-          <el-form-item label="真实姓名：">
-            <el-button type="text" style="color:#000;">{{details.realName}}</el-button>
-          </el-form-item>
-          <el-form-item label="性别：">
-            <el-button type="text" style="color:#000;">{{details.gender}}</el-button>
-          </el-form-item>
-          <el-form-item label="手机号码：">
-            <el-button type="text" style="color:#000;">{{details.phone}}</el-button>
-          </el-form-item>
-          <el-form-item label="身份证号：">
-            <el-button type="text" style="color:#000;">{{details.IDcard}}</el-button>
-          </el-form-item>
-          <el-form-item label="会员总消费：">
-            <el-button type="text" style="color:#000;">{{details.cost}}元</el-button>
-          </el-form-item>
-          <el-form-item label="登录时间：">
-            <el-button type="text" style="color:#000;">{{details.loginTime}}</el-button>
-          </el-form-item>
-          <el-form-item label="登录ip：">
-            <el-button type="text" style="color:#000;">{{details.loginIp}}</el-button>
-          </el-form-item>
-          <el-form-item label="在线时间：">
-            <el-button type="text" style="color:#000;">{{details.onlineTime}}</el-button>
-          </el-form-item>
-          <el-form-item label="正在游戏的房间：">
-            <el-table
-              :data="tableData"
-              style="width: 100%;">
-              <el-table-column
-                prop="no"
-                label="游戏房间号"
-                width="150">
-              </el-table-column>
-              <el-table-column
-                prop="game"
-                label="游戏名称"
-                width="180">
-              </el-table-column>
-              <el-table-column
-                prop="vip"
-                label="是否VIP房间">
-              </el-table-column>
-              <el-table-column
-                prop="playersCount"
-                label="玩家人数">
-              </el-table-column>
-              <el-table-column
-                prop="panCountPerJu"
-                label="每局盘数">
-              </el-table-column>
-              <el-table-column
-                prop="currentPanNum"
-                label="当前盘数">
-              </el-table-column>
+          </span>
+          <span class="every">
+            <label for="">真实姓名:</label>
+            <span style="color:#000;">{{details.realName}}</span>
+          </span>
+          <span class="every">
+            <label for="">性别:</label>
+            <span style="color:#000;">{{details.gender}}</span>
+          </span>
+          <span class="every">
+            <label for="">手机号码:</label>
+            <span style="color:#000;">{{details.phone}}</span>
+          </span>
+        </div>
+        <div class="details">
+          <span class="every">
+            <label for="">身份证号:</label>
+            <span style="color:#000;">{{details.IDcard}}</span>
+          </span>
+          <span class="every">
+            <label for="">会员总消费:</label>
+            <span style="color:#000;">{{details.cost}}</span>
+          </span>
+          <span class="every">
+            <label for="">登录ip:</label>
+             <span id="msg" style="color:#000;">{{details.loginIp}}</span>
+             <el-button type="text" data-clipboard-target="#msg" class="copy" @click="copy">点击复制</el-button>
+          </span>
+        </div>
+        <div class="details" style="margin-top:10px;">
+          <span class="every">
+            <label for="">登录时间:</label>
+            <span style="color:#000;">{{details.loginTime}}</span>
+          </span>
+          <span class="every">
+            <label for="">在线时间:</label>
+             <span style="color:#000;">{{details.onlineTime}}</span>
+          </span>
+          <span class="every">
+            <label for="">累计在线时长:</label>
+             <span style="color:#000;"></span>
+          </span>
+        </div>
+        <div class="details" style="margin-top:20px;">
+          <span class="every">
+            <label for="">正在游戏的房间:</label>
+             <el-table :data="tableData" style="width: 100%;">
+              <el-table-column prop="no" label="游戏房间号" width="150"></el-table-column>
+              <el-table-column prop="game" label="游戏名称" width="180"></el-table-column>
+              <el-table-column prop="vip" label="是否VIP房间"></el-table-column>
+              <el-table-column prop="playersCount" label="玩家人数"></el-table-column>
+              <el-table-column prop="panCountPerJu" label="每局盘数"></el-table-column>
+              <el-table-column prop="currentPanNum" label="当前盘数"></el-table-column>
             </el-table>
-          </el-form-item>
-        </el-form>
+          </span>
+        </div>
+        <div class="details" style="margin-top:20px;">
+          <span class="every">
+            <label for="">历史战绩:</label>
+            <ul class="zj">
+                <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+                <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+               <li>
+                  <div class="top">
+                    <span>瑞安麻将</span>
+                    <span>房号：888888</span>
+                    <span>局数：3/4</span>
+                    <span>2018-12-10 10:21</span>
+                  </div>
+                  <div class="bottom">
+                    <span>一川闲絮：2</span>
+                    <span>一川闲絮：-180</span>
+                    <span>一川闲絮：10</span>
+                    <span>一川闲絮：2</span>
+                  </div>
+                </li>
+            </ul>
+          </span>
+        </div>
       </el-dialog>
 
       <!--绑定调整-->
@@ -278,6 +339,7 @@
 
 <script>
   import axios from 'axios'
+  import Clipboard from 'clipboard'
 
   export default {
     name: "NewVip",
@@ -1049,6 +1111,18 @@
           }
         }
         this.handleSearch(this.sorting.gold,this.sorting.score,this.sorting.createTime,this.sorting.vip,this.sorting.vipEndTime,this.sorting.vipLevel,this.sorting.vipScore,this.sorting.onlineState,this.sorting.verifyUser)
+      },
+      copy(){
+        let clipboard = new Clipboard('.copy');
+        clipboard.on('success', function(e) {
+          alert('复制成功')
+          clipboard.destroy()
+        });
+
+        clipboard.on('error', function(e) {
+          alert('复制失败，请手动复制')
+          clipboard.destroy()
+        });
       }
     },
     mounted() { //初始化页面
@@ -1057,7 +1131,7 @@
   }
 </script>
 
-<style>
+<style scoped lang="scss">
   .demo-table-expand label {
     font-weight: bold;
   }
@@ -1103,6 +1177,32 @@
   .bdtz{
     width:53%;
     left:25%;
+  }
+  .every:not(:first-child){
+    margin-left:10%;
+  }
+  .zj{
+    list-style: none;
+    width:93%;
+    border:1px solid #000;
+    height:130px;
+    overflow-y: scroll;
+  }
+  .zj li{
+    margin-left:-6.7%;
+    background-color: #F5F5F5;
+  }
+  .zj li:not(:first-child){
+    margin-top:5px;
+  }
+  .zj .top{
+    border-bottom:1px solid #c9c9c9;
+  }
+  .zj .top span,
+  .zj .bottom span{
+    display:inline-block;
+    width:24%;
+    text-align: center;
   }
 </style>
 

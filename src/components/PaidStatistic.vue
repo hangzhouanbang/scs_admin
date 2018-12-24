@@ -60,7 +60,7 @@
       </div>
     </el-col>
 
-    <el-row :gutter="20" style="margin:190px 0 0 30px;">
+    <el-row :gutter="20" style="margin:190px 0 40px 30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple CARD">
           <div class="top" style="overflow: hidden;">

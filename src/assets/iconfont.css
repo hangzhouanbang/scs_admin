@@ -51,3 +51,40 @@
 
 .icon-wanfa:before { content: "\e68c"; }
 
+.icon-home,
+.icon-home1{
+  border-radius: 10px;
+  display: inline-block;
+  font-size: 12px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 6px;
+  text-align: center;
+  white-space: nowrap;
+  position: absolute;
+  top:0;
+  right:27px;
+}
+.icon-home1{
+  right:68px;
+}
+.icon-yewurenyuanxinxiguanli:after {
+  content: "";
+  position: absolute;
+  top: 17px;
+  right: 66px;
+  border-radius: 50%;
+  display: inline-block;
+  font-size: 12px;
+  height: 9px;
+  line-height: 9px;
+  padding: 0 5px;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #f56c6c;
+  display:none;
+}
+.aa{
+
+}
+

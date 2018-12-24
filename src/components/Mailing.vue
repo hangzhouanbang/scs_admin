@@ -58,7 +58,7 @@
           <el-form-item label="礼券" prop="integral">
             <el-input type="number" min="0" placeholder="数目" v-model="filters.integral"></el-input>
           </el-form-item>
-          <el-form-item label="物品" prop="number">
+          <el-form-item label="物品" prop="id">
             <el-select v-model="id" placeholder="请选择" clearable>
               <el-option
                 v-for="item in this.data"
@@ -125,7 +125,10 @@
         rules: {
           ids: [
             {required: true, message: '请输入ID', trigger: 'blur'}
-          ]
+          ],
+          // number:[
+          //   {required: true, message: '请输入玉石数', trigger: 'blur'}
+          // ]
         },
         radio:'',
         visible:false
@@ -407,5 +410,6 @@
   img {
     width: 180px;
     height: 120px;
+    margin:0;
   }
 </style>

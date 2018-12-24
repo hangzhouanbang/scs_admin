@@ -1,10 +1,17 @@
 <template>
   <el-row class="warp" style="margin:30px 0 0 50px;">
     <!-- 列表-->
-    <el-table :data="users" highlight-current-row
+    <el-table :data="items" highlight-current-row
               style="width: 30%;" id="out-table">
-      <el-table-column prop="id" label="账号" width="120"></el-table-column>
-      <el-table-column prop="transaction_id" label="当前角色" width="auto"></el-table-column>
+      <el-table-column prop="nickname" label="账号" width="120"></el-table-column>
+      <el-table-column label="当前角色" width="auto">
+        <template slot-scope="scope">
+          <ul style="margin-left:-26px;">
+            <li v-for="roles in scope.row.roleList">{{roles.role}}</li>
+          </ul>
+        </template>
+      </el-table-column>
+      <!--<el-table-column prop="transaction_id" label="当前角色" width="auto"></el-table-column>-->
     </el-table>
 
     <el-form :inline="true" :model="filters" style="margin-top:50px;">
@@ -28,13 +35,55 @@
 </template>
 
 <script>
+  import axios from 'axios'
     export default {
         name: "PersonalInfo",
         data(){
           return{
-            filters:{}
+            filters:{},
+            items:[]
           }
+        },
+      methods:{
+        handleSearch() {
+          axios({//根据昵称查询
+            method: 'post',
+            url: this.global.mPath + '/login/admin_info',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'token':sessionStorage.getItem('token')
+            }
+          })
+            .then((res) => {
+                this.items = res.data.data.admin;
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
         }
+      },
+      mounted(){
+        this.handleSearch()
+      }
     }
 </script>
 

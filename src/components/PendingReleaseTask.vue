@@ -43,10 +43,10 @@
     <el-dialog title="新增任务" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
         <el-form-item label="任务名称" prop="name" required>
-          <el-input v-model="addForm.name" auto-complete="off"></el-input>
+          <el-input v-model="addForm.name" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="详细描述" prop="description" required>
-          <el-input v-model="addForm.description" auto-complete="off"></el-input>
+          <el-input v-model="addForm.description" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="任务类型" prop="taskType" required>
           <el-select v-model="addForm.taskType" placeholder="请选择">
@@ -89,16 +89,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="任务名称" prop="name" required>
-          <el-input v-model="publishForm.name" auto-complete="off"></el-input>
+          <el-input v-model="publishForm.name" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="详细描述" prop="desc" required>
-          <el-input v-model="publishForm.desc" auto-complete="off"></el-input>
+          <el-input v-model="publishForm.desc" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="任务类型" prop="type" required>
-          <el-input v-model="publishForm.type" auto-complete="off"></el-input>
+          <el-input v-model="publishForm.type" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="任务种类" prop="taskName" required>
-          <el-input v-model="publishForm.taskName" auto-complete="off"></el-input>
+          <el-input v-model="publishForm.taskName" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="奖励玉石数量" prop="goldNumber">
           <el-input v-model="publishForm.goldNumber" auto-complete="off" style="width:220px;"></el-input>个
