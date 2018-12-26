@@ -54,7 +54,7 @@
         <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
         <el-table-column prop="product" label="商品名称" width="120"></el-table-column>
         <el-table-column prop="accountingAmount" label="数量" width="100"></el-table-column>
-        <el-table-column prop="summary.text" label="类型" width="100"></el-table-column>
+        <el-table-column prop="summary.text" label="类型" width="170"></el-table-column>
         <el-table-column prop="accountingTime" label="使用时间" width="160" sortable></el-table-column>
         <el-table-column prop="receiverId" label="使用对象" width="140"></el-table-column>
         <el-table-column prop="balanceAfterRi" label="剩余日卡" width="100" sortable></el-table-column>

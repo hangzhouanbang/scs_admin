@@ -103,17 +103,19 @@
         <el-table-column label="地区" prop="area"></el-table-column>
         <el-table-column label="注册时间" prop="createTime"></el-table-column>
         <el-table-column label="邀请玩家数" prop="inviteMemberNum"></el-table-column>
+        <el-table-column label="下级数" prop="juniorNum"></el-table-column>
       </el-table>
       <el-table :data="roles" style="width: 100%;">
-        <el-table-column label="下级数" prop="juniorNum"></el-table-column>
         <el-table-column label="代理级别" prop="agentType.type"></el-table-column>
         <el-table-column label="上级ID" prop="bossId"></el-table-column>
         <el-table-column label="充值返利" prop="agentType.memberReward"></el-table-column>
         <el-table-column label="下级返利" prop="agentType.juniorReward"></el-table-column>
-        <el-table-column label="日卡剩余" prop="clubCardRi"></el-table-column>
-        <el-table-column label="周卡剩余" prop="clubCardZhou"></el-table-column>
-        <el-table-column label="月卡剩余" prop="clubCardYue"></el-table-column>
-        <el-table-column label="季卡剩余" prop="clubCardJi" sortabl></el-table-column>
+        <el-table-column label="日卡" prop="clubCardRi"></el-table-column>
+        <el-table-column label="周卡" prop="clubCardZhou"></el-table-column>
+        <el-table-column label="月卡" prop="clubCardYue"></el-table-column>
+        <el-table-column label="季卡" prop="clubCardJi" sortabl></el-table-column>
+        <el-table-column label="玉石" prop="" sortabl></el-table-column>
+        <el-table-column label="茶馆玉石" prop="" sortabl></el-table-column>
         <el-table-column label="邀请码" prop="invitationCode"></el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
@@ -134,6 +136,7 @@
         <el-button @click.native="BindingAdjustment">上级绑定调整</el-button>
         <el-button @click.native="MembershipAdjustment">会员卡调整</el-button>
         <el-button @click.native="IntegralAdjustment">积分调整</el-button>
+        <el-button @click.native="GoldAdjustment">玉石调整</el-button>
       </div>
     </el-dialog>
 
@@ -219,7 +222,7 @@
     <el-dialog title="查看绑定玩家" :visible.sync="playersVisible" :close-on-click-modal="false">
       <el-table :data="player" style="width: 100%;">
         <el-table-column label="玩家ID" prop="memberId"></el-table-column>
-        <el-table-column label="当前玉石" prop=""></el-table-column>
+        <el-table-column label="当前玉石" prop="gold"></el-table-column>
         <el-table-column label="玩家昵称" prop="nickname"></el-table-column>
         <el-table-column label="绑定时间" prop="createTime"></el-table-column>
         <el-table-column prop="systemMail.createtime" label="操作" width="auto">
@@ -422,6 +425,32 @@
       </el-form>
     </el-dialog>
 
+    <!--绑定调整-->
+    <el-dialog title="玉石调整" :visible.sync="Goldtoadjust" :close-on-click-modal="false" class="bdtz">
+      <el-form :model="GoldForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="推广员ID" prop="score" style="width:300px;">
+          <el-input v-model="GoldForm.agentId" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="玉石类型">
+          <el-select v-model="GoldForm.product" placeholder="请选择" style="width:200px;">
+            <el-option
+              v-for="item in Golds"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发放数量" prop="score" style="width:300px;">
+          <el-input v-model="GoldForm.id"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="goldsure">确认调整</el-button>
+          <el-button type="primary" @click.native="Goldtoadjust = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <!--工具条-->
     <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
@@ -435,652 +464,666 @@
     import axios from 'axios'
     import Clipboard from 'clipboard'
     export default {
-        name: "PromoterManagement",
-        data(){
-          return{
-            filters: {},
-            record:[],
-            form:{},
-            roles:[],
-            total:0,
-            upgrade:'',
-            options: [],
-            types:[
-              {value:'日卡'},
-              {value:'周卡'},
-              {value:'月卡'},
-              {value:'季卡'},
-            ],
-            centerDialogVisible:false,
-            relieveDialogVisible:false,
-            bindingVisible:false,
-            levelVisible:false,
-            disqualifyDialogVisible:true,
-            unlockingDialogVisible:false,
-            publishVisible:false,
-            notarizeVisible:false,
-            integralVisible:false,
-            sureVisible:false,
-            codeVisible:false,
-            playersVisible:false,
-            other:false,
-            state:'',
-            seniorAmount:'',
-            juniorAmount:'',
-            sorting:{},
-            page:1,
-            state1:{},
-            publishForm:{},
-            number:'',
-            id:'',
-            integralForm:{},
-            score:'',
-            publishForm1:{},
-            src:'',
-            player:[],
-            details:{},
-            tableData:[],
-            type:'',
-            amount:'',
-            num:0,
-            Bindingtoadjust:false,
-            bindForm:{},
-            memberId:''
-          }
+      name: "PromoterManagement",
+      data(){
+        return{
+          filters: {},
+          record:[],
+          form:{},
+          roles:[],
+          total:0,
+          upgrade:'',
+          options: [],
+          types:[
+            {value:'日卡'},
+            {value:'周卡'},
+            {value:'月卡'},
+            {value:'季卡'},
+          ],
+          centerDialogVisible:false,
+          relieveDialogVisible:false,
+          bindingVisible:false,
+          levelVisible:false,
+          disqualifyDialogVisible:true,
+          unlockingDialogVisible:false,
+          publishVisible:false,
+          notarizeVisible:false,
+          integralVisible:false,
+          sureVisible:false,
+          codeVisible:false,
+          playersVisible:false,
+          other:false,
+          Goldtoadjust:false,
+          state:'',
+          seniorAmount:'',
+          juniorAmount:'',
+          sorting:{},
+          page:1,
+          state1:{},
+          publishForm:{},
+          number:'',
+          id:'',
+          integralForm:{},
+          score:'',
+          publishForm1:{},
+          src:'',
+          player:[],
+          details:{},
+          tableData:[],
+          type:'',
+          amount:'',
+          num:0,
+          Bindingtoadjust:false,
+          bindForm:{},
+          memberId:'',
+          Golds:[
+            {value:'玉石'},
+            {value:'茶馆玉石'}
+          ],
+          GoldForm:{}
+        }
+      },
+      methods:{
+        dateTimeFormat(value) {
+          let time = new Date(+value);
+          let rightTwo = (v) => {
+            v = '0' + v;
+            return v.substring(v.length - 2, v.length)
+          };
+          if (time == null) return;
+          let year = time.getFullYear();
+          let month = time.getMonth() + 1;
+          let date = time.getDate();
+          let hours = time.getHours();
+          let minutes = time.getMinutes();
+          let seconds = time.getSeconds();
+          return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
-        methods:{
-          dateTimeFormat(value) {
-            let time = new Date(+value);
-            let rightTwo = (v) => {
-              v = '0' + v;
-              return v.substring(v.length - 2, v.length)
-            };
-            if (time == null) return;
-            let year = time.getFullYear();
-            let month = time.getMonth() + 1;
-            let date = time.getDate();
-            let hours = time.getHours();
-            let minutes = time.getMinutes();
-            let seconds = time.getSeconds();
-            return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
-          },
-          handleSearch(page,inviteMemberNumSort,juniorNumSort,createTimeSort,stateSort){
-            if(this.filters.startTime){
-              let date = new Date(this.filters.startTime);
-              this.state1.startTime = date.getTime();
+        handleSearch(page,inviteMemberNumSort,juniorNumSort,createTimeSort,stateSort){
+          if(this.filters.startTime){
+            let date = new Date(this.filters.startTime);
+            this.state1.startTime = date.getTime();
+          }
+          if(this.filters.endTime){
+            let date = new Date(this.filters.endTime);
+            this.state1.endTime = date.getTime();
+          }
+          if(this.filters.startTime &&
+            this.filters.endTime &&
+            this.state1.endTime - this.state1.startTime < 0){
+            return;
+          }
+          axios({
+            url:this.global.mPath + '/agent/queryagent',
+            method:'post',
+            params:{
+              page:page,
+              size:10,
+              token:sessionStorage.getItem('token'),
+              id:this.filters.id,
+              bossId:this.filters.bossId,
+              nickname:this.filters.nickname,
+              phone:this.filters.phone,
+              userName:this.filters.userName,
+              startTime:this.state1.startTime,
+              endTime:this.state1.endTime,
+              type:this.filters.mailType,
+              inviteMemberNumSort:inviteMemberNumSort,
+              juniorNumSort:juniorNumSort,
+              createTimeSort:createTimeSort,
+              stateSort:stateSort
             }
-            if(this.filters.endTime){
-              let date = new Date(this.filters.endTime);
-              this.state1.endTime = date.getTime();
-            }
-            if(this.filters.startTime &&
-              this.filters.endTime &&
-              this.state1.endTime - this.state1.startTime < 0){
-              return;
-            }
-            axios({
-              url:this.global.mPath + '/agent/queryagent',
-              method:'post',
-              params:{
-                page:page,
-                size:10,
-                token:sessionStorage.getItem('token'),
-                id:this.filters.id,
-                bossId:this.filters.bossId,
-                nickname:this.filters.nickname,
-                phone:this.filters.phone,
-                userName:this.filters.userName,
-                startTime:this.state1.startTime,
-                endTime:this.state1.endTime,
-                type:this.filters.mailType,
-                inviteMemberNumSort:inviteMemberNumSort,
-                juniorNumSort:juniorNumSort,
-                createTimeSort:createTimeSort,
-                stateSort:stateSort
+          }).then((res) => {
+              // console.log(res.data)
+              this.amount = res.data.data.amount
+              this.record = res.data.data.agentList.items;
+              this.total = res.data.data.agentList.pageCount;
+              for(let i = 0;i < this.record.length;i++){
+                this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
               }
-            }).then((res) => {
-                // console.log(res.data)
-                this.amount = res.data.data.amount
-                this.record = res.data.data.agentList.items;
-                this.total = res.data.data.agentList.pageCount;
-                for(let i = 0;i < this.record.length;i++){
-                  this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
-                }
-              }
-            ).catch((e) => {
+            }
+          ).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        sort(a,page){
+          this.sorting = a;
+          if(this.sorting.prop == 'inviteMemberNum'){
+            if(this.sorting.order == 'ascending'){
+              this.sorting.inviteMemberNum = 'ASC'
+            }
+            if(this.sorting.order == 'descending'){
+              this.sorting.inviteMemberNum = 'DESC'
+            }
+          }
+          if(this.sorting.prop == 'juniorNum'){
+            if(this.sorting.order == 'ascending'){
+              this.sorting.juniorNum = 'ASC'
+            }
+            if(this.sorting.order == 'descending'){
+              this.sorting.juniorNum = 'DESC'
+            }
+          }
+          if(this.sorting.prop == 'createTime'){
+            if(this.sorting.order == 'ascending'){
+              this.sorting.createTime = 'ASC'
+            }
+            if(this.sorting.order == 'descending'){
+              this.sorting.createTime = 'DESC'
+            }
+          }
+          if(this.sorting.prop == 'state'){
+            if(this.sorting.order == 'ascending'){
+              this.sorting.state = 'ASC'
+            }
+            if(this.sorting.order == 'descending'){
+              this.sorting.state = 'DESC'
+            }
+          }
+          this.handleSearch(page,this.sorting.inviteMemberNum,this.sorting.juniorNum,this.sorting.createTime,this.sorting.state)
+        },
+        handleCurrentChange(val){
+          this.page = val;
+          this.sort(this.sorting,this.page);
+        },
+        //详情
+        particulars(index,row){
+          this.centerDialogVisible = true;
+          this.form = row
+          axios({
+            url:this.global.mPath + '/agent/agentdetail',
+            method:'post',
+            params:{
+              agentId:row.id,
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+              // console.log(res.data)
+              row.clubCardYue = res.data.data.clubCardYue;
+              row.clubCardJi = res.data.data.clubCardJi;
+              row.clubCardZhou = res.data.data.clubCardZhou;
+              row.clubCardRi = res.data.data.clubCardRi;
+              row.score = res.data.data.score;
+              this.roles = [Object.assign({}, row)];
+              this.state = res.data.data.agent.state;
+              this.id = res.data.data.agent.id;
+              this.score = res.data.data.score;
+              // console.log(this.id)
+          }).catch((e) => {
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          sort(a,page){
-            this.sorting = a;
-            if(this.sorting.prop == 'inviteMemberNum'){
-              if(this.sorting.order == 'ascending'){
-                this.sorting.inviteMemberNum = 'ASC'
-              }
-              if(this.sorting.order == 'descending'){
-                this.sorting.inviteMemberNum = 'DESC'
-              }
-            }
-            if(this.sorting.prop == 'juniorNum'){
-              if(this.sorting.order == 'ascending'){
-                this.sorting.juniorNum = 'ASC'
-              }
-              if(this.sorting.order == 'descending'){
-                this.sorting.juniorNum = 'DESC'
-              }
-            }
-            if(this.sorting.prop == 'createTime'){
-              if(this.sorting.order == 'ascending'){
-                this.sorting.createTime = 'ASC'
-              }
-              if(this.sorting.order == 'descending'){
-                this.sorting.createTime = 'DESC'
-              }
-            }
-            if(this.sorting.prop == 'state'){
-              if(this.sorting.order == 'ascending'){
-                this.sorting.state = 'ASC'
-              }
-              if(this.sorting.order == 'descending'){
-                this.sorting.state = 'DESC'
-              }
-            }
-            this.handleSearch(page,this.sorting.inviteMemberNum,this.sorting.juniorNum,this.sorting.createTime,this.sorting.state)
-          },
-          handleCurrentChange(val){
-            this.page = val;
-            this.sort(this.sorting,this.page);
-          },
-          //详情
-          particulars:function(index,row){
-            this.centerDialogVisible = true;
-            this.form = row
-            axios({
-              url:this.global.mPath + '/agent/agentdetail',
-              method:'post',
-              params:{
-                agentId:row.id,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-                // console.log(res.data)
-                row.clubCardYue = res.data.data.clubCardYue;
-                row.clubCardJi = res.data.data.clubCardJi;
-                row.clubCardZhou = res.data.data.clubCardZhou;
-                row.clubCardRi = res.data.data.clubCardRi;
-                row.score = res.data.data.score;
-                this.roles = [Object.assign({}, row)];
-                this.state = res.data.data.agent.state;
-                this.id = res.data.data.agent.id;
-                this.score = res.data.data.score;
-                // console.log(this.id)
-            }).catch((e) => {
-                this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          //代理等级调整
-          LevelAdjustment:function(){
-            // console.log(this.form)
-            this.levelVisible = true;
-            this.centerDialogVisible = false;
-            if(this.form.agentType){
-              this.type = this.form.agentType.type
-            }
+          })
+        },
+        //代理等级调整
+        LevelAdjustment(){
+          // console.log(this.form)
+          this.levelVisible = true;
+          this.centerDialogVisible = false;
+          if(this.form.agentType){
+            this.type = this.form.agentType.type
+          }
 
-          },
-          //确认修改
-          makeSure:function(){
-            axios({
-              url:this.global.mPath + '/agent/settype',
-              method:'post',
-              params:{
-                agentId:this.form.id,
-                type:this.form.upgrade,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data)
-              if(res.data.success){
-                this.$message.success({showClose: true, message: '等级修改成功', duration: 1500});
-                this.levelVisible = false;
-                this.handleSearch(this.page)
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            }).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          //上级绑定调整
-          BindingAdjustment:function(){
-            this.bindingVisible = true;
-            this.centerDialogVisible = false;
-          },
-          //绑定
-          bound:function(){
-            axios({
-              url:this.global.mPath + '/agent/setboss',
-              method:'post',
-              params:{
-                agentId:this.form.id,
-                bossId:this.form.bossId,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data)
-              if(res.data.success){
-                this.$message.success({showClose: true, message: '绑定成功', duration: 1500});
-                this.bindingVisible = false;
-                this.handleSearch(this.page)
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            }).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          //解除绑定
-          unbound:function(){
-            axios({
-              url:this.global.mPath + '/agent/removeboss',
-              method:'post',
-              params:{
-                agentId:this.form.id,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data)
-              if(res.data.success){
-                this.$message.success({showClose: true, message: '解除绑定成功', duration: 1500});
-                this.bindingVisible = false;
-                this.handleSearch(this.page)
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            }).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          //取消推广员资格
-          CancelSubmit:function(){
-            axios({
-              url:this.global.mPath + '/agent/ban',
-              method:'post',
-              params:{
-                agentId:this.roles[0].id,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data)
-              if(res.data.success){
-                this.unlockingDialogVisible = true;
-                this.disqualifyDialogVisible = false;
-                this.roles[0].state = res.data.data
-                this.state = '封禁'
-                this.handleSearch(this.page)
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            }).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          //解除封停状态
-          relieveSubmit:function(){
-            axios({
-              url:this.global.mPath + '/agent/liberate',
-              method:'post',
-              params:{
-                agentId:this.roles[0].id,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data)
-              if(res.data.success){
-                this.unlockingDialogVisible = false;
-                this.disqualifyDialogVisible = true;
-                this.roles[0].state = res.data.data
-                this.state = '正常'
-                this.handleSearch(this.page)
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            }).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          //会员卡调整
-          MembershipAdjustment: function () {
-            this.centerDialogVisible = false;
-            this.publishVisible = true;
-          },
-          //确认调整会员卡
-          sure() {
-            if(this.publishForm.product == '日卡'){
-              this.publishForm1.product = 'ri'
+        },
+        //确认修改
+        makeSure(){
+          axios({
+            url:this.global.mPath + '/agent/settype',
+            method:'post',
+            params:{
+              agentId:this.form.id,
+              type:this.form.upgrade,
+              token:sessionStorage.getItem('token')
             }
-            if(this.publishForm.product == '周卡'){
-              this.publishForm1.product = 'zhou'
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.$message.success({showClose: true, message: '等级修改成功', duration: 1500});
+              this.levelVisible = false;
+              this.handleSearch(this.page)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
             }
-            if(this.publishForm.product == '月卡'){
-              this.publishForm1.product = 'yue'
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        //上级绑定调整
+        BindingAdjustment(){
+          this.bindingVisible = true;
+          this.centerDialogVisible = false;
+        },
+        //绑定
+        bound(){
+          axios({
+            url:this.global.mPath + '/agent/setboss',
+            method:'post',
+            params:{
+              agentId:this.form.id,
+              bossId:this.form.bossId,
+              token:sessionStorage.getItem('token')
             }
-            if(this.publishForm.product == '季卡'){
-              this.publishForm1.product = 'ji'
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.$message.success({showClose: true, message: '绑定成功', duration: 1500});
+              this.bindingVisible = false;
+              this.handleSearch(this.page)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
             }
-            axios({
-              method: 'post',
-              url: this.global.mPath + '/agent/clubcardmanager',
-              headers: {
-                'Content-type': 'application/x-www-form-urlencoded'
-              },
-              params: {
-                'agentId': this.id,
-                'card':this.publishForm1.product,
-                'cardAmount':this.publishForm.afternumber,
-                'token':sessionStorage.getItem('token')
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        //解除绑定
+        unbound(){
+          axios({
+            url:this.global.mPath + '/agent/removeboss',
+            method:'post',
+            params:{
+              agentId:this.form.id,
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.$message.success({showClose: true, message: '解除绑定成功', duration: 1500});
+              this.bindingVisible = false;
+              this.handleSearch(this.page)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        //取消推广员资格
+        CancelSubmit(){
+          axios({
+            url:this.global.mPath + '/agent/ban',
+            method:'post',
+            params:{
+              agentId:this.roles[0].id,
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.unlockingDialogVisible = true;
+              this.disqualifyDialogVisible = false;
+              this.roles[0].state = res.data.data
+              this.state = '封禁'
+              this.handleSearch(this.page)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        //解除封停状态
+        relieveSubmit(){
+          axios({
+            url:this.global.mPath + '/agent/liberate',
+            method:'post',
+            params:{
+              agentId:this.roles[0].id,
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.unlockingDialogVisible = false;
+              this.disqualifyDialogVisible = true;
+              this.roles[0].state = res.data.data
+              this.state = '正常'
+              this.handleSearch(this.page)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        //会员卡调整
+        MembershipAdjustment() {
+          this.centerDialogVisible = false;
+          this.publishVisible = true;
+        },
+        //确认调整会员卡
+        sure() {
+          if(this.publishForm.product == '日卡'){
+            this.publishForm1.product = 'ri'
+          }
+          if(this.publishForm.product == '周卡'){
+            this.publishForm1.product = 'zhou'
+          }
+          if(this.publishForm.product == '月卡'){
+            this.publishForm1.product = 'yue'
+          }
+          if(this.publishForm.product == '季卡'){
+            this.publishForm1.product = 'ji'
+          }
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/agent/clubcardmanager',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'agentId': this.id,
+              'card':this.publishForm1.product,
+              'cardAmount':this.publishForm.afternumber,
+              'token':sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+              if (res.data.success == false) {
+                this.$message({
+                  showClose: true,
+                  message: '调整失败',
+                  type: 'warning'
+                });
+              } else if (res.data.success == true) {
+                this.$message({
+                  showClose: true,
+                  message: '调整成功',
+                  type: 'success'
+                });
+                this.centerDialogVisible = false;
+                this.notarizeVisible = false;
+                this.handleSearch(this.page)
               }
-            }).then((res) => {
-                if (res.data.success == false) {
+            },
+          ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
                   this.$message({
                     showClose: true,
-                    message: '调整失败',
+                    message: '服务器异常',
                     type: 'warning'
                   });
-                } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '调整成功',
-                    type: 'success'
-                  });
-                  this.centerDialogVisible = false;
-                  this.notarizeVisible = false;
-                  this.handleSearch(this.page)
-                }
-              },
-            ).catch((e) => {
-              if (e && e.response) {
-                switch (e.response.status) {
-                  case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break
-                  case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break
-                  case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
-                    break
-                }
-              }
-            });
-          },
-          //积分调整
-          IntegralAdjustment:function(){
-            this.centerDialogVisible = false;
-            this.integralVisible = true;
-          },
-          Confirm:function(){
-            axios({
-              method: 'post',
-              url: this.global.mPath + '/agent/scoremanager',
-              headers: {
-                'Content-type': 'application/x-www-form-urlencoded'
-              },
-              params: {
-                'agentId': this.id,
-                'scoreAmount':this.integralForm.afterAmount,
-                'token':sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-                if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '调整失败',
-                    type: 'warning'
-                  });
-                } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '调整成功',
-                    type: 'success'
-                  });
-                  this.centerDialogVisible = false;
-                  this.sureVisible = false;
-                  this.handleSearch(this.page)
-                }
-              },
-            ).catch((e) => {
-              if (e && e.response) {
-                switch (e.response.status) {
-                  case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break
-                  case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break
-                  case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
-                    break
-                }
-              }
-            });
-          },
-          //查看二维码
-          Code:function(){
-            this.centerDialogVisible = false;
-            this.codeVisible = true;
-            this.src = this.global.mPath + '/agent/qrcode?token='+sessionStorage.getItem('token')+'&agentId='+this.id
-          },
-          //查看玩家
-          Players:function(page){
-            this.playersVisible = true
-            this.centerDialogVisible = false;
-            axios({
-              url:this.global.mPath + '/agent/queryinvitatemember',
-              method:'post',
-              params:{
-                page:page,
-                size:'10',
-                agentId:this.id,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data.data.listPage.items)
-              this.player = res.data.data.listPage.items;
-              this.num = res.data.data.listPage.pageCount;
-              for(let i = 0;i < this.player.length;i++){
-                this.player[i].createTime = this.dateTimeFormat(this.player[i].createTime)
-              }
-            }).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          handleCurrentChange1(val){
-              this.Players(val)
-          },
-          //查看会员详情
-          showother: function (index,row) {
-            this.other = true;
-            this.memberId = row.memberId
-            console.log(this.memberId)
-            // this.playersVisible = false;
-            axios({
-              method: 'post',
-              url: this.global.mPath + '/member/querymemberdetail',
-              headers: {
-                'Content-type': 'application/x-www-form-urlencoded'
-              },
-              params: {
-                'memberId': row.memberId,
-                'token':sessionStorage.getItem('token'),
-              }
-            })
-              .then((res) => {
                   this.loading = false;//隐藏加载条
-                  this.details = res.data.data;
-                  this.tableData = res.data.data.roomList;
-                  for(var i = 0;i < this.tableData.length;i++){
-                    if(this.tableData[i].vip == true){
-                      this.tableData[i].vip = '是'
-                    }else{
-                      this.tableData[i].vip = '否'
-                    }
-                  }
-                },
-              ).catch((e) => {
-              if (e && e.response) {
-                switch (e.response.status) {
-                  case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break
-                  case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break
-                  case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
-                    break
-                }
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
               }
-            });
-            this.addForm = {
-              name: '',
-              author: '',
-              publishAt: '',
-              description: ''
-            };
-          },
-        //  查看下级
-          LookLower:function(){
-            this.centerDialogVisible = false;
-            this.filters.bossId = this.id;
-            this.handleSearch(1);
-          },
-          copy(){
-            let clipboard = new Clipboard('.copy');
-            clipboard.on('success', function(e) {
-              alert('复制成功')
-              clipboard.destroy()
-            });
-
-            clipboard.on('error', function(e) {
-              alert('复制失败，请手动复制')
-              clipboard.destroy()
-            });
-          },
-          //绑定调整
-          Bindingadjust:function(agentId){
-            this.Bindingtoadjust = true;
-            this.playersVisible = false;
-            this.other = false;
-            this.bindForm.agentId = agentId
-          },
-          bindsure:function() {
-            axios({
-              method: 'post',
-              url: this.global.mPath + '/member/update_agent_bind',
-              headers: {
-                'Content-type': 'application/x-www-form-urlencoded'
-              },
-              params: {
-                'memberId': this.memberId,
-                'agentId': this.bindForm.id,//0023
-                'token': sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              console.log(res.data)
-              if (res.data.success) {
-                this.$message.success({showClose: true, message: '修改成功', duration: 1500});
-                this.Bindingtoadjust = false;
+            }
+          });
+        },
+        //积分调整
+        IntegralAdjustment(){
+          this.centerDialogVisible = false;
+          this.integralVisible = true;
+        },
+        Confirm(){
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/agent/scoremanager',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'agentId': this.id,
+              'scoreAmount':this.integralForm.afterAmount,
+              'token':sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+              if (res.data.success == false) {
+                this.$message({
+                  showClose: true,
+                  message: '调整失败',
+                  type: 'warning'
+                });
+              } else if (res.data.success == true) {
+                this.$message({
+                  showClose: true,
+                  message: '调整成功',
+                  type: 'success'
+                });
+                this.centerDialogVisible = false;
+                this.sureVisible = false;
                 this.handleSearch(this.page)
-              } else {
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
               }
-            }).catch((e) => {
-              if (e && e.response) {
-                switch (e.response.status) {
-                  case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break;
-                  case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
-                    this.loading = false;//隐藏加载条
-                    break;
-                  case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
-                    break
+            },
+          ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          });
+        },
+        //查看二维码
+        Code(){
+          this.centerDialogVisible = false;
+          this.codeVisible = true;
+          this.src = this.global.mPath + '/agent/qrcode?token='+sessionStorage.getItem('token')+'&agentId='+this.id
+        },
+        //查看玩家
+        Players(page){
+          this.playersVisible = true
+          this.centerDialogVisible = false;
+          axios({
+            url:this.global.mPath + '/agent/queryinvitatemember',
+            method:'post',
+            params:{
+              page:page,
+              size:'10',
+              agentId:this.id,
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data.data.listPage.items)
+            this.player = res.data.data.listPage.items;
+            this.num = res.data.data.listPage.pageCount;
+            for(let i = 0;i < this.player.length;i++){
+              this.player[i].createTime = this.dateTimeFormat(this.player[i].createTime)
+            }
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        handleCurrentChange1(val){
+            this.Players(val)
+        },
+        //查看会员详情
+        showother(index,row) {
+          this.other = true;
+          this.memberId = row.memberId
+          console.log(this.memberId)
+          // this.playersVisible = false;
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/member/querymemberdetail',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'memberId': row.memberId,
+              'token':sessionStorage.getItem('token'),
+            }
+          })
+            .then((res) => {
+                this.loading = false;//隐藏加载条
+                this.details = res.data.data;
+                this.tableData = res.data.data.roomList;
+                for(var i = 0;i < this.tableData.length;i++){
+                  if(this.tableData[i].vip == true){
+                    this.tableData[i].vip = '是'
+                  }else{
+                    this.tableData[i].vip = '否'
+                  }
                 }
+              },
+            ).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
               }
-            })
+            }
+          });
+          this.addForm = {
+            name: '',
+            author: '',
+            publishAt: '',
+            description: ''
+          };
+        },
+        //  查看下级
+        LookLower(){
+          this.centerDialogVisible = false;
+          this.filters.bossId = this.id;
+          this.handleSearch(1);
+        },
+        copy(){
+          let clipboard = new Clipboard('.copy');
+          clipboard.on('success', function(e) {
+            alert('复制成功')
+            clipboard.destroy()
+          });
+
+          clipboard.on('error', function(e) {
+            alert('复制失败，请手动复制')
+            clipboard.destroy()
+          });
+        },
+        //绑定调整
+        Bindingadjust(agentId){
+          this.Bindingtoadjust = true;
+          this.playersVisible = false;
+          this.other = false;
+          this.bindForm.agentId = agentId
+        },
+        bindsure() {
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/member/update_agent_bind',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'memberId': this.memberId,
+              'agentId': this.bindForm.id,//0023
+              'token': sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            console.log(res.data)
+            if (res.data.success) {
+              this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+              this.Bindingtoadjust = false;
+              this.handleSearch(this.page)
+            } else {
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 500:
+                  this.$message({
+                    showClose: true,
+                    message: '服务器异常',
+                    type: 'warning'
+                  });
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 405:
+                  this.$message({
+                    showClose: true,
+                    message: '请先登录',
+                    type: 'warning'
+                  });
+                  break
+              }
+            }
+          })
+        },
+        //  玉石调整
+        GoldAdjustment(){
+          this.Goldtoadjust = true
+          this.centerDialogVisible = false
+        },
+        goldsure(){
+
+        }
+      },
+      mounted(){
+        this.handleSearch(1);
+        axios({
+          url:this.global.mPath + '/agent/queryagenttype',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
           }
-        },
-        mounted(){
-            this.handleSearch(1);
-            axios({
-              url:this.global.mPath + '/agent/queryagenttype',
-              method:'post',
-              params:{
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              console.log(res.data.data.listPage.items)
-              this.options = res.data.data.listPage.items;
-            })
-        },
+        }).then((res) => {
+          console.log(res.data.data.listPage.items)
+          this.options = res.data.data.listPage.items;
+        })
+      },
     }
 </script>
 
@@ -1144,10 +1187,6 @@
   .wanjia{
     margin-top:0;
   }
-
-  /*.other .el-dialog{*/
-    /*width:90%;*/
-  /*}*/
   .bg-purple{
     width:200px;
     height:100px;

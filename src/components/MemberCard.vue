@@ -17,6 +17,8 @@
       <el-table-column prop="score" label="购买获得积分数" width="auto"></el-table-column>
       <el-table-column prop="gold" label="购买获得玉石数" width="auto"></el-table-column>
       <el-table-column prop="time" label="延长的会员时间" width="auto"></el-table-column>
+      <el-table-column prop="firstDiscount" label="首次购买折扣" width="auto"></el-table-column>
+      <el-table-column prop="firstDiscountPrice" label="首次购买价格" width="auto"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="small" @click="showEditCard(scope.$index,scope.row)">编辑</el-button>
@@ -43,6 +45,12 @@
         <el-form-item label="延长的会员时间" prop="time">
           <el-input v-model="addCard.time" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="首次购买折扣" prop="time">
+          <el-input v-model="addCard.firstDiscount" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="首次购买价格" prop="time">
+          <el-input v-model="addCard.firstDiscountPrice" auto-complete="off"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addFormVisible = false">取消</el-button>
@@ -67,6 +75,12 @@
         </el-form-item>
         <el-form-item label="延长的会员时间" prop="time">
           <el-input v-model="editCard.time" :rows="8"></el-input>
+        </el-form-item>
+        <el-form-item label="首次购买折扣" prop="time">
+          <el-input v-model="editCard.firstDiscount" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="首次购买价格" prop="time">
+          <el-input v-model="editCard.firstDiscountPrice" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -260,7 +274,9 @@
             'price':this.trim(this.addCard.price),
             'gold':this.trim(this.addCard.gold),
             'score':this.trim(this.addCard.score),
-            'time':this.addCard.time * 24 * 60 * 60 * 1000,
+            'time':this.addCard.time,
+            'firstDiscount':this.addCard.firstDiscount,
+            'firstDiscountPrice':this.addCard.firstDiscountPrice,
             'token':sessionStorage.getItem('token')
           }
         })
@@ -325,7 +341,9 @@
                 'price':this.editCard.price,
                 'gold':this.editCard.gold,
                 'score':this.editCard.score,
-                'time':this.editCard.time * 24 * 60 * 60 * 1000,
+                'time':this.editCard.time,
+                'firstDiscount':this.editCard.firstDiscount,
+                'firstDiscountPrice':this.editCard.firstDiscountPrice,
                 'token':sessionStorage.getItem('token')
               }
             })
