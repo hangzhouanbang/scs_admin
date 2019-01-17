@@ -12,7 +12,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.role" placeholder="角色名称" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.role" placeholder="角色名称" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询角色</el-button>
@@ -57,7 +57,7 @@
       <el-dialog title="编辑角色" :visible.sync="editFormVisible" :close-on-click-modal="false">
         <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
           <el-form-item label="角色名称" prop="role">
-            <el-input v-model="editForm.role" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="editForm.role" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -70,7 +70,7 @@
       <el-dialog title="新增角色" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
           <el-form-item label="角色名称" prop="role">
-            <el-input v-model="addForm.role" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="addForm.role" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -159,11 +159,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -178,7 +173,7 @@
           params: {
             'page': this.page,
             'size': '15',
-            'role': this.trim(this.filters.role),
+            'role': this.filters.role,
             'token':sessionStorage.getItem('token')
           }
         })
@@ -191,18 +186,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -241,7 +228,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -260,24 +246,16 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'id': this.trim(this.editForm.id),
-            'role': this.trim(this.editForm.role),
+            'id': this.editForm.id,
+            'role': this.editForm.role,
             'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '编辑失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '编辑失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '编辑成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '编辑成功', type: 'success'});
                 this.editFormVisible = false;//关闭编辑角色弹窗
                 this.handleSearch();
               }
@@ -286,18 +264,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -338,18 +308,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -363,7 +325,7 @@
         // console.log(ids)
         let that = this;
         let param = new URLSearchParams()
-        param.append('roleId', this.trim(this.editForm.id))
+        param.append('roleId',this.editForm.id)
         param.append('privilegeId', ids)
         param.append('token', sessionStorage.getItem('token'))
         this.$confirm('确认保存选中记录吗？', '提示', {
@@ -385,11 +347,7 @@
                   this.chooseFormVisible = false;//关闭弹窗
                   this.handleSearch();
                 } else {
-                  this.$message({
-                    showClose: true,
-                    message: '保存失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '保存失败', type: 'warning'});
                   this.chooseFormVisible = false;//关闭弹窗
                 }
               },
@@ -408,23 +366,15 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'role': this.trim(this.addForm.role),//角色名称
+            'role': this.addForm.role,//角色名称
             'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '添加失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '添加失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '添加成功', type: 'success'});
                 this.addFormVisible = false;//关闭弹窗
                 this.handleSearch();
               }
@@ -433,18 +383,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -480,7 +422,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
 
@@ -488,7 +429,20 @@
       }
     },
     mounted() {
-      this.handleSearch()
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch()
+        }
+      })
     }
   }
 </script>

@@ -13,10 +13,10 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.taskDocId" placeholder="任务ID"></el-input>
+            <el-input v-model.trim="filters.taskDocId" placeholder="任务ID"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="filters.promulgator" placeholder="管理员名称"></el-input>
+            <el-input v-model.trim="filters.promulgator" placeholder="管理员名称"></el-input>
           </el-form-item>
           <el-form-item>
             <el-select v-model="filters.vip" placeholder="请选择发布对象" clearable>
@@ -53,9 +53,8 @@
       <el-table-column prop="name" label="任务名称" width="100"></el-table-column>
       <el-table-column prop="desc" label="详细描述" width="100"></el-table-column>
       <el-table-column prop="type" label="任务类型" width="100"></el-table-column>
-      <el-table-column prop="rewardGold" label="玉石（个）" width="120"></el-table-column>
-      <el-table-column prop="rewardScore" label="礼券" width="100"></el-table-column>
-      <el-table-column prop="rewardVip" label="会员卡（天）" width="140"></el-table-column>
+      <el-table-column prop="rewardType" label="奖励类型" width="120"></el-table-column>
+      <el-table-column prop="rewardNum" label="奖励数量" width="100"></el-table-column>
       <el-table-column prop="targetNum" label="完成次数" width="100"></el-table-column>
 
       <el-table-column label="操作">
@@ -93,7 +92,6 @@
           value: false,
           label: '非会员任务'
         }],
-        value: '',
         filters: {
           name: ''
         },
@@ -105,11 +103,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       selsChange: function (sels) {
         this.sels = sels;
       },
@@ -128,13 +121,13 @@
           params: {
             'size': '10',//每页数量
             'page': this.page,//当前页
-            'taskDocId': this.trim(this.filters.taskDocId),
-            'promulgator': this.trim(this.filters.promulgator),
-            'vip': this.value,
-            'token':sessionStorage.getItem('token')
+            'taskDocId': this.filters.taskDocId,
+            'promulgator':this.filters.promulgator,
+            'vip': this.filters.vip,
+            'token':sessionStorage.getItem('token'),
+            'type':this.filters.type
           }
-        })
-          .then((res) => {
+        }).then((res) => {
               this.items = res.data.data.items;
               this.total = res.data.data.pageCount;
             },
@@ -142,27 +135,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -196,7 +177,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -232,13 +212,24 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
       }
     },
     mounted() { //初始化页面
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }
+      })
       this.showtask();
       axios({//查出所有任务类型
         method: 'post',
@@ -257,27 +248,15 @@
         if (e && e.response) {
           switch (e.response.status) {
             case 504:
-              this.$message({
-                showClose: true,
-                message: '服务器异常',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
               break
             case 500:
-              this.$message({
-                showClose: true,
-                message: '服务器异常',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
               break
             case 405:
-              this.$message({
-                showClose: true,
-                message: '请先登录',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '请先登录', type: 'warning'});
               break
           }
         }

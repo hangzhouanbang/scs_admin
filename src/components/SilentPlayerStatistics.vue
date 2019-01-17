@@ -14,10 +14,10 @@
       </div>
       <el-form :inline="true" :model="filters" style="margin-top:10px;">
         <el-form-item label="用户ID">
-          <el-input v-model="filters.agentId" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item label="用户昵称">
-          <el-input v-model="filters.agentId" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item label="在线状态">
           <el-select v-model="filters.upgrade" placeholder="请选择">
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
       name: "SilentPlayerStatistics",
       data(){
@@ -77,7 +78,18 @@
         }
       },
       mounted(){
-
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }
+        })
       }
     }
 </script>

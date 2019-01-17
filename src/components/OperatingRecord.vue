@@ -12,7 +12,7 @@
       <el-col :span="24" class="toolbar" style="margin-top:30px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="用户ID">
-            <el-input v-model="filters.memberId" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item label="类型">
             <el-select v-model="filters.type" clearable placeholder="请选择">
@@ -114,27 +114,15 @@
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break;
                   case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break;
                   case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
                     break
                 }
               }
@@ -149,7 +137,20 @@
           }
         },
         mounted(){
-          this.handleSearch()
+          axios({
+            url:this.global.mPath + '/login/admin_info',
+            method:'post',
+            params:{
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data.success)
+            if(res.data.success == false){
+              this.$router.replace('/');
+            }else{
+              this.handleSearch()
+            }
+          })
         }
     }
 </script>

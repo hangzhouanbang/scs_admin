@@ -11,7 +11,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.privilege" placeholder="权限名称" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.privilege" placeholder="权限名称" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -40,10 +40,10 @@
     <el-dialog title="新增权限" :visible.sync="addprivilegeVisible" :close-on-click-modal="false">
       <el-form :model="addprivilege" label-width="80px" :rules="addFormRules" ref="addprivilege" id="cc">
         <el-form-item label="权限名称" prop="privilege">
-          <el-input v-model="addprivilege.privilege" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addprivilege.privilege" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="URI" prop="uri">
-          <el-input v-model="addprivilege.uri" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addprivilege.uri" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
       </el-form>
       <!--<i class="el-icon-circle-plus" @click="add"></i>-->
@@ -57,10 +57,10 @@
     <el-dialog title="编辑权限" :visible.sync="editprivilegeVisible" :close-on-click-modal="false">
       <el-form :model="editPrivilege" label-width="100px" :rules="editFormRules" ref="editPrivilege">
         <el-form-item label="权限名称" prop="privilege">
-          <el-input v-model="editPrivilege.privilege" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="editPrivilege.privilege" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="URI" prop="uri">
-          <el-input v-model="editPrivilege.uri" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="editPrivilege.uri" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -126,11 +126,6 @@
         this.page = val;
         this.handleSearch(this.page);
       },
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       handleSearch() {
         axios({
           method: 'post',
@@ -141,7 +136,7 @@
           params: {
             'page': this.page,
             'size': '10',
-            'privilege': this.trim(this.filters.privilege),
+            'privilege': this.filters.privilege,
             'token':sessionStorage.getItem('token')
           }
         })
@@ -153,18 +148,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -190,7 +177,7 @@
             }
           })
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 that.loading = false;
                 if (res.data.success == true) {
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
@@ -201,7 +188,6 @@
               }
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -236,7 +222,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -250,8 +235,8 @@
       addSubmit: function () {
         let privileges = [
           {
-            'privilege': this.trim(this.addprivilege.privilege),
-            'uri': this.trim(this.addprivilege.uri)
+            'privilege': this.addprivilege.privilege,
+            'uri': this.addprivilege.uri
           }
         ]
         let params = JSON.stringify(privileges)
@@ -268,17 +253,9 @@
         })
           .then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '添加失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '添加失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '添加成功', type: 'success'});
                 this.addprivilegeVisible = false;//关闭弹窗
                 this.handleSearch(1);
               }
@@ -287,18 +264,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -321,9 +290,9 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                'id': this.trim(this.editPrivilege.id),
-                'privilege': this.trim(this.editPrivilege.privilege),
-                'uri': this.trim(this.editPrivilege.uri),
+                'id': this.editPrivilege.id,
+                'privilege': this.editPrivilege.privilege,
+                'uri': this.editPrivilege.uri,
                 'token':sessionStorage.getItem('token')
               }
             })
@@ -339,7 +308,6 @@
                 },
               ).catch((e) => {
               this.loading = false;
-              console.log(error);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           }
@@ -347,7 +315,20 @@
       },
     },
     mounted() {
-      this.handleSearch(1)
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch(1)
+        }
+      })
     }
   }
 

@@ -123,6 +123,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         name: "PaidStatistic",
         data(){
@@ -215,14 +216,27 @@
           }
         },
       mounted(){
-          this.drawLinepoint(1,'当前会员玩家属性占比')
-          this.drawLinepoint(2,'昨日活跃玩家属性占比')
-          this.drawLinepoint(3,'玩家付费占比')
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.drawLinepoint(1,'当前会员玩家属性占比')
+            this.drawLinepoint(2,'昨日活跃玩家属性占比')
+            this.drawLinepoint(3,'玩家付费占比')
+          }
+        })
       }
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .sks{
     margin-top:50px;
     border-top:1px solid #000;
@@ -240,6 +254,7 @@
     font-size: 26px;
     color: #252631;
     font-weight:bold;
+    margin-top:0;
   }
   .CARD div:nth-child(2){
     margin-top:5px;

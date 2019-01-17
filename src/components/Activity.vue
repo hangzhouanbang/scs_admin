@@ -13,7 +13,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="标题">
-            <el-input v-model="filters.title"></el-input>
+            <el-input v-model.trim="filters.title"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
@@ -59,7 +59,7 @@
       <el-dialog title="新建活动" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="活动主题" prop="title">
-            <el-input v-model="normalForm.title" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="normalForm.title" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="图片" prop="file">
             <div class="upload">
@@ -75,7 +75,7 @@
             </div>
           </el-form-item>
           <el-form-item label="活动地址" prop="address">
-            <el-input v-model="normalForm.address" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="normalForm.address" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="issue">发布</el-button>
@@ -122,14 +122,9 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       // 上传文件到七牛云
       upqiniu(req) {
-        console.log(req)
+        // console.log(req)
         const config = {
           headers: {'Content-Type': 'multipart/form-data'}
         }
@@ -191,26 +186,18 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'theme': this.trim(this.normalForm.title),
+              'theme': this.normalForm.title,
               'content': this.imageUrl,
-              'url': this.trim(this.normalForm.address),
+              'url': this.normalForm.address,
               'promulgator': sessionStorage.getItem('nickname'),
               'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '新建活动失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '新建活动失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '新建活动成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '新建活动成功', type: 'success'});
                   this.normalForm.title = ''
                   this.imageUrl = ''
                   this.normalForm.address = ''
@@ -222,27 +209,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -272,7 +247,7 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'theme': this.trim(this.filters.title),//标题
+            'theme': this.filters.title,//标题
             'token':sessionStorage.getItem('token')
           }
         })
@@ -285,27 +260,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -341,27 +304,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -395,27 +346,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -447,27 +386,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -476,7 +403,20 @@
       }
     },
     mounted() { //初始化页面
-      this.handleSearch()
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch()
+        }
+      })
     },
   }
 </script>

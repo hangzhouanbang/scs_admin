@@ -25,10 +25,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="用户ID" label-width="68px">
-            <el-input v-model="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+            <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
           </el-form-item>
           <el-form-item label="昵称" label-width="68px">
-            <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+            <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
           </el-form-item>
           <el-form-item label="支付方式" label-width="68px">
             <el-select v-model="filters.pay_type" placeholder="请选择"  clearable>
@@ -171,11 +171,6 @@
           let seconds = time.getSeconds();
           return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
-        trim(str) {
-          if(str != null){
-            return str.replace(/(^\s+)|(\s+$)/g, "");
-          }
-        },
         //导出Excel表
         exportExcel () {
           if(this.filters.status == '未付款'){
@@ -210,8 +205,8 @@
           let download = document.getElementById('download');
           download.href = this.global.mPath + '/order/download?out_trade_no='
             +'&pay_type='+this.state.pay_type
-            +'&payerId='+this.trim(this.filters.memberId)
-            +'&payerName='+this.trim(this.filters.nickname)
+            +'&payerId='+this.filters.memberId
+            +'&payerName='+this.filters.nickname
             +'&status='+this.state.status
             +'&startTime='+this.state.startTime
             +'&endTime='+this.state.endTime
@@ -259,8 +254,8 @@
             params: {
               'page':this.page,
               'size': '10',
-              'payerId': this.trim(this.filters.memberId),
-              'payerName': this.trim(this.filters.nickname),
+              'payerId': this.filters.memberId,
+              'payerName': this.filters.nickname,
               'out_trade_no':'',
               'pay_type':this.state.pay_type,
               'startTime':this.state.startTime,
@@ -291,18 +286,10 @@
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break;
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break;
               }
             }
@@ -362,7 +349,20 @@
         }
       },
       mounted() {
-        this.handleSearch()
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch()
+          }
+        })
       }
     }
 </script>

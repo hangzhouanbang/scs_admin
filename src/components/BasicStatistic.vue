@@ -431,7 +431,7 @@
             this.countByToday = res.data.data.countByToday
             this.countByWeek = res.data.data.countByWeek
             this.countByMonth = res.data.data.countByMonth
-            console.log(this.countByToday)
+            // console.log(this.countByToday)
             if(this.online == '本周在线'){
               for(let i = 1;i < 8;i++){
                 this.week.push('周'+i)
@@ -469,7 +469,7 @@
             this.countByToday = res.data.data.countByToday
             this.countByWeek = res.data.data.countByWeek
             this.countByMonth = res.data.data.countByMonth
-            console.log(this.countByToday)
+            // console.log(this.countByToday)
             if(this.start == '本周启动'){
               for(let i = 1;i < 8;i++){
                 this.week.push('周'+i)
@@ -506,7 +506,7 @@
             // console.log(res.data.data)
             this.countByWeek = res.data.data.countByWeek
             this.countByMonth = res.data.data.countByMonth
-            console.log(this.active)
+            // console.log(this.active)
             if(this.active == '本周活跃' || this.active == ''){
               for(let i = 1;i < 8;i++){
                 this.week.push('周'+i)
@@ -533,7 +533,7 @@
             },
             params: {}
           }).then((res) => {
-            console.log(res.data.data)
+            // console.log(res.data.data)
             this.activeUser = res.data.data[0].activeUser
             this.dayOnlineTime = res.data.data[0].dayOnlineTime
             this.activeUser1 = res.data.data[1].activeUser
@@ -587,12 +587,25 @@
         }
       },
       mounted(){
-        this.linechart()
-        this.handleSearch()
-        this.information(new Date().getTime())
-        let myDate = new Date();
-        this.year = myDate.getFullYear() + '年'
-        this.month = myDate.getMonth() + 1 + '月'
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.linechart()
+            this.handleSearch()
+            this.information(new Date().getTime())
+            let myDate = new Date();
+            this.year = myDate.getFullYear() + '年'
+            this.month = myDate.getMonth() + 1 + '月'
+          }
+        })
       }
     }
 </script>

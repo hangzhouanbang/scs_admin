@@ -16,11 +16,11 @@
 
     <el-form :inline="true" :model="filters" style="margin-top:50px;">
       <el-form-item label="原密码" label-width="68px">
-        <el-input v-model="filters.oldPass" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入原密码" type="password"></el-input>
+        <el-input v-model.trim="filters.oldPass" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入原密码" type="password"></el-input>
       </el-form-item>
       <br>
       <el-form-item label="新密码" label-width="68px">
-        <el-input v-model="filters.newPass" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入新密码" type="password"></el-input>
+        <el-input v-model.trim="filters.newPass" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入新密码" type="password"></el-input>
       </el-form-item>
       <br>
       <br>
@@ -63,18 +63,10 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -82,7 +74,20 @@
         }
       },
       mounted(){
-        this.handleSearch()
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch()
+          }
+        })
       }
     }
 </script>

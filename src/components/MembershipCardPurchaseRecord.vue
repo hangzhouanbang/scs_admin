@@ -4,7 +4,7 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>推广员中心</b></el-breadcrumb-item>
-        <el-breadcrumb-item>会员卡购买记录</el-breadcrumb-item>
+        <el-breadcrumb-item>充值购买记录</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -13,10 +13,10 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="推广员ID">
-            <el-input v-model="filters.id" placeholder="请输入推广员ID"></el-input>
+            <el-input v-model.trim="filters.id" placeholder="请输入推广员ID"></el-input>
           </el-form-item>
           <el-form-item label="推广员昵称">
-            <el-input v-model="filters.agent" placeholder="请输入推广员昵称"></el-input>
+            <el-input v-model.trim="filters.agent" placeholder="请输入推广员昵称"></el-input>
           </el-form-item>
           <el-form-item label="购买时间">
             <el-date-picker
@@ -46,7 +46,7 @@
         <el-table-column prop="accountingAmount" label="数量" width="100"></el-table-column>
         <el-table-column prop="totalamount" label="购买金额" width="120"></el-table-column>
         <el-table-column prop="accountingTime" label="购买时间" width="160" sortable></el-table-column>
-        <el-table-column prop="summary.text" label="说明" width="100"></el-table-column>
+        <el-table-column prop="summary.text" label="说明" width="120"></el-table-column>
         <el-table-column prop="cost" label="累积消费" width="auto" sortable></el-table-column>
       </el-table>
       <!--工具条-->
@@ -92,11 +92,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       dateTimeFormat(value) {
         let time = new Date(+value);
         let rightTwo = (v) => {
@@ -133,11 +128,7 @@
         if (this.filters.startTime &&
           this.filters.endTime &&
           this.state.endTime - this.state.startTime <= 0) {
-          this.$message({
-            showClose: true,
-            message: '时间段选择有误',
-            type: 'warning'
-          });
+          this.$message({showClose: true, message: '时间段选择有误', type: 'warning'});
           return;
         }
         axios({
@@ -147,10 +138,10 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'size': '10',//每页数量
+            'size': '15',//每页数量
             'page': this.page,//当前页
-            'agentId': this.trim(this.filters.id),
-            'agent': this.trim(this.filters.agent),
+            'agentId': this.filters.id,
+            'agent': this.filters.agent,
             'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
             'endTime': this.state.endTime,
             'token':sessionStorage.getItem('token'),
@@ -171,27 +162,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -222,7 +201,20 @@
       },
     },
     mounted() {
-      this.seek();
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.seek();
+        }
+      })
     }
   }
 </script>

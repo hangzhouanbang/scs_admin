@@ -11,7 +11,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.game" placeholder="游戏名称" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.game" placeholder="游戏名称" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -43,16 +43,16 @@
     <el-dialog title="上线" :visible.sync="onlineVisible" :close-on-click-modal="false">
       <el-form :model="addonline" label-width="150px" :rules="addFormRules" ref="addonline" id="cc">
         <el-form-item label="游戏名称" prop="game">
-          <el-input v-model="addonline.game" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addonline.game" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="服务器名称" prop="name">
-          <el-input v-model="addonline.name" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addonline.name" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="httpURL" prop="httpUrl">
-          <el-input v-model="addonline.httpUrl" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addonline.httpUrl" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="websocket URL" prop="wsUrl">
-          <el-input v-model="addonline.wsUrl" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addonline.wsUrl" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -101,11 +101,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -133,14 +128,14 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'game':this.trim(this.filters.game),
+            'game':this.filters.game,
             'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
               this.server = res.data.data.servers;
               for(let i = 0; i < this.server.length;i++){
-                console.log(this.server[i])
+                // console.log(this.server[i])
                 this.server[i].onlineTime = this.dateTimeFormat(this.server[i].onlineTime);
               }
             },
@@ -148,18 +143,10 @@
           if(e && e.response){
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -195,7 +182,6 @@
               }
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -214,27 +200,18 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params:{
-            'game':this.trim(this.addonline.game), //游戏
-            'name':this.trim(this.addonline.name), //服务器名称
-            'httpUrl':this.trim(this.addonline.httpUrl), //http接口域名
-            // 'portForHttp':this.trim(this.addonline.portForHttp), //http接口端口
-            'wsUrl':this.trim(this.addonline.wsUrl), //websocket URL
+            'game':this.addonline.game, //游戏
+            'name':this.addonline.name, //服务器名称
+            'httpUrl':this.addonline.httpUrl, //http接口域名
+            'wsUrl':this.addonline.wsUrl, //websocket URL
             'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '上线失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '上线失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '上线成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '上线成功', type: 'success'});
                 this.onlineVisible = false;//关闭弹窗
                 this.handleSearch(1);
               }
@@ -243,18 +220,10 @@
           if(e && e.response){
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -277,17 +246,9 @@
           })
             .then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '暂停失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '暂停失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '暂停成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '暂停成功', type: 'success'});
                   this.onlineVisible = false;//关闭弹窗
                   this.handleSearch(1);
                 }
@@ -296,18 +257,10 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -331,17 +284,9 @@
           })
             .then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '恢复失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '恢复失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '恢复成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '恢复成功', type: 'success'});
                   this.onlineVisible = false;//关闭弹窗
                   this.handleSearch(1);
                 }
@@ -350,18 +295,10 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -370,7 +307,20 @@
       }
     },
     mounted() {
-      this.handleSearch(1)
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch(1)
+        }
+      })
     }
   }
 </script>

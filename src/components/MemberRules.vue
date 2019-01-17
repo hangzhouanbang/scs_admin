@@ -17,34 +17,34 @@
     <!--普通用户-->
     <el-form :model="normalForm" :rules="rules" ref="normalForm" label-width="250px" class="demo-ruleForm" v-show="normalshow">
       <el-form-item label="新用户注册赠送的玉石数量" prop="goldForNewNember ">
-        <el-input v-model="normalForm.goldForNewNember "></el-input>
+        <el-input v-model.trim="normalForm.goldForNewNember "></el-input>
       </el-form-item>
       <el-form-item label="签到得玉石数量" prop="signGoldNumber ">
-        <el-input v-model="normalForm.signGoldNumber "></el-input>
+        <el-input v-model.trim="normalForm.signGoldNumber "></el-input>
       </el-form-item>
       <el-form-item label="邀请得礼券数量" prop="inviteIntegralNumber">
-        <el-input v-model="normalForm.inviteIntegralNumber"></el-input>
+        <el-input v-model.trim="normalForm.inviteIntegralNumber"></el-input>
       </el-form-item>
       <el-form-item label="礼券增长速度" prop="planGrowIntegralSpeed">
-        <el-input v-model="normalForm.planGrowIntegralSpeed"></el-input>
+        <el-input v-model.trim="normalForm.planGrowIntegralSpeed"></el-input>
       </el-form-item>
       <el-form-item label="创建会员玩法房间的玉石价格" prop="planMemberCreateRoomDailyGoldPrice">
-        <el-input v-model="normalForm.planMemberCreateRoomDailyGoldPrice"></el-input>
+        <el-input v-model.trim="normalForm.planMemberCreateRoomDailyGoldPrice"></el-input>
       </el-form-item>
       <el-form-item label="加入会员玩法房间的玉石价格" prop="planMemberaddRoomDailyGoldPrice">
-        <el-input v-model="normalForm.planMemberaddRoomDailyGoldPrice"></el-input>
+        <el-input v-model.trim="normalForm.planMemberaddRoomDailyGoldPrice"></el-input>
       </el-form-item>
       <el-form-item label="加入会员玩法每天可开的房间数量" prop="planMemberMaxCreateRoomDaily">
-        <el-input v-model="normalForm.planMemberMaxCreateRoomDaily"></el-input>
+        <el-input v-model.trim="normalForm.planMemberMaxCreateRoomDaily"></el-input>
       </el-form-item>
       <el-form-item label="保存房间数量" prop="planMemberRoomsCount">
-        <el-input v-model="normalForm.planMemberRoomsCount"></el-input>
+        <el-input v-model.trim="normalForm.planMemberRoomsCount"></el-input>
       </el-form-item>
       <el-form-item label="房间存活小时数" prop="planMemberRoomsAliveHours">
-        <el-input v-model="normalForm.planMemberRoomsAliveHours"></el-input>
+        <el-input v-model.trim="normalForm.planMemberRoomsAliveHours"></el-input>
       </el-form-item>
       <el-form-item label="绑定邀请码后赠送玉石数" prop="goldForAgentInvite">
-        <el-input v-model="normalForm.goldForAgentInvite"></el-input>
+        <el-input v-model.trim="normalForm.goldForAgentInvite"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('normalForm')">立即设置</el-button>
@@ -54,22 +54,22 @@
     <!--会员用户-->
     <el-form :model="memberForm" :rules="rules" ref="memberForm" label-width="150px" class="demo-ruleForm" v-show="membershow">
       <el-form-item label="签到得玉石数量" prop="signGoldNumber ">
-        <el-input v-model="memberForm.signGoldNumber "></el-input>
+        <el-input v-model.trim="memberForm.signGoldNumber "></el-input>
       </el-form-item>
       <el-form-item label="邀请得礼券数量" prop="inviteIntegralNumber">
-        <el-input v-model="memberForm.inviteIntegralNumber"></el-input>
+        <el-input v-model.trim="memberForm.inviteIntegralNumber"></el-input>
       </el-form-item>
       <el-form-item label="礼券增长速度" prop="vipGrowIntegralSpeed">
-        <el-input v-model="memberForm.vipGrowIntegralSpeed"></el-input>
+        <el-input v-model.trim="memberForm.vipGrowIntegralSpeed"></el-input>
       </el-form-item>
       <el-form-item label="等级增长速度" prop="vipGrowGradeSpeed">
-        <el-input v-model="memberForm.vipGrowGradeSpeed"></el-input>
+        <el-input v-model.trim="memberForm.vipGrowGradeSpeed"></el-input>
       </el-form-item>
       <el-form-item label="保存房间数量" prop="vipMemberRoomsCount">
-        <el-input v-model="memberForm.vipMemberRoomsCount"></el-input>
+        <el-input v-model.trim="memberForm.vipMemberRoomsCount"></el-input>
       </el-form-item>
       <el-form-item label="房间存活小时数" prop="vipMemberRoomsAliveHours">
-        <el-input v-model="memberForm.vipMemberRoomsAliveHours"></el-input>
+        <el-input v-model.trim="memberForm.vipMemberRoomsAliveHours"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitmemberForm()">立即设置</el-button>
@@ -153,11 +153,6 @@
         }
       },
       methods: {
-        trim(str) {
-          if(str != null){
-            return str.replace(/(^\s+)|(\s+$)/g, "");
-          }
-        },
         change(value8){
           if(this.value8 == '普通用户'){
             this.normalshow = true;
@@ -218,19 +213,11 @@
             }
           })
             .then((res) => {
-              console.log(res)
+              // console.log(res)
                 if (res.data == "fail") {
-                  this.$message({
-                    showClose: true,
-                    message: '设置失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '设置失败', type: 'warning'});
                 } else if (res.data == "success") {
-                  this.$message({
-                    showClose: true,
-                    message: '设置成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '设置成功', type: 'success'});
                   this.change('普通用户');
                 }
               },
@@ -238,18 +225,10 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -257,7 +236,7 @@
         },
         //会员用户
         submitmemberForm:function(){
-          console.log(this.memberForm.vipMemberRoomsCount)
+          // console.log(this.memberForm.vipMemberRoomsCount)
           axios({
             method: 'post',
             url: this.global.mPath + '/rights/vipuser',
@@ -277,19 +256,11 @@
             }
           })
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 if (res.data == "fail") {
-                  this.$message({
-                    showClose: true,
-                    message: '设置失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '设置失败', type: 'warning'});
                 } else if (res.data == "success") {
-                  this.$message({
-                    showClose: true,
-                    message: '设置成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '设置成功', type: 'success'});
                   this.change('会员用户');
                 }
               },
@@ -297,23 +268,29 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
           })
         }
+      },
+      mounted(){
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }
+        })
       }
     }
 </script>

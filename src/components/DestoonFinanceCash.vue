@@ -11,7 +11,7 @@
       <div class="stay_out">待处理（{{amount}}）</div>
       <el-form :inline="true" :model="filters" style="margin-top:10px;">
         <el-form-item label="推广员ID">
-          <el-input v-model="filters.agentId" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="filters.upgrade" placeholder="请选择">
@@ -24,7 +24,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-on:click="handleSearch">查询</el-button>
+          <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -167,7 +167,7 @@
         })
           .then((res) => {
               this.loading = false;//隐藏加载条
-              console.log(res.data.data)
+              // console.log(res.data.data)
               this.amount = res.data.data.amount;
               localStorage.setItem('amount',this.amount)
               let aa = document.getElementsByClassName('icon-home1')[0]
@@ -197,27 +197,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -250,40 +238,24 @@
             this.handleSearch(this.page)
           } else {
             this.unpassVisible = true;
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            this.$message.error({showClose: true, message: err.toString(), duration: 2000});
           }
         }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break;
               case 400:
-                this.$message({
-                  showClose: true,
-                  message: '请按要求输入',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请按要求输入', type: 'warning'});
                 break;
             }
           }
@@ -307,7 +279,7 @@
           }
         }).then((res) => {
           this.loading = false;
-          console.log(res.data)
+          // console.log(res.data)
           if (res.data.success == true) {
             // that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
             this.rejectVisible = false;//关闭弹窗
@@ -319,34 +291,18 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break;
               case 400:
-                this.$message({
-                  showClose: true,
-                  message: '请按要求输入',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请按要求输入', type: 'warning'});
                 break;
             }
           }
@@ -358,7 +314,20 @@
       }
     },
     mounted(){
-      this.handleSearch(1)
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch(1)
+        }
+      })
     }
   }
 </script>

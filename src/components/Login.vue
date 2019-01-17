@@ -3,10 +3,10 @@
            class="demo-ruleForm login-container">
     <h3 class="title">管理员登录</h3>
     <el-form-item prop="nickname">
-      <el-input type="text" v-model="account.nickname" auto-complete="off" placeholder="账号"></el-input>
+      <el-input type="text" v-model.trim="account.nickname" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
     <el-form-item prop="pass">
-      <el-input type="password" v-model="account.pass" auto-complete="off" placeholder="密码"></el-input>
+      <el-input type="password" v-model.trim="account.pass" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
     <!--<el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>-->
     <el-form-item style="width:100%;">
@@ -41,11 +41,6 @@
       };
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       handleLogin() {
         axios({//登录
           method: 'post',
@@ -54,24 +49,16 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'nickname': this.trim(this.account.nickname),
-            'pass': this.trim(this.account.pass)
+            'nickname': this.account.nickname,
+            'pass': this.account.pass
           }
         })
           .then((res) => {
               if (res.data.data == null) {
-                this.$message({
-                  showClose: true,
-                  message: '账号或密码错误',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '账号或密码错误', type: 'warning'});
               } else {
                 this.$router.replace('/index');
-                this.$message({
-                  showClose: true,
-                  message: '登录成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '登录成功', type: 'success'});
                 sessionStorage.setItem('nickname', res.data.data.admin.nickname);
                 sessionStorage.setItem('token', res.data.data.token);
               }
@@ -80,16 +67,26 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
             }
           }
         });
       }
+    },
+    mounted(){
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }
+      })
     }
   }
 </script>

@@ -19,19 +19,19 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="推广员ID">
-          <el-input v-model="filters.id" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="推广员昵称">
-          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="上级推广员ID">
-          <el-input v-model="filters.bossId" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.bossId" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-input v-model="filters.phone" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.phone" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="filters.userName" placeholder="姓名" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.userName" placeholder="姓名" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="注册时间" label-width="68px">
           <el-date-picker
@@ -114,7 +114,7 @@
         <el-table-column label="周卡" prop="clubCardZhou"></el-table-column>
         <el-table-column label="月卡" prop="clubCardYue"></el-table-column>
         <el-table-column label="季卡" prop="clubCardJi" sortabl></el-table-column>
-        <el-table-column label="玉石" prop="" sortabl></el-table-column>
+        <el-table-column label="玉石" prop="coins" sortabl></el-table-column>
         <el-table-column label="茶馆玉石" prop="" sortabl></el-table-column>
         <el-table-column label="邀请码" prop="invitationCode"></el-table-column>
       </el-table>
@@ -144,7 +144,7 @@
     <el-dialog title="会员卡调整" :visible.sync="publishVisible" :close-on-click-modal="false">
       <el-form :model="publishForm" label-width="220px">
         <el-form-item label="推广员ID">
-          <el-input class="memberInput" v-model="id" :disabled="true" style="width:217px;"></el-input>
+          <el-input class="memberInput" v-model.trim="id" :disabled="true" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item label="会员卡类型">
           <el-select v-model="publishForm.product" placeholder="请选择">
@@ -157,7 +157,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="调整数量">
-          <el-input class="memberInput" v-model="publishForm.afternumber" style="width:217px;"></el-input>
+          <el-input class="memberInput" v-model.trim="publishForm.afternumber" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click.native="notarizeVisible = true,publishVisible =false">确认调整</el-button>
@@ -184,13 +184,13 @@
     <el-dialog title="积分操作" :visible.sync="integralVisible" :close-on-click-modal="false">
       <el-form :model="integralForm" label-width="220px">
         <el-form-item label="推广员ID">
-          <el-input class="memberInput" v-model="id" :disabled="true" style="width:217px;"></el-input>
+          <el-input class="memberInput" v-model.trim="id" :disabled="true" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item label="当前积分">
-          <el-input class="memberInput" v-model="score" :disabled="true" style="width:217px;"></el-input>
+          <el-input class="memberInput" v-model.trim="score" :disabled="true" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item label="调整积分">
-          <el-input class="memberInput" v-model="integralForm.afterAmount" style="width:217px;"></el-input>
+          <el-input class="memberInput" v-model.trim="integralForm.afterAmount" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click.native="sureVisible = true,integralVisible =false">确认调整</el-button>
@@ -306,60 +306,17 @@
           <span class="every">
             <label for="">历史战绩:</label>
             <ul class="zj">
-                <li>
+                <li v-for="data in recordList" :key="data.id">
                   <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
+                    <span>{{data.game}}</span>
+                    <span>房号：{{data.roomNo}}</span>
+                    <span>局数：{{data.lastPanNo}}/{{data.panshu}}</span>
+                    <span>{{data.finishTime}}</span>
                   </div>
                   <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
-                  </div>
-                </li>
-                <li>
-                  <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
-                  </div>
-                  <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
-                  </div>
-                </li>
-                <li>
-                  <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
-                  </div>
-                  <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
-                  </div>
-                </li>
-               <li>
-                  <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
-                  </div>
-                  <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
+                    <span v-for="single in data.playerResultList" :key="single.playerId">
+                      {{single.nickname}}：{{single.totalScore}}
+                    </span>
                   </div>
                 </li>
             </ul>
@@ -371,10 +328,10 @@
     <el-dialog title="代理等级调整" :visible.sync="levelVisible" :close-on-click-modal="false">
       <el-form ref="form" :model="form" label-width="100px" class="form">
         <el-form-item label="推广员ID">
-          <el-input v-model="form.id" disabled></el-input>
+          <el-input v-model.trim="form.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="当前等级">
-          <el-input v-model="type" disabled></el-input>
+          <el-input v-model.trim="type" disabled></el-input>
         </el-form-item>
         <el-form-item label="调整等级">
           <el-select v-model="form.upgrade" placeholder="请选择">
@@ -397,10 +354,10 @@
     <el-dialog title="上级绑定调整" :visible.sync="bindingVisible" :close-on-click-modal="false">
       <el-form ref="form" :model="form" label-width="100px" class="form">
         <el-form-item label="上级推广员ID">
-          <el-input v-model="form.bossId"></el-input>
+          <el-input v-model.trim="form.bossId"></el-input>
         </el-form-item>
         <el-form-item label="推广员ID">
-          <el-input v-model="form.id" disabled></el-input>
+          <el-input v-model.trim="form.id" disabled></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click.native="bound()">绑定</el-button>
@@ -412,11 +369,11 @@
     <!--绑定调整-->
     <el-dialog title="推广员绑定调整" :visible.sync="Bindingtoadjust" :close-on-click-modal="false" class="bdtz">
       <el-form :model="bindForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="当前绑定" prop="score" style="width:300px;">
-          <el-input v-model="bindForm.agentId" disabled></el-input>
+        <el-form-item label="当前绑定" prop="agentId" style="width:300px;">
+          <el-input v-model.trim="bindForm.agentId" disabled></el-input>
         </el-form-item>
-        <el-form-item label="调整绑定" prop="score" style="width:300px;">
-          <el-input v-model="bindForm.id"></el-input>
+        <el-form-item label="调整绑定" prop="id" style="width:300px;">
+          <el-input v-model.trim="bindForm.id"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="bindsure">确认</el-button>
@@ -426,13 +383,13 @@
     </el-dialog>
 
     <!--绑定调整-->
-    <el-dialog title="玉石调整" :visible.sync="Goldtoadjust" :close-on-click-modal="false" class="bdtz">
+    <el-dialog title="玉石调整" :visible.sync="Goldtoadjust" :close-on-click-modal="false">
       <el-form :model="GoldForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="推广员ID" prop="score" style="width:300px;">
-          <el-input v-model="GoldForm.agentId" disabled></el-input>
+        <el-form-item label="推广员ID" prop="id" style="width:300px;">
+          <el-input v-model.trim="id" disabled></el-input>
         </el-form-item>
         <el-form-item label="玉石类型">
-          <el-select v-model="GoldForm.product" placeholder="请选择" style="width:200px;">
+          <el-select v-model="query" placeholder="请选择" style="width:200px;">
             <el-option
               v-for="item in Golds"
               :key="item.value"
@@ -441,8 +398,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="发放数量" prop="score" style="width:300px;">
-          <el-input v-model="GoldForm.id"></el-input>
+        <el-form-item label="发放数量" prop="goldAmount" style="width:300px;">
+          <el-input v-model.trim="GoldForm.goldAmount"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="goldsure">确认调整</el-button>
@@ -518,9 +475,11 @@
           memberId:'',
           Golds:[
             {value:'玉石'},
-            {value:'茶馆玉石'}
+            // {value:'茶馆玉石'}
           ],
-          GoldForm:{}
+          query: '玉石',
+          GoldForm:{},
+          recordList:[]
         }
       },
       methods:{
@@ -644,11 +603,11 @@
               row.clubCardZhou = res.data.data.clubCardZhou;
               row.clubCardRi = res.data.data.clubCardRi;
               row.score = res.data.data.score;
+              row.coins = res.data.data.coins;
               this.roles = [Object.assign({}, row)];
               this.state = res.data.data.agent.state;
               this.id = res.data.data.agent.id;
               this.score = res.data.data.score;
-              // console.log(this.id)
           }).catch((e) => {
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           })
@@ -817,17 +776,9 @@
             }
           }).then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '调整失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '调整失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '调整成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '调整成功', type: 'success'});
                 this.centerDialogVisible = false;
                 this.notarizeVisible = false;
                 this.handleSearch(this.page)
@@ -837,27 +788,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -882,17 +821,9 @@
             }
           }).then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '调整失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '调整失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '调整成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '调整成功', type: 'success'});
                 this.centerDialogVisible = false;
                 this.sureVisible = false;
                 this.handleSearch(this.page)
@@ -902,27 +833,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -965,8 +884,6 @@
         showother(index,row) {
           this.other = true;
           this.memberId = row.memberId
-          console.log(this.memberId)
-          // this.playersVisible = false;
           axios({
             method: 'post',
             url: this.global.mPath + '/member/querymemberdetail',
@@ -982,11 +899,30 @@
                 this.loading = false;//隐藏加载条
                 this.details = res.data.data;
                 this.tableData = res.data.data.roomList;
-                for(var i = 0;i < this.tableData.length;i++){
+                this.recordList = res.data.data.recordList.items;
+                for(let i = 0;i < this.tableData.length;i++){
                   if(this.tableData[i].vip == true){
                     this.tableData[i].vip = '是'
                   }else{
                     this.tableData[i].vip = '否'
+                  }
+                }
+                for(let j = 0;j < this.recordList.length;j++){
+                  this.recordList[j].finishTime = this.dateTimeFormat(this.recordList[j].finishTime)
+                  if(this.recordList[j].game == 'ruianMajiang'){
+                    this.recordList[j].game = '瑞安麻将'
+                  }
+                  if(this.recordList[j].game == 'wenzhouMajiang'){
+                    this.recordList[j].game = '温州麻将'
+                  }
+                  if(this.recordList[j].game == 'fangpaoMajiang'){
+                    this.recordList[j].game = '放炮麻将'
+                  }
+                  if(this.recordList[j].game == 'dianpaoMajiang'){
+                    this.recordList[j].game = '点炮麻将'
+                  }
+                  if(this.recordList[j].game == 'wenzhouShuangkou'){
+                    this.recordList[j].game = '温州双扣'
                   }
                 }
               },
@@ -994,27 +930,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning' });
                   break
               }
             }
@@ -1028,6 +952,9 @@
         },
         //  查看下级
         LookLower(){
+          if(this.filters.id == this.id){
+            this.filters.id = ''
+          }
           this.centerDialogVisible = false;
           this.filters.bossId = this.id;
           this.handleSearch(1);
@@ -1064,7 +991,7 @@
               'token': sessionStorage.getItem('token')
             }
           }).then((res) => {
-            console.log(res.data)
+            // console.log(res.data)
             if (res.data.success) {
               this.$message.success({showClose: true, message: '修改成功', duration: 1500});
               this.Bindingtoadjust = false;
@@ -1076,27 +1003,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break;
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break;
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -1108,10 +1023,38 @@
           this.centerDialogVisible = false
         },
         goldsure(){
-
+          axios({
+            url:this.global.mPath + '/agent/goldmanager',
+            method:'post',
+            params:{
+              token:sessionStorage.getItem('token'),
+              agentId:this.id,
+              goldAmount:this.GoldForm.goldAmount
+            }
+          }).then((res) => {
+            if (res.data.success) {
+              this.$message.success({showClose: true, message: '调整成功', duration: 1500});
+              this.Goldtoadjust = false;
+              this.handleSearch(this.page)
+            } else {
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          })
         }
       },
       mounted(){
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }
+        })
         this.handleSearch(1);
         axios({
           url:this.global.mPath + '/agent/queryagenttype',
@@ -1120,7 +1063,7 @@
             token:sessionStorage.getItem('token')
           }
         }).then((res) => {
-          console.log(res.data.data.listPage.items)
+          // console.log(res.data.data.listPage.items)
           this.options = res.data.data.listPage.items;
         })
       },

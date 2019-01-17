@@ -83,11 +83,11 @@
         methods:{
           getImageTypeIndex(index){
             this.order = index;
-            console.log(index)
+            // console.log(index)
           },
           // 上传文件到七牛云
           upqiniu(req) {
-            console.log(req)
+            // console.log(req)
             this.dialogVisible = true;
             const config = {
               headers: {'Content-Type': 'multipart/form-data'}
@@ -130,20 +130,12 @@
                     ordinal:this.order
                   }
                 }).then(res => {
-                  console.log(res.data)
+                  // console.log(res.data)
                   if(res.data.success == true){
-                    this.$message({
-                      showClose: true,
-                      message: '上传成功',
-                      type: 'success'
-                    });
+                    this.$message({showClose: true, message: '上传成功', type: 'success'});
                     this.handleSearch()
                   }else{
-                    this.$message({
-                      showClose: true,
-                      message: '上传失败',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '上传失败', type: 'warning'});
                   }
                 })
               })
@@ -172,7 +164,7 @@
                 token:sessionStorage.getItem('token'),
               }
             }).then(res => {
-              console.log(res.data)
+              // console.log(res.data)
               this.imageList = res.data.data.imageList
               for(let i = 0;i <  this.imageList.length;i++){
                 if(this.imageList[i].ordinal == '1'){
@@ -191,7 +183,7 @@
             })
           },
           del(imageId){
-            console.log(imageId)
+            // console.log(imageId)
             this.$confirm('确认删除吗？', '提示', {
               type: 'warning'
             }).then(() => {
@@ -206,27 +198,32 @@
                   imageId: imageId
                 }
               }).then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 if(res.data.success){
-                  this.$message({
-                    showClose: true,
-                    message: '删除成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '删除成功', type: 'success'});
                   this.handleSearch()
                 }else{
-                  this.$message({
-                    showClose: true,
-                    message: '删除失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '删除失败', type: 'warning'});
                 }
               })
             })
           }
         },
         mounted(){
-            this.handleSearch()
+          axios({
+            url:this.global.mPath + '/login/admin_info',
+            method:'post',
+            params:{
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data.success)
+            if(res.data.success == false){
+              this.$router.replace('/');
+            }else{
+              this.handleSearch()
+            }
+          })
         }
       }
   </script>

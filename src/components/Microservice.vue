@@ -74,6 +74,20 @@
           });*/
         });
       },
+    },
+    mounted(){
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }
+      })
     }
   }
 </script>

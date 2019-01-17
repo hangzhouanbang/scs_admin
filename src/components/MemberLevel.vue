@@ -10,23 +10,23 @@
     <!--设置-->
       <el-form :model="addCard" label-width="150px" ref="addCard" class="toolbar" :rules="editFormRules">
         <el-form-item label="充值" prop="vip1">
-          <el-input v-model="addCard.vip1" auto-complete="off" type="number"></el-input>
+          <el-input v-model.trim="addCard.vip1" auto-complete="off" type="number"></el-input>
           元，等级为v1
         </el-form-item>
         <el-form-item label="充值" prop="vip2">
-          <el-input v-model="addCard.vip2" auto-complete="off" type="number"></el-input>
+          <el-input v-model.trim="addCard.vip2" auto-complete="off" type="number"></el-input>
           元，等级为v2
         </el-form-item>
         <el-form-item label="充值" prop="vip3">
-          <el-input v-model="addCard.vip3" auto-complete="off" type="number"></el-input>
+          <el-input v-model.trim="addCard.vip3" auto-complete="off" type="number"></el-input>
           元，等级为v3
         </el-form-item>
         <el-form-item label="充值" prop="vip4">
-          <el-input v-model="addCard.vip4" auto-complete="off" type="number"></el-input>
+          <el-input v-model.trim="addCard.vip4" auto-complete="off" type="number"></el-input>
           元，等级为v4
         </el-form-item>
         <el-form-item label="充值" prop="vip5">
-          <el-input v-model="addCard.vip5" auto-complete="off" type="number"></el-input>
+          <el-input v-model.trim="addCard.vip5" auto-complete="off" type="number"></el-input>
           元，等级为v5
         </el-form-item>
         <el-button @click.native="addFormVisible = false" class="button">取消</el-button>
@@ -78,10 +78,10 @@
             }
           })
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.data.data != null){
                   this.addCard = res.data.data;
-                  console.log(this.addCard)
+                  // console.log(this.addCard)
                 }
               },
             ).catch((e) => {})
@@ -103,26 +103,31 @@
             }
           })
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 if(res.data.success){
-                  this.$message({
-                    showClose: true,
-                    message: '设置成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '设置成功', type: 'success'});
                 }else{
-                  this.$message({
-                    showClose: true,
-                    message: '设置失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '设置失败', type: 'warning'});
                 }
               },
             ).catch((e) => {})
         }
       },
       mounted(){
-        this.setLevel();
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.setLevel();
+          }
+        })
       }
     }
 </script>

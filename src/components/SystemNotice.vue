@@ -12,7 +12,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.adminname" placeholder="管理员名称" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.adminname" placeholder="管理员名称" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -104,11 +104,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       //数组去重
       uniq(array){
         let temp = []; //一个新的临时数组
@@ -138,27 +133,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -184,27 +167,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -230,27 +201,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -266,11 +225,7 @@
       issue() {
         this.place = this.uniq(this.place);
         if (this.normalForm.notice == undefined || this.normalForm.notice == "") {
-          this.$message({
-            showClose: true,
-            message: '公告内容不能为空',
-            type: 'warning'
-          });
+          this.$message({showClose: true, message: '公告内容不能为空', type: 'warning'});
         } else {
           axios({
             method: 'post',
@@ -279,16 +234,12 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'content': this.trim(this.normalForm.notice),
-              'place': this.trim(this.place.toString()),
+              'content': this.normalForm.notice,
+              'place': this.place.toString(),
               'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
-                this.$message({
-                  showClose: true,
-                  message: '发布成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '发布成功', type: 'success'});
                 this.normalForm.notice = ''
                 this.place = []
                 let checkbox = document.getElementsByClassName('el-checkbox__input');
@@ -302,27 +253,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break;
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break;
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -344,7 +283,7 @@
           params: {
             'size': '15',//每页数量
             'page': this.page,//当前页
-            'adminName': this.trim(this.filters.adminname),
+            'adminName': this.filters.adminname,
             'token':sessionStorage.getItem('token')
           }
         })
@@ -357,27 +296,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -388,7 +315,20 @@
       },
     },
     mounted() { //初始化页面
-      this.handleSearch()
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch()
+        }
+      })
     }
   }
 </script>

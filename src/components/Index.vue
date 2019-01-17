@@ -136,7 +136,7 @@
       </el-select>
     </el-col>
     <el-row :gutter="20" style="margin:70px 0 70px 30px;">
-      <el-col :span="6">
+      <el-col :span="5">
         <div class="grid-content bg-purple">
           <div class="leftImg">
             <img src="../assets/images/icon_rika.png" alt="" class="card">
@@ -147,7 +147,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="5">
         <div class="grid-content bg-purple">
           <div class="leftImg">
             <img src="../assets/images/icon_zhouka.png" alt="" class="card">
@@ -158,7 +158,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="5">
         <div class="grid-content bg-purple">
           <div class="leftImg">
             <img src="../assets/images/icon_yueka.png" alt="" class="card">
@@ -169,7 +169,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="5">
         <div class="grid-content bg-purple">
           <div class="leftImg">
             <img src="../assets/images/icon_jika.png" alt="" class="card">
@@ -177,6 +177,17 @@
           <div class="rightText">
             <div class="num">{{filters1.agentJiAmount}}张</div>
             <div class="type grey">季卡</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="4">
+        <div class="grid-content bg-purple">
+          <div class="leftImg">
+            <img src="../assets/images/icon_jade.png" alt="" class="card">
+          </div>
+          <div class="rightText">
+            <div class="num">{{filters1.agentGoldAmount}}个</div>
+            <div class="type grey">玉石</div>
           </div>
         </div>
       </el-col>
@@ -224,44 +235,14 @@
       methods:{
           handleSearch(month){
             let myDate = new Date();
-            this.year = myDate.getFullYear() + '年';
             if(!month){
+              this.year = myDate.getFullYear() + '年';
               this.value = myDate.getMonth()+1 +'月';
             }
-            if(month == '1月'){
-              month = 1;
-            }
-            if(month == '2月'){
-              month = 2;
-            }
-            if(month == '3月'){
-              month = 3;
-            }
-            if(month == '4月'){
-              month = 4;
-            }
-            if(month == '5月'){
-              month = 5;
-            }
-            if(month == '6月'){
-              month = 6;
-            }
-            if(month == '7月'){
-              month = 7
-            } if(month == '8月'){
-              month = 8;
-            }
-            if(month == '9月'){
-              month = 9;
-            }
-            if(month == '10月'){
-              month = 10;
-            }
-            if(month == '11月'){
-              month = 11;
-            }
-            if(month == '12月'){
-              month = 12;
+            for(let i = 1;i < 13;i++){
+              if(month == i + '月'){
+                month = i
+              }
             }
             axios({
               method: 'post',
@@ -282,121 +263,81 @@
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break
                   case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break
                   case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
                     break
                 }
               }
             });
           },
           handleSearch1(month){
-          if(!month){
             var myDate = new Date();
-            this.value1 = myDate.getMonth()+1+'月';
-          }
-          if(month == '1月'){
-            month = 1;
-          }
-          if(month == '2月'){
-            month = 2;
-          }
-          if(month == '3月'){
-            month = 3;
-          }
-          if(month == '4月'){
-            month = 4;
-          }
-          if(month == '5月'){
-            month = 5;
-          }
-          if(month == '6月'){
-            month = 6;
-          }
-          if(month == '7月'){
-            month = 7
-          } if(month == '8月'){
-            month = 8;
-          }
-          if(month == '9月'){
-            month = 9;
-          }
-          if(month == '10月'){
-            month = 10;
-          }
-          if(month == '11月'){
-            month = 11;
-          }
-          if(month == '12月'){
-            month = 12;
-          }
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/index/agentindex',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              'month': month,
-              'token':sessionStorage.getItem('token')
+            if(!month){
+              this.value1 = myDate.getMonth()+1+'月';
+              this.year = myDate.getFullYear() + '年';
             }
-          })
-            .then((res) => {
-                // console.log(res.data)
-                this.filters1 = res.data.data;
-              },
-            ).catch((e) => {
-            if (e && e.response) {
-              switch (e.response.status) {
-                case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
-                  this.loading = false;//隐藏加载条
-                  break
-                case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
-                  break
+            for(let i = 1;i < 13;i++){
+              if(month == i + '月'){
+                month = i
               }
             }
-          });
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/index/agentindex',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                'month': month,
+                'token':sessionStorage.getItem('token')
+              }
+            })
+              .then((res) => {
+                  // console.log(res.data)
+                  this.filters1 = res.data.data;
+                },
+              ).catch((e) => {
+              if (e && e.response) {
+                switch (e.response.status) {
+                  case 504:
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                    this.loading = false;//隐藏加载条
+                    break
+                  case 500:
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                    this.loading = false;//隐藏加载条
+                    break
+                  case 405:
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
+                    break
+                }
+              }
+            });
         }
       },
       mounted(){
-          this.handleSearch('');
-          this.handleSearch1('');
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch('');
+            this.handleSearch1('');
+          }
+        })
       }
     }
 </script>

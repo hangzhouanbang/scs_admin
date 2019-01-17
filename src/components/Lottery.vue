@@ -39,7 +39,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="small" @click="adjustmentDialog(scope.$index,scope.row)">调整</el-button>
-          <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
+          <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small" v-if="scope.row.type != null">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,10 +48,10 @@
     <el-dialog title="" :visible.sync="adjustmentVisible" :close-on-click-modal="false">
       <el-form :model="adjustForm" label-width="120px" :rules="addFormRules" ref="adjustForm">
         <el-form-item label="奖励备注" prop="name" required>
-          <el-input v-model="adjustForm.name" auto-complete="off"></el-input>
+          <el-input v-model.trim="adjustForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="奖励类别" prop="type" required>
-          <el-select v-model="adjustForm.type" placeholder="请选择" @change="select">
+          <el-select v-model.trim="adjustForm.type" placeholder="请选择" @change="select">
             <el-option
               v-for="item in types"
               :key="item.value"
@@ -69,10 +69,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="单奖数量" prop="singleNum" required>
-          <el-input v-model="adjustForm.singleNum" auto-complete="off"></el-input>
+          <el-input v-model.trim="adjustForm.singleNum" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="库存数量" prop="storeNum" required>
-          <el-input v-model="adjustForm.storeNum" auto-complete="off"></el-input>
+          <el-input v-model.trim="adjustForm.storeNum" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="icon图" prop="iconUrl" required>
           <div class="upload">
@@ -88,10 +88,10 @@
           </div>
         </el-form-item>
         <el-form-item label="中奖概率" prop="prizeProb" required>
-          <el-input v-model="adjustForm.prizeProb" auto-complete="off"></el-input>
+          <el-input v-model.trim="adjustForm.prizeProb" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="首次中奖概率" prop="firstPrizeProb" required>
-          <el-input v-model="adjustForm.firstPrizeProb" auto-complete="off"></el-input>
+          <el-input v-model.trim="adjustForm.firstPrizeProb" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="加入超额奖池" prop="overstep" required>
           <el-select v-model="adjustForm.overstep" placeholder="请选择">
@@ -114,7 +114,7 @@
     <el-dialog title="添加商品" :visible.sync="addVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
         <el-form-item label="奖励备注" prop="name" required>
-          <el-input v-model="addForm.name" auto-complete="off"></el-input>
+          <el-input v-model.trim="addForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="奖励类别" prop="type" required>
           <el-select v-model="addForm.type" placeholder="请选择" @change="select1">
@@ -135,10 +135,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="数量" prop="singleNum" required>
-          <el-input v-model="addForm.singleNum" auto-complete="off"></el-input>
+          <el-input v-model.trim="addForm.singleNum" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="库存数量" prop="storeNum" required>
-          <el-input v-model="addForm.storeNum" auto-complete="off"></el-input>
+          <el-input v-model.trim="addForm.storeNum" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="icon图" prop="iconUrl" required>
           <div class="upload">
@@ -154,10 +154,10 @@
           </div>
         </el-form-item>
         <el-form-item label="中奖概率" prop="prizeProb" required>
-          <el-input v-model="addForm.prizeProb" auto-complete="off"></el-input>
+          <el-input v-model.trim="addForm.prizeProb" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="首次中奖概率" prop="firstPrizeProb" required>
-          <el-input v-model="addForm.firstPrizeProb" auto-complete="off"></el-input>
+          <el-input v-model.trim="addForm.firstPrizeProb" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="超额奖池" prop="overstep" required>
           <el-select v-model="addForm.overstep" placeholder="请选择">
@@ -309,7 +309,7 @@
         methods:{
           // 上传文件到七牛云
           upqiniu(req) {
-            console.log(req)
+            // console.log(req)
             const config = {
               headers: {'Content-Type': 'multipart/form-data'}
             }
@@ -341,7 +341,7 @@
                 this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
                 this.imageUrl1 = 'http://' + this.qiniuaddr + '/' + res.data.key
                 this.img = false;
-                console.log(this.imageUrl)
+                // console.log(this.imageUrl)
               })
             })
           },
@@ -376,27 +376,15 @@
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break
                   case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break
                   case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
                     break
                 }
               }
@@ -565,7 +553,20 @@
           }
         },
         mounted(){
-         this.handleSearch();
+          axios({
+            url:this.global.mPath + '/login/admin_info',
+            method:'post',
+            params:{
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data.success)
+            if(res.data.success == false){
+              this.$router.replace('/');
+            }else{
+              this.handleSearch();
+            }
+          })
         },
     }
 </script>

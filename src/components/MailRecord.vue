@@ -155,11 +155,7 @@
         })
           .then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '发布失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '发布失败', type: 'warning'});
               } else if (res.data.success == true) {
                 this.items = res.data.data.items;
                 this.total = res.data.data.pageCount;//总页数
@@ -175,27 +171,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -203,6 +187,18 @@
       },
     },
     mounted() {
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }
+      })
       this.handleSearch();
       axios({//查出所有管理员名称
         method: 'post',
@@ -222,27 +218,15 @@
         if (e && e.response) {
           switch (e.response.status) {
             case 504:
-              this.$message({
-                showClose: true,
-                message: '服务器异常',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
               break
             case 500:
-              this.$message({
-                showClose: true,
-                message: '服务器异常',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
               break
             case 405:
-              this.$message({
-                showClose: true,
-                message: '请先登录',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '请先登录', type: 'warning'});
               break
           }
         }

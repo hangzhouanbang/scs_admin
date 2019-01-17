@@ -31,25 +31,25 @@
     <el-dialog title="新增会员卡" :visible.sync="addCardVisible" :close-on-click-modal="false">
       <el-form :model="addCard" label-width="150px" :rules="editFormRules" ref="addCard">
         <el-form-item label="会员卡名称" prop="name">
-          <el-input v-model="addCard.name" auto-complete="off"></el-input>
+          <el-input v-model.trim="addCard.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="会员卡价格" prop="price">
-          <el-input v-model="addCard.price" auto-complete="off"></el-input>
+          <el-input v-model.trim="addCard.price" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="购买赠送的玉石数" prop="gold">
-          <el-input v-model="addCard.gold" auto-complete="off"></el-input>
+          <el-input v-model.trim="addCard.gold" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="购买赠送的礼券数" prop="score">
-          <el-input v-model="addCard.score" auto-complete="off"></el-input>
+          <el-input v-model.trim="addCard.score" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="延长的会员时间" prop="time">
-          <el-input v-model="addCard.time" auto-complete="off"></el-input>
+          <el-input v-model.trim="addCard.time" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="首次购买折扣" prop="time">
-          <el-input v-model="addCard.firstDiscount" auto-complete="off"></el-input>
+          <el-input v-model.trim="addCard.firstDiscount" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="首次购买价格" prop="time">
-          <el-input v-model="addCard.firstDiscountPrice" auto-complete="off"></el-input>
+          <el-input v-model.trim="addCard.firstDiscountPrice" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -62,25 +62,25 @@
     <el-dialog title="编辑会员卡" :visible.sync="editCardVisible" :close-on-click-modal="false">
       <el-form :model="editCard" label-width="150px" :rules="editFormRules" ref="editCard">
         <el-form-item label="会员卡名称" prop="name">
-          <el-input v-model="editCard.name" auto-complete="off"></el-input>
+          <el-input v-model.trim="editCard.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="会员卡价格" prop="price">
-          <el-input v-model="editCard.price" auto-complete="off"></el-input>
+          <el-input v-model.trim="editCard.price" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="购买赠送玉石数" prop="gold">
-          <el-input v-model="editCard.gold" :rows="8"></el-input>
+          <el-input v-model.trim="editCard.gold" :rows="8"></el-input>
         </el-form-item>
         <el-form-item label="购买赠送礼券数" prop="score">
-          <el-input v-model="editCard.score" :rows="8"></el-input>
+          <el-input v-model.trim="editCard.score" :rows="8"></el-input>
         </el-form-item>
         <el-form-item label="延长的会员时间" prop="time">
-          <el-input v-model="editCard.time" :rows="8"></el-input>
+          <el-input v-model.trim="editCard.time" :rows="8"></el-input>
         </el-form-item>
         <el-form-item label="首次购买折扣" prop="time">
-          <el-input v-model="editCard.firstDiscount" auto-complete="off"></el-input>
+          <el-input v-model.trim="editCard.firstDiscount" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="首次购买价格" prop="time">
-          <el-input v-model="editCard.firstDiscountPrice" auto-complete="off"></el-input>
+          <el-input v-model.trim="editCard.firstDiscountPrice" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -136,11 +136,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       handleCurrentChange(val) {
         this.page = val;
         this.handleSearch(this.page);
@@ -157,29 +152,18 @@
           }
         })
           .then((res) => {
-            console.log(res)
+            // console.log(res)
               this.users = res.data.data;
               this.total = res.data.pageNumber;
-              for(let i = 0; i < this.users.length;i++){
-                this.users[i].time = this.users[i].time / 1000 / 60 / 60 / 24;
-              }
             },
           ).catch((e) => {
           if(e && e.response){
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -205,7 +189,7 @@
             }
           })
             .then((res) => {
-                console.log(res)
+                // console.log(res)
                 that.loading = false;
                 if(res.data.success == true){
                   that.$message.success({showClose: true, message: '删除成功', duration: 1500});
@@ -216,7 +200,6 @@
               }
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -251,7 +234,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -270,10 +252,10 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params:{
-            'name':this.trim(this.addCard.name),
-            'price':this.trim(this.addCard.price),
-            'gold':this.trim(this.addCard.gold),
-            'score':this.trim(this.addCard.score),
+            'name':this.addCard.name,
+            'price':this.addCard.price,
+            'gold':this.addCard.gold,
+            'score':this.addCard.score,
             'time':this.addCard.time,
             'firstDiscount':this.addCard.firstDiscount,
             'firstDiscountPrice':this.addCard.firstDiscountPrice,
@@ -281,19 +263,11 @@
           }
         })
           .then((res) => {
-            console.log(res.data)
+            // console.log(res.data)
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '添加失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '添加失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '添加成功', type: 'success'});
                 this.addCardVisible = false;//关闭弹窗
                 this.handleSearch();
               }
@@ -302,18 +276,10 @@
           if(e && e.response){
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -359,7 +325,6 @@
                 },
               ).catch((e) => {
               this.loading = false;
-              // console.log(e);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           }
@@ -367,7 +332,20 @@
       },
     },
     mounted() {
-      this.handleSearch()
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch()
+        }
+      })
     }
   }
 </script>

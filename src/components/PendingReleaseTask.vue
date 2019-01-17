@@ -11,7 +11,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-input v-model="filters.nickname" placeholder="任务名" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.nickname" placeholder="任务名" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -43,10 +43,10 @@
     <el-dialog title="新增任务" :visible.sync="addFormVisible" :close-on-click-modal="false">
       <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
         <el-form-item label="任务名称" prop="name" required>
-          <el-input v-model="addForm.name" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addForm.name" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="详细描述" prop="description" required>
-          <el-input v-model="addForm.description" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="addForm.description" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="任务类型" prop="taskType" required>
           <el-select v-model="addForm.taskType" placeholder="请选择">
@@ -89,30 +89,38 @@
           </el-select>
         </el-form-item>
         <el-form-item label="任务名称" prop="name" required>
-          <el-input v-model="publishForm.name" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="publishForm.name" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="详细描述" prop="desc" required>
-          <el-input v-model="publishForm.desc" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="publishForm.desc" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="任务类型" prop="type" required>
-          <el-input v-model="publishForm.type" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="publishForm.type" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
         <el-form-item label="任务种类" prop="taskName" required>
-          <el-input v-model="publishForm.taskName" auto-complete="off" style="width:400px;"></el-input>
+          <el-input v-model.trim="publishForm.taskName" auto-complete="off" style="width:400px;"></el-input>
         </el-form-item>
-        <el-form-item label="奖励玉石数量" prop="goldNumber">
-          <el-input v-model="publishForm.goldNumber" auto-complete="off" style="width:220px;"></el-input>个
+        <el-form-item label="奖励类型" prop="rewardTypes" required>
+          <el-select v-model="publishForm.rewardTypes" placeholder="请选择">
+            <el-option
+              v-for="(item,index) in rewardTypes"
+              :key="index"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="奖励礼券数量" prop="integralNumber">
-          <el-input v-model="publishForm.integralNumber" auto-complete="off" style="width:220px;"></el-input>个
+        <el-form-item label="奖励数量" prop="rewardNum">
+          <el-input v-model.trim="publishForm.rewardNum" auto-complete="off" style="width:220px;"></el-input>
         </el-form-item>
-        <el-form-item label="奖励会员天数" prop="vipDays">
-          <el-input v-model="publishForm.vipDays" auto-complete="off" style="width:220px;"></el-input>天
+        <el-form-item label="完成次数" prop="targetNum" required>
+          <el-input type='number' v-model.trim="publishForm.targetNum" auto-complete="off" style="width:220px;"></el-input>
         </el-form-item>
-        <el-form-item label="完成次数" prop="completionTimes" required>
-          <el-input type='number' v-model="publishForm.completionTimes" auto-complete="off" style="width:220px;"></el-input>
+        <el-form-item label="设置任务时限" prop="limitTime">
+          <el-input type='number' v-model.trim="publishForm.limitTime" auto-complete="off" style="width:220px;"></el-input> 天
         </el-form-item>
-        <el-radio v-model="radio" label="1" class="radio">每日</el-radio>
+        <el-radio v-model="radio" label="EVERYDAY" class="radio">每日</el-radio>
+        <el-radio v-model="radio" label="ONE">单次</el-radio>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="publishVisible = false">取消</el-button>
@@ -146,7 +154,7 @@
             publishForm:{},
             total:0,
             index:'',
-            radio: '1',
+            radio:'',
             options:[],
             typeTask:[],
             sels: [],
@@ -185,15 +193,32 @@
               numberOfReward: [
                 {required: true, message: '请输入奖励数', trigger: 'blur'}
               ]
-            }
+            },
+            rewardTypes:[
+              {value:'玉石'},
+              {value:'礼券'},
+              {value:'会员卡'},
+              {value:'红包点'},
+              {value:'现金红包'},
+            ],
+            types:[
+              {value:'每日任务'},
+              {value:'邀请豪礼'},
+            ],
+            taskNames:[
+              {value:'邀请新玩家'},
+              {value:'赢得游戏'},
+              {value:'分享好友'},
+              {value:'分享朋友圈'},
+              {value:'成为会员'},
+              {value:'红包点福利'},
+              {value:'完成小盘游戏'},
+              {value:'俏皮话'},
+              {value:'对局任务'},
+            ]
           }
         },
         methods:{
-          trim(str) {
-            if(str != null){
-              return str.replace(/(^\s+)|(\s+$)/g, "");
-            }
-          },
           selsChange: function (sels) {
             this.sels = sels;
           },
@@ -221,18 +246,10 @@
               if(e && e.response){
                 switch (e.response.status) {
                   case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     break
                   case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
                     break
                 }
               }
@@ -259,13 +276,13 @@
               params: {
                 page:page,
                 size:10,
-                name:this.trim(this.filters.nickname),
+                name:this.filters.nickname,
                 type:'',
                 token:sessionStorage.getItem('token')
               }
             })
               .then((res) => {
-                  console.log(res.data.data)
+                  // console.log(res.data.data)
                   this.task = res.data.data.items;
                   this.total = res.data.data.pageCount;
                 },
@@ -273,18 +290,10 @@
               if(e && e.response){
                 switch (e.response.status) {
                   case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     break
                   case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
                     break
                 }
               }
@@ -298,15 +307,15 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                name:this.trim(this.addForm.name),
+                name:this.addForm.name,
                 type:this.addForm.taskType,
-                desc:this.trim(this.addForm.description),
+                desc:this.addForm.description,
                 taskName:this.addForm.Typetask,
                 token:sessionStorage.getItem('token')
               }
             })
               .then((res) => {
-                  console.log(res)
+                  // console.log(res)
                   if(res.data.success == true){
                     this.$message.success({showClose: true, message: '添加成功', duration: 1500});
                     this.handleSearch(1);
@@ -317,7 +326,6 @@
                 },
               ).catch((e) => {
               this.loading = false;
-              console.log(e);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           },
@@ -331,15 +339,20 @@
             if(this.publishForm.releaseObject == '所有用户'){
               this.publishForm.userTypes = 'null';
             }
-            console.log(this.publishForm.goldNumber)
-            if(this.publishForm.goldNumber == undefined){
-              this.publishForm.goldNumber = 0;
+            if(this.publishForm.rewardTypes == '玉石'){
+              this.publishForm.rewardType = 'YUSHI'
             }
-            if(this.publishForm.integralNumber == undefined){
-              this.publishForm.integralNumber = 0;
+            if(this.publishForm.rewardTypes == '礼券'){
+              this.publishForm.rewardType = 'LIQUAN'
             }
-            if(this.publishForm.vipDays == undefined){
-              this.publishForm.vipDays = 0;
+            if(this.publishForm.rewardTypes == '会员卡'){
+              this.publishForm.rewardType = 'VIPTIME'
+            }
+            if(this.publishForm.rewardTypes == '红包点'){
+              this.publishForm.rewardType = 'HONGBAODIAN'
+            }
+            if(this.publishForm.rewardTypes == '现金红包'){
+              this.publishForm.rewardType = 'HONGBAORMB'
             }
             this.publishForm.promulgator = sessionStorage.getItem('nickname');
             this.loading = true;
@@ -350,18 +363,23 @@
                 'Content-type': 'application/x-www-form-urlencoded'
               },
               params: {
-                taskDocId:this.trim(this.publishForm.id),
-                promulgator:this.trim(this.publishForm.promulgator),
-                rewardGold:this.trim(this.publishForm.goldNumber),
-                rewardScore:this.trim(this.publishForm.integralNumber),
-                rewardVip:this.publishForm.vipDays,
+                token:sessionStorage.getItem('token'),
+                taskDocId:this.publishForm.id,
+                name:this.publishForm.name,
+                desc:this.publishForm.desc,
+                type:this.publishForm.type,
+                taskName:this.publishForm.taskName,
+                rewardType:this.publishForm.rewardType,
+                rewardNum:this.publishForm.rewardNum,
                 vip:this.publishForm.userTypes,
-                targetNum:this.trim(this.publishForm.completionTimes),
-                token:sessionStorage.getItem('token')
+                targetNum:this.publishForm.targetNum,
+                limitTime:this.publishForm.limitTime,
+                taskType:this.radio,
+                promulgator:this.publishForm.promulgator
               }
             })
               .then((res) => {
-                console.log(res)
+                // console.log(res)
                   this.loading = false;
                   if (res.data.success == true) {
                     this.publishVisible = false;
@@ -373,7 +391,6 @@
                 },
               ).catch((e) => {
               this.loading = false;
-              console.log(error);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           },
@@ -403,7 +420,6 @@
                   },
                 ).catch((e) => {
                 that.loading = false;
-                console.log(error);
                 that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
               });
             });
@@ -437,14 +453,26 @@
                   },
                 ).catch((e) => {
                 that.loading = false;
-                console.log(error);
                 that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
               });
             })
           }
         },
         mounted(){
-          this.handleSearch(1);
+          axios({
+            url:this.global.mPath + '/login/admin_info',
+            method:'post',
+            params:{
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data.success)
+            if(res.data.success == false){
+              this.$router.replace('/');
+            }else{
+              this.handleSearch(1);
+            }
+          })
         }
     }
 </script>

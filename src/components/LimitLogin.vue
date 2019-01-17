@@ -11,7 +11,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0;margin-top:30px;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
-          <el-input v-model="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model.trim="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch()"></el-input>
         </el-form-item>
         <el-button type="primary" @click="handleSearch()">查询</el-button>
         <el-button type="primary" @click="addLimit()">新建限制</el-button>
@@ -46,10 +46,10 @@
     <el-dialog title="新建限制" :visible.sync="addLimitVisible" :close-on-click-modal="false">
       <el-form :model="addLimitForm" label-width="100px" :rules="rules" class="demo-ruleForm">
         <el-form-item label="用户ID" prop="memberId">
-          <el-input v-model="addLimitForm.memberId" auto-complete="off" style="width:217px;"></el-input>
+          <el-input v-model.trim="addLimitForm.memberId" auto-complete="off" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="desc">
-          <el-input v-model="addLimitForm.desc" auto-complete="off" style="width:217px;"></el-input>
+          <el-input v-model.trim="addLimitForm.desc" auto-complete="off" style="width:217px;"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="sure">确定</el-button>
@@ -112,7 +112,7 @@
                 memberId:this.filters.id
               }
             }).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 this.limit = res.data.data.listPage.items;
                 this.total = res.data.data.listPage.pageCount
                 for(let i = 0;i < this.limit.length;i++){
@@ -136,24 +136,16 @@
                 memberId:this.addLimitForm.memberId
               }
             }).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 if(res.data.success){
                   this.$message({showClose: true, message: '请求出现异常', duration: 2000});
                 }if(res.data.success == true){
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success'
-                });
-                this.addLimitVisible = false;
-                this.handleSearch()
-              }else{
-                this.$message({
-                  showClose: true,
-                  message: '添加失败',
-                  type: 'warning'
-                });
-              }
+                  this.$message({showClose: true, message: '添加成功', type: 'success'});
+                  this.addLimitVisible = false;
+                  this.handleSearch()
+                }else{
+                  this.$message({showClose: true, message: '添加失败', type: 'warning'});
+                }
               }
             ).catch((e) => {
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
@@ -178,20 +170,12 @@
                   recordId: row.id
                 }
               }).then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 if (res.data.success) {
-                  this.$message({
-                    showClose: true,
-                    message: '删除成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '删除成功', type: 'success'});
                   this.handleSearch()
                 } else {
-                  this.$message({
-                    showClose: true,
-                    message: '删除失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '删除失败', type: 'warning'});
                 }
               })
             })
@@ -212,20 +196,12 @@
                   recordId: ids
                 }
               }).then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 if (res.data.success) {
-                  this.$message({
-                    showClose: true,
-                    message: '删除成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '删除成功', type: 'success'});
                   this.handleSearch()
                 } else {
-                  this.$message({
-                    showClose: true,
-                    message: '删除失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '删除失败', type: 'warning'});
                 }
               })
             })
@@ -235,7 +211,20 @@
           }
         },
       mounted(){
-        this.handleSearch()
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch()
+          }
+        })
       }
     }
 </script>

@@ -11,7 +11,7 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.nickname" placeholder="用户名" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.nickname" placeholder="用户名" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -58,19 +58,19 @@
       <el-dialog title="修改密码" :visible.sync="editFormVisible" :close-on-click-modal="false">
         <el-form :model="editForm" label-width="100px" ref="editForm">
           <el-form-item label="用户名" prop="nickname">
-            <el-input v-model="editForm.nickname" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="editForm.nickname" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="姓名" prop="user">
-            <el-input v-model="editForm.user" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="editForm.user" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="身份证号" prop="idCard">
-            <el-input v-model="editForm.idCard" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="editForm.idCard" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="添加时间" prop="createTime">
-            <el-input v-model="editForm.createTime" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="editForm.createTime" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="密码" required>
-            <el-input v-model="editForm.password" type='password' auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="editForm.password" type='password' auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -95,16 +95,16 @@
       <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
           <el-form-item label="用户名" prop="nickname">
-            <el-input v-model="addForm.nickname" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="addForm.nickname" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="addForm.pass" auto-complete="off" style="width:400px;"></el-input>
+            <el-input type="password" v-model.trim="addForm.pass" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="姓名" prop="user">
-            <el-input v-model="addForm.user" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="addForm.user" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
           <el-form-item label="身份证号" prop="idCard">
-            <el-input v-model="addForm.idCard" auto-complete="off" style="width:400px;"></el-input>
+            <el-input v-model.trim="addForm.idCard" auto-complete="off" style="width:400px;"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -183,11 +183,6 @@
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       handleSearch() {
         axios({//根据昵称查询
           method: 'post',
@@ -198,7 +193,7 @@
           params: {
             'page': this.page,
             'size': '10',
-            'nickname': this.trim(this.filters.nickname),
+            'nickname': this.filters.nickname,
             'token':sessionStorage.getItem('token')
           }
         })
@@ -213,18 +208,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -259,7 +246,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         });
@@ -299,7 +285,6 @@
                 },
               ).catch((e) => {
               this.loading = false;
-              console.log(error);
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           }
@@ -320,7 +305,7 @@
           }
         })
           .then((res) => {
-            console.log(res.data.data)
+            // console.log(res.data.data)
               this.roles = res.data.data;
             },
           ).catch((e) => {
@@ -329,8 +314,8 @@
       //编辑角色
       roleSubmit: function () {
         let roleids = this.sels.map(item => item.id).toString();
-        console.log(roleids)
-        console.log(this.editRole)
+        // console.log(roleids)
+        // console.log(this.editRole)
         axios({
           method: 'post',
           url: this.global.mPath + '/admin/editrole',
@@ -344,19 +329,11 @@
           }
         })
           .then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '编辑失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '编辑失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '编辑成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '编辑成功', type: 'success'});
                 this.editRoleVisible = false;//关闭弹窗
                 this.handleSearch(1);
               }
@@ -382,26 +359,18 @@
             'Content-type': 'application/x-www-form-urlencoded'
           },
           params: {
-            'nickname': this.trim(this.addForm.nickname),
-            'pass': this.trim(this.addForm.pass),
-            'user': this.trim(this.addForm.user),
-            'idCard': this.trim(this.addForm.idCard),
+            'nickname': this.addForm.nickname,
+            'pass': this.addForm.pass,
+            'user': this.addForm.user,
+            'idCard': this.addForm.idCard,
             'token':sessionStorage.getItem('token')
           }
         })
           .then((res) => {
               if (res.data.success == false) {
-                this.$message({
-                  showClose: true,
-                  message: '添加失败',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '添加失败', type: 'warning'});
               } else if (res.data.success == true) {
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success'
-                });
+                this.$message({showClose: true, message: '添加成功', type: 'success'});
                 this.addFormVisible = false;//关闭弹窗
                 this.handleSearch(1);
               }
@@ -410,18 +379,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -457,7 +418,6 @@
               },
             ).catch((e) => {
             that.loading = false;
-            console.log(error);
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
 
@@ -465,7 +425,20 @@
       }
     },
     mounted() {
-      this.handleSearch(1)
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch(1)
+        }
+      })
     }
   }
 </script>

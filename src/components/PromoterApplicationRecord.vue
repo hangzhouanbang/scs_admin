@@ -10,10 +10,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="推广员ID">
-          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item label="推广员昵称">
-          <el-input v-model="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -124,7 +124,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-                console.log(res.data)
+                // console.log(res.data)
                 this.record = res.data.data.items;
                 this.total = res.data.data.pageCount;
                 let number = res.data.data.totalItemsCount;
@@ -167,7 +167,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data.data)
+              // console.log(res.data.data)
               this.options = res.data.data.listPage.items;
             })
           },
@@ -196,7 +196,7 @@
                 token:sessionStorage.getItem('token')
               }
             }).then((res) => {
-              console.log(res.data)
+              // console.log(res.data)
               if(res.data.success){
                 this.recordDialogVisible = false;
                 this.handleSearch(1)
@@ -205,7 +205,20 @@
           }
         },
         mounted(){
-          this.handleSearch(1)
+          axios({
+            url:this.global.mPath + '/login/admin_info',
+            method:'post',
+            params:{
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data.success)
+            if(res.data.success == false){
+              this.$router.replace('/');
+            }else{
+              this.handleSearch(1)
+            }
+          })
         }
     }
 </script>

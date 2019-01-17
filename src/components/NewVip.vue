@@ -34,13 +34,13 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
-            <el-input v-model="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch()"></el-input>
+            <el-input v-model.trim="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch()"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="filters.nickname" placeholder="用户昵称" @keyup.enter.native="handleSearch()"></el-input>
+            <el-input v-model.trim="filters.nickname" placeholder="用户昵称" @keyup.enter.native="handleSearch()"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="identity" placeholder="请选择身份进行查询" @change="handleSearch()">
+            <el-select v-model="identity" placeholder="请选择身份进行查询" @change="handleSearch()" clearable>
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -49,7 +49,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="state" placeholder="请选择在线状态" @change="handleSearch()">
+            <el-select v-model="state" placeholder="请选择在线状态" @change="handleSearch()" clearable>
               <el-option
                 v-for="item in states"
                 :key="item.value"
@@ -110,7 +110,7 @@
       <el-dialog title="赠送玉石" :visible.sync="giveFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="玉石数量" prop="gold">
-            <el-input type="number" min="0" placeholder="请输入整数" v-model="normalForm.amount"
+            <el-input type="number" min="0" placeholder="请输入整数" v-model.trim="normalForm.amount"
                       auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
@@ -124,7 +124,7 @@
       <el-dialog title="赠送礼券" :visible.sync="givefromintegral" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="礼券数量" prop="score">
-            <el-input type="number" min="0" placeholder="请输入整数" v-model="normalForm.amount"
+            <el-input type="number" min="0" placeholder="请输入整数" v-model.trim="normalForm.amount"
                       auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
@@ -256,60 +256,17 @@
           <span class="every">
             <label for="">历史战绩:</label>
             <ul class="zj">
-                <li>
+                <li v-for="data in recordList" :key="data.id">
                   <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
+                    <span>{{data.game}}</span>
+                    <span>房号：{{data.roomNo}}</span>
+                    <span>局数：{{data.lastPanNo}}/{{data.panshu}}</span>
+                    <span>{{data.finishTime}}</span>
                   </div>
                   <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
-                  </div>
-                </li>
-                <li>
-                  <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
-                  </div>
-                  <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
-                  </div>
-                </li>
-                <li>
-                  <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
-                  </div>
-                  <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
-                  </div>
-                </li>
-               <li>
-                  <div class="top">
-                    <span>瑞安麻将</span>
-                    <span>房号：888888</span>
-                    <span>局数：3/4</span>
-                    <span>2018-12-10 10:21</span>
-                  </div>
-                  <div class="bottom">
-                    <span>一川闲絮：2</span>
-                    <span>一川闲絮：-180</span>
-                    <span>一川闲絮：10</span>
-                    <span>一川闲絮：2</span>
+                    <span v-for="single in data.playerResultList" :key="single.playerId">
+                      {{single.nickname}}：{{single.totalScore}}
+                    </span>
                   </div>
                 </li>
             </ul>
@@ -321,10 +278,10 @@
       <el-dialog title="推广员绑定调整" :visible.sync="Bindingtoadjust" :close-on-click-modal="false" class="bdtz">
         <el-form :model="bindForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="当前绑定" prop="score" style="width:300px;">
-            <el-input v-model="bindForm.agentId" disabled></el-input>
+            <el-input v-model.trim="bindForm.agentId" disabled></el-input>
           </el-form-item>
           <el-form-item label="调整绑定" prop="score" style="width:300px;">
-            <el-input v-model="bindForm.id"></el-input>
+            <el-input v-model.trim="bindForm.id"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="bindsure">确认</el-button>
@@ -352,18 +309,16 @@
         givefromcard:false,
         other: false,//隐藏其他信息弹窗
         normalForm: {},
-        options: [{
-          value: '会员用户'
-        }, {
-          value: '非会员用户'
-        },{
-          value:'所有用户'
-        }],
-        states:[{
-          value:'在线'
-        },{
-          value:'下线'
-        }],
+        options: [
+          {value: '会员用户'},
+          {value: '非会员用户'},
+          {value:'所有用户'}
+        ],
+        states:[
+          {value:'在线'},
+          {value:'下线'},
+          {value:'全部'},
+        ],
         identity: '',
         identity1: '',
         state:'',
@@ -416,15 +371,11 @@
         cardForm:{},
         cardForm1:{},
         Bindingtoadjust:false,
-        bindForm:{}
+        bindForm:{},
+        recordList:[]
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       dateTimeFormat(value) {
         let time = new Date(+value);
         let rightTwo = (v) => {
@@ -457,10 +408,11 @@
           }
         })
           .then((res) => {
-            console.log(res.data.data)
+            // console.log(res.data.data)
               this.loading = false;//隐藏加载条
               this.details = res.data.data;
               this.tableData = res.data.data.roomList;
+              this.recordList = res.data.data.recordList.items;
               for(let i = 0;i < this.tableData.length;i++){
                 if(this.tableData[i].vip == true){
                   this.tableData[i].vip = '是'
@@ -468,32 +420,38 @@
                   this.tableData[i].vip = '否'
                 }
               }
+              for(let j = 0;j < this.recordList.length;j++){
+                this.recordList[j].finishTime = this.dateTimeFormat(this.recordList[j].finishTime)
+                if(this.recordList[j].game == 'ruianMajiang'){
+                  this.recordList[j].game = '瑞安麻将'
+                }
+                if(this.recordList[j].game == 'wenzhouMajiang'){
+                  this.recordList[j].game = '温州麻将'
+                }
+                if(this.recordList[j].game == 'fangpaoMajiang'){
+                  this.recordList[j].game = '放炮麻将'
+                }
+                if(this.recordList[j].game == 'dianpaoMajiang'){
+                  this.recordList[j].game = '点炮麻将'
+                }
+                if(this.recordList[j].game == 'wenzhouShuangkou'){
+                  this.recordList[j].game = '温州双扣'
+                }
+              }
             },
           ).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -513,10 +471,7 @@
           type: 'warning'
         }).then(() => {
           if (this.normalForm.amount == undefined || this.normalForm.amount == "") {
-            this.$message({
-              showClose: true,
-              message: '不能为空',
-              type: 'warning'
+            this.$message({showClose: true, message: '不能为空', type: 'warning'
             });
           }else {
             that.loading = true;
@@ -545,33 +500,20 @@
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break;
                   case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'
                     });
                     this.loading = false;//隐藏加载条
                     break;
                   case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'
                     });
                     break;
                   case 400:
-                    this.$message({
-                      showClose: true,
-                      message: '请按要求输入',
-                      type: 'warning'
+                    this.$message({showClose: true, message: '请按要求输入', type: 'warning'
                     });
                     that.loading = false;
                     break;
@@ -594,17 +536,13 @@
       //赠送礼券
       giveintegral() {
         let ids = this.sels.map(item => item.id).toString();
-        console.log(ids)
+        // console.log(ids)
         let that = this;
         this.$confirm('确认赠送礼券吗？', '提示', {
           type: 'warning'
         }).then(() => {
           if (this.normalForm.amount == undefined || this.normalForm.amount == "") {
-            this.$message({
-              showClose: true,
-              message: '不能为空',
-              type: 'warning'
-            });
+            this.$message({showClose: true, message: '不能为空', type: 'warning'});
           }else {
             that.loading = true;
             axios({
@@ -632,34 +570,18 @@
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break;
                   case 500:
-                    this.$message({
-                      showClose: true,
-                      message: '服务器异常',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break;
                   case 405:
-                    this.$message({
-                      showClose: true,
-                      message: '请先登录',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
                     break;
                   case 400:
-                    this.$message({
-                      showClose: true,
-                      message: '请按要求输入',
-                      type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请按要求输入', type: 'warning'});
                     break;
                 }
               }
@@ -726,34 +648,18 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break;
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break;
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break;
                 case 400:
-                  this.$message({
-                    showClose: true,
-                    message: '请按要求输入',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请按要求输入', type: 'warning'});
                   break;
               }
             }
@@ -799,27 +705,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -856,27 +750,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -901,7 +783,7 @@
             'token':sessionStorage.getItem('token')
           }
         }).then((res) => {
-         console.log(res.data)
+         // console.log(res.data)
           if(res.data.success){
             this.$message.success({showClose: true, message: '修改成功', duration: 1500});
             this.Bindingtoadjust = false;
@@ -913,27 +795,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -958,6 +828,8 @@
           this.state1 = 'online'
         }else if(this.state == '下线'){
           this.state1 = 'offline'
+        }else{
+          this.state1 = ''
         }
         this.loading = true;//显示加载条
         axios({//根据会员昵称查询
@@ -985,7 +857,7 @@
             'verifyUserSort':verifyUserSort
           }
         }).then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
           this.loading = false;//隐藏加载条
           this.amount = res.data.data.amount;
           this.vipAmount = res.data.data.vipAmount;
@@ -1010,27 +882,15 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 500:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
                 break;
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -1126,7 +986,20 @@
       }
     },
     mounted() { //初始化页面
-      this.handleSearch()
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch()
+        }
+      })
     }
   }
 </script>

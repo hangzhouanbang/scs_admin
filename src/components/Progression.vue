@@ -90,7 +90,7 @@
             }
           }
           if(this.filters.startTime){
-            console.log(this.filters.startTime)
+            // console.log(this.filters.startTime)
             let date = new Date(this.filters.startTime).getTime();
             this.filters.startTime = date
             this.state.startTime = date;
@@ -207,7 +207,20 @@
         }
       },
       mounted(){
-        this.handleSearch()
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch()
+          }
+        })
       }
     }
 </script>

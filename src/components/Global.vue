@@ -1,9 +1,8 @@
 <script type="text/javascript">
 
-  // const mDevPath = 'http://47.96.20.47:99' //外网
-  // const mDevPath = 'http://scs.3cscy.com:99' //外网
-  // const mDevPath = 'http://192.168.0.161:99' //徐嘉政
-  const mDevPath = 'http://192.168.0.134:99' //测试
+  const mDevPath = 'http://47.96.20.47:99' //外网
+  // const mDevPath  = 'http://192.168.0.161:99' //徐嘉政
+  // const mDevPath = 'http://192.168.1.127:99' //测试
   // const mDevPath = 'http://192.168.0.116:99' //林少聪
   // const mDevPath = 'http://127.0.0.1:99' //林少聪
   const mProductionPath = 'http://47.96.20.47:99'

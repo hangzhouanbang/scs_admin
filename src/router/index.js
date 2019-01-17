@@ -49,6 +49,16 @@ import PaidStatistic from '@/components/PaidStatistic.vue'
 import SilentPlayerStatistics from '@/components/SilentPlayerStatistics.vue'
 import PersonalInfo from '@/components/PersonalInfo.vue'
 import Housekeeping from '@/components/Housekeeping.vue'
+import ReviewTheOpeningOfTeahouse from '@/components/ReviewTheOpeningOfTeahouse.vue'
+import TeahouseMallManagement from '@/components/TeahouseMallManagement.vue'
+import DetailsOfTheTeahouse from '@/components/DetailsOfTheTeahouse.vue'
+import ShoppingMallPurchaseRecord from '@/components/ShoppingMallPurchaseRecord.vue'
+import JadeRechargeRecord from '@/components/JadeRechargeRecord.vue'
+import VersionManagement from '@/components/VersionManagement.vue'
+import RedEnvelopeTaskRecord from '@/components/RedEnvelopeTaskRecord.vue'
+import CashManagement from '@/components/CashManagement.vue'
+import ForRecord from '@/components/ForRecord.vue'
+import WhitelistManagement from '@/components/WhitelistManagement.vue'
 
 Vue.config.devtools = true;
 Vue.use(Router)
@@ -102,22 +112,35 @@ export default new Router({
           menuShow: true,
           iconCls: 'iconfont icon-home',
         },
-        {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '会员卡购买记录', menuShow: true},
-        {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '会员卡兑换记录', menuShow: true},
-        {path: '/integralRecord', component: IntegralRecord, name: '积分记录', menuShow: true},
-        {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '会员卡使用记录', menuShow: true},
-        {path: '/mallManagement', component: MallManagement, name: '推广员商城管理', menuShow: true},
-        {path: '/codeUsageRecord', component: CodeUsageRecord, name: '推广码使用记录', menuShow: true},
+        {path: '/membershipCardPurchaseRecord', component: MembershipCardPurchaseRecord, name: '充值购买记录', menuShow: true},
+        {path: '/promoterOperationRecord', component: PromoterOperationRecord, name: '消费使用记录', menuShow: true},
+        {path: '/membershipCardConsumptionRecord', component: MembershipCardConsumptionRecord, name: '积分兑换记录', menuShow: true},
+        {path: '/integralRecord', component: IntegralRecord, name: '积分获取记录', menuShow: true},
+        {path: '/mallManagement', component: MallManagement, name: '代理商城管理', menuShow: true},
+        {path: '/codeUsageRecord', component: CodeUsageRecord, name: '邀请玩家查询', menuShow: true},
         {path: '/mapManagement', component: MapManagement, name: '推广图管理', menuShow: true},
-        {path: '/promotionOfEarnings', component: PromotionOfEarnings, name: '查看推广收益', menuShow: true},
+        {path: '/promotionOfEarnings', component: PromotionOfEarnings, name: '推广收益查询', menuShow: true},
         {
           path: '/destoonFinanceCash',
           component: DestoonFinanceCash,
           name: '提现申请',
           menuShow: true,
-          iconCls: 'iconfont icon-home1',
-        },
+          iconCls: 'iconfont icon-home1'},
         {path: '/proxyLevelManagement', component: ProxyLevelManagement, name: '代理级别管理', menuShow: true},
+      ]
+    },
+    {
+      path: '/home',
+      component: Home,
+      name: '茶馆管理',
+      menuShow: true,
+      iconCls: 'iconfont icon-chahu',
+      children: [
+        {path: '/reviewTheOpeningOfTeahouse', component: ReviewTheOpeningOfTeahouse, name: '茶馆开通审核', menuShow: true},
+        {path: '/teahouseMallManagement', component: TeahouseMallManagement, name: '茶馆商城管理', menuShow: true},
+        {path: '/detailsOfTheTeahouse', component: DetailsOfTheTeahouse, name: '茶馆详情查询', menuShow: true},
+        {path: '/shoppingMallPurchaseRecord', component: ShoppingMallPurchaseRecord, name: '茶馆购买记录', menuShow: true},
+        {path: '/jadeRechargeRecord', component: JadeRechargeRecord, name: '玉石充值记录', menuShow: true},
       ]
     },
     {
@@ -154,6 +177,10 @@ export default new Router({
       children: [
         {path: '/pendingReleaseTask', component: PendingReleaseTask, name: '待发布任务', menuShow: true},
         {path: '/publishedTask', component: PublishedTask, name: '已发布任务', menuShow: true},
+        {path: '/redEnvelopeTaskRecord', component: RedEnvelopeTaskRecord, name: '红包任务记录', menuShow: true},
+        {path: '/cashManagement', component: CashManagement, name: '兑换管理', menuShow: true},
+        {path: '/forRecord', component: ForRecord, name: '兑换记录', menuShow: true},
+        {path: '/whitelistManagement', component: WhitelistManagement, name: '白名单管理', menuShow: true},
       ]
     },
     {
@@ -200,7 +227,8 @@ export default new Router({
         {path: '/systemMaintenance', component: SystemMaintenance, name: '系统维护', menuShow: true},
         {path: '/systemRecovery', component: SystemRecovery, name: '系统恢复', menuShow: true},
         {path: '/systemNotice', component: SystemNotice, name: '系统公告', menuShow: true},
-        {path: '/Microservice', component: Microservice, name: '微服务', menuShow: true}
+        {path: '/microservice', component: Microservice, name: '微服务', menuShow: true},
+        {path: '/versionManagement', component: VersionManagement , name: '版本管理', menuShow: true}
       ]
     },
     {

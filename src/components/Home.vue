@@ -126,7 +126,7 @@
           }
         }).then((res) => {
             let number = res.data.data.totalItemsCount;
-            console.log(number)
+            // console.log(number)
             if(number > 0){
               let aa = document.getElementsByClassName('icon-home')[0]
               aa.innerHTML = number;
@@ -179,8 +179,24 @@
         user = JSON.parse(user);
         this.nickname = user.nickname || '';
       }
-      this.handleSearch()
-      this.handleSearch1()
+      if(!sessionStorage.getItem('token')){
+        this.$router.replace('/');
+      }
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch()
+          this.handleSearch1()
+        }
+      })
     }
 
   }

@@ -10,7 +10,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="用户ID" label-width="68px">
-          <el-input v-model="filters.nickname" placeholder="用户ID" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.nickname" placeholder="用户ID" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item label="类型" label-width="68px">
           <el-select v-model="filters.type" placeholder="请选择"  clearable>
@@ -100,11 +100,6 @@
           let seconds = time.getSeconds();
           return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
-        trim(str) {
-          if(str != null){
-            return str.replace(/(^\s+)|(\s+$)/g, "");
-          }
-        },
         handleSearch(page){
           axios({
             method: 'post',
@@ -113,7 +108,7 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              memberId:this.trim(this.filters.nickname),
+              memberId:this.filters.nickname,
               mailType:this.filters.type,
               page:page,
               size:'10',
@@ -125,7 +120,7 @@
                 this.email = res.data.data.items;
                 this.total = res.data.data.pageCount;
                 for(let i = 0; i < this.email.length;i++){
-                  console.log(this.email[i])
+                  // console.log(this.email[i])
                   if(this.email[i].receive == 1){
                     this.email[i].receive = '未领取';
                   }
@@ -140,18 +135,10 @@
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -187,7 +174,6 @@
                 },
               ).catch((e) => {
               that.loading = false;
-              console.log(e);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           });
@@ -219,14 +205,26 @@
                 },
               ).catch((error) => {
               that.loading = false;
-              console.log(error);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           });
         }
       },
       mounted() {
-        this.handleSearch(1);
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch(1);
+          }
+        })
       }
     }
 </script>

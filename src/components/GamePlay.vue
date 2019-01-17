@@ -10,10 +10,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="游戏名称" label-width="68px">
-          <el-input v-model="filters.gamename" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.gamename" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="玩法" label-width="68px">
-          <el-input v-model="filters.play" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.play" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
@@ -43,16 +43,16 @@
     <el-dialog title="新增玩法" :visible.sync="addGameVisible" :close-on-click-modal="false">
       <el-form :model="addGame" label-width="150px" :rules="editFormRules" ref="addGame">
         <el-form-item label="游戏名称" prop="game">
-          <el-input v-model="addGame.game" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="addGame.game" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="玩法" prop="name">
-          <el-input v-model="addGame.name" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="addGame.name" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="addGame.desc" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="addGame.desc" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="互斥组id" prop="mutexGroupId">
-          <el-input v-model="addGame.mutexGroupId" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="addGame.mutexGroupId" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="是否为vip" prop="vip">
           <el-radio v-model="addGame.vip" label="是">是</el-radio>
@@ -69,16 +69,16 @@
     <el-dialog title="调整玩法" :visible.sync="adjustGameVisible" :close-on-click-modal="false">
       <el-form :model="adjustGame" label-width="150px" :rules="editFormRules" ref="addGame">
         <el-form-item label="游戏名称" prop="game">
-          <el-input v-model="adjustGame.game" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="adjustGame.game" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="玩法" prop="name">
-          <el-input v-model="adjustGame.name" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="adjustGame.name" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="adjustGame.desc" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="adjustGame.desc" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="互斥组id" prop="mutexGroupId">
-          <el-input v-model="adjustGame.mutexGroupId" auto-complete="off" style="width:300px;"></el-input>
+          <el-input v-model.trim="adjustGame.mutexGroupId" auto-complete="off" style="width:300px;"></el-input>
         </el-form-item>
         <el-form-item label="是否为vip" prop="vip">
           <el-radio v-model="adjustGame.vip" label="是">是</el-radio>
@@ -139,11 +139,6 @@
           this.page = val;
           this.handleSearch(this.page);
         },
-        trim(str) {
-          if(str != null){
-            return str.replace(/(^\s+)|(\s+$)/g, "");
-          }
-        },
         handleSearch(page){
           axios({
             method: 'post',
@@ -152,8 +147,8 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              game:this.trim(this.filters.gamename),
-              name:this.trim(this.filters.play),
+              game:this.filters.gamename,
+              name:this.filters.play,
               page:page,
               size:'10',
               token:sessionStorage.getItem('token')
@@ -163,7 +158,7 @@
                 this.playmethod = res.data.data.items;
                 this.total = res.data.data.pageCount;
                 for(let i = 0; i < this.playmethod.length;i++){
-                  console.log(this.playmethod[i])
+                  // console.log(this.playmethod[i])
                   if(this.playmethod[i].vip == true){
                     this.playmethod[i].vip = '是';
                   }else{
@@ -175,18 +170,10 @@
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -200,7 +187,7 @@
           this.adjustGame = Object.assign({}, row);
         },
         referSubmit:function(){
-          console.log(this.adjustGame.id)
+          // console.log(this.adjustGame.id)
           if(this.adjustGame.vip == '是'){
             this.adjustGame1.vip = true;
           }else{
@@ -214,27 +201,19 @@
             },
             params:{
               'id':this.adjustGame.id,
-              'game':this.trim(this.adjustGame.game),
-              'name':this.trim(this.adjustGame.name),
-              'desc':this.trim(this.adjustGame.desc),
-              'mutexGroupId':this.trim(this.adjustGame.mutexGroupId),
+              'game':this.adjustGame.game,
+              'name':this.adjustGame.name,
+              'desc':this.adjustGame.desc,
+              'mutexGroupId':this.adjustGame.mutexGroupId,
               'vip':this.adjustGame1.vip,
               'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '调整失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '调整失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '调整成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '调整成功', type: 'success'});
                   this.adjustGameVisible = false;//关闭弹窗
                   this.handleSearch(1);
                 }
@@ -243,18 +222,10 @@
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -287,7 +258,6 @@
                 },
               ).catch((e) => {
               that.loading = false;
-              console.log(e);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           });
@@ -319,7 +289,6 @@
                 },
               ).catch((error) => {
               that.loading = false;
-              console.log(error);
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
           });
@@ -340,27 +309,19 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params:{
-              'game':this.trim(this.addGame.game),
-              'name':this.trim(this.addGame.name),
-              'desc':this.trim(this.addGame.desc),
-              'mutexGroupId':this.trim(this.addGame.mutexGroupId),
+              'game':this.addGame.game,
+              'name':this.addGame.name,
+              'desc':this.addGame.desc,
+              'mutexGroupId':this.addGame.mutexGroupId,
               'vip':this.addGame1.vip,
               'token':sessionStorage.getItem('token')
             }
           })
             .then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '添加失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '添加失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '添加成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '添加成功', type: 'success'});
                   this.addGameVisible = false;//关闭弹窗
                   this.handleSearch(1);
                 }
@@ -369,18 +330,10 @@
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -388,7 +341,20 @@
         }
       },
       mounted(){
-        this.handleSearch(1)
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch(1)
+          }
+        })
       }
     }
 </script>

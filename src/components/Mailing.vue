@@ -14,7 +14,7 @@
 
         <el-form :model="filters" label-width="120px" :rules="rules">
           <el-form-item label="标题" prop="title">
-            <el-input type="text" min="0" v-model="filters.title"></el-input>
+            <el-input type="text" min="0" v-model.trim="filters.title"></el-input>
           </el-form-item>
           <el-form-item label="类型">
             <el-select v-model="value">
@@ -53,10 +53,10 @@
           </el-form-item>
 
           <el-form-item label="玉石" prop="number">
-            <el-input type="number" min="0" placeholder="数目" v-model="filters.number"></el-input>
+            <el-input type="number" min="0" placeholder="数目" v-model.trim="filters.number"></el-input>
           </el-form-item>
           <el-form-item label="礼券" prop="integral">
-            <el-input type="number" min="0" placeholder="数目" v-model="filters.integral"></el-input>
+            <el-input type="number" min="0" placeholder="数目" v-model.trim="filters.integral"></el-input>
           </el-form-item>
           <el-form-item label="物品" prop="id">
             <el-select v-model="id" placeholder="请选择" clearable>
@@ -135,11 +135,6 @@
       }
     },
     methods: {
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       // 上传文件到七牛云
       upqiniu(req) {
         //console.log(req)
@@ -204,7 +199,7 @@
       },
       //发送
       send() {
-        console.log(this.radio)
+        // console.log(this.radio)
         if (this.filters.number < 0 || this.filters.integral < 0) {
           this.$message({
             showClose: true,
@@ -219,12 +214,12 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'title':this.trim(this.filters.title),
+              'title':this.filters.title,
               'mailType': this.value,
               'file': this.imageUrl,
-              'ids': this.trim(this.filters.ids),
-              'number': this.trim(this.filters.number),
-              'integral': this.trim(this.filters.integral),
+              'ids': this.filters.ids,
+              'number': this.filters.number,
+              'integral': this.filters.integral,
               'vipCardId': this.id,
               'validDay': this.value2,
               'token':sessionStorage.getItem('token')
@@ -232,17 +227,9 @@
           })
             .then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '发布失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '发布失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '发布成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '发布成功', type: 'success'});
                   this.filters.ids = ''
                   this.filters.number = ''
                   this.filters.integral = ''
@@ -253,27 +240,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -286,11 +261,11 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'title':this.trim(this.filters.title),
+              'title':this.filters.title,
               'mailType': this.value,
               'file': this.imageUrl,
-              'number': this.trim(this.filters.number),
-              'integral': this.trim(this.filters.integral),
+              'number': this.filters.number,
+              'integral': this.filters.integral,
               'vipCardId': this.id,
               'validDay': this.value2,
               'sendType': this.radio,
@@ -299,17 +274,9 @@
           })
             .then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '发布失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '发布失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '发布成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '发布成功', type: 'success'});
                   this.filters.ids = ''
                   this.filters.number = ''
                   this.filters.integral = ''
@@ -320,27 +287,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -349,6 +304,18 @@
       }
     },
     mounted() { //初始化页面
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }
+      })
       axios({//查出所有会员卡
         method: 'post',
         url: this.global.mPath + '/mailctrl/find_vipcard',
@@ -367,27 +334,15 @@
         if (e && e.response) {
           switch (e.response.status) {
             case 504:
-              this.$message({
-                showClose: true,
-                message: '服务器异常',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
               break
             case 500:
-              this.$message({
-                showClose: true,
-                message: '服务器异常',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
               break
             case 405:
-              this.$message({
-                showClose: true,
-                message: '请先登录',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '请先登录', type: 'warning'});
               break
           }
         }

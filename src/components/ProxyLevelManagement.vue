@@ -3,7 +3,7 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>推广员中心</b></el-breadcrumb-item>
-        <el-breadcrumb-item>代理类型管理</el-breadcrumb-item>
+        <el-breadcrumb-item>代理级别管理</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -44,13 +44,13 @@
       <el-dialog title="添加代理类型" :visible.sync="addFormVisible" :close-on-click-modal="false">
         <el-form :model="normalForm" label-width="160px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="代理名称" prop="type" style="width:317px;">
-            <el-input v-model="normalForm.type" auto-complete="off"></el-input>
+            <el-input v-model.trim="normalForm.type" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="充值返利（%）" prop="memberReward" style="width:317px;">
-            <el-input v-model="normalForm.memberReward" auto-complete="off"></el-input>
+            <el-input v-model.trim="normalForm.memberReward" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="下级返利（%）" prop="juniorReward" style="width:317px;">
-            <el-input v-model="normalForm.juniorReward" auto-complete="off"></el-input>
+            <el-input v-model.trim="normalForm.juniorReward" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="issue()">确定</el-button>
@@ -63,13 +63,13 @@
       <el-dialog title="调整代理类型" :visible.sync="adjustmentVisible" :close-on-click-modal="false">
         <el-form :model="adjustForm" label-width="160px" :rules="rules" class="demo-ruleForm">
           <el-form-item label="代理名称" prop="type" style="width:317px;">
-            <el-input v-model="adjustForm.type" auto-complete="off"></el-input>
+            <el-input v-model.trim="adjustForm.type" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="充值返利（%）" prop="memberReward" style="width:317px;">
-            <el-input v-model="adjustForm.memberReward" auto-complete="off"></el-input>
+            <el-input v-model.trim="adjustForm.memberReward" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="下级返利（%）" prop="juniorReward" style="width:317px;">
-            <el-input v-model="adjustForm.juniorReward" auto-complete="off"></el-input>
+            <el-input v-model.trim="adjustForm.juniorReward" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="Adjust()">确认调整</el-button>
@@ -115,11 +115,6 @@
       }
     },
     methods:{
-      trim(str) {
-        if(str != null){
-          return str.replace(/(^\s+)|(\s+$)/g, "");
-        }
-      },
       handleSearch(page){
         axios({
           url:this.global.mPath + '/agent/queryagenttype',
@@ -134,18 +129,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -170,17 +157,9 @@
           }
         }).then((res) => {
             if (res.data.success == false) {
-              this.$message({
-                showClose: true,
-                message: '添加失败',
-                type: 'warning'
-              });
+              this.$message({showClose: true, message: '添加失败', type: 'warning'});
             } else if (res.data.success == true) {
-              this.$message({
-                showClose: true,
-                message: '添加成功',
-                type: 'success'
-              });
+              this.$message({showClose: true, message: '添加成功', type: 'success'});
               this.addFormVisible = false;//关闭弹窗
               this.handleSearch(1);
             }
@@ -189,18 +168,10 @@
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
-                this.$message({
-                  showClose: true,
-                  message: '服务器异常',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 break
               case 405:
-                this.$message({
-                  showClose: true,
-                  message: '请先登录',
-                  type: 'warning'
-                });
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
@@ -309,7 +280,20 @@
       }
     },
     mounted(){
-      this.handleSearch()
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.handleSearch()
+        }
+      })
     }
   }
 </script>

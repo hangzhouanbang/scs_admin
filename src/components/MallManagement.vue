@@ -3,7 +3,7 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>推广员中心</b></el-breadcrumb-item>
-        <el-breadcrumb-item>推广员商城管理</el-breadcrumb-item>
+        <el-breadcrumb-item>代理商城管理</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
@@ -62,7 +62,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="商品数量" prop="number" style="width:317px;">
-          <el-input v-model="normalForm.number" auto-complete="off"></el-input>
+          <el-input v-model.trim="normalForm.number" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="支付方式" prop="payType">
           <el-select v-model="normalForm.payType" placeholder="请选择">
@@ -75,10 +75,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="设置价格" prop="price">
-          <el-input v-model="normalForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
+          <el-input v-model.trim="normalForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
         </el-form-item>
         <el-form-item label="权重" prop="weight">
-          <el-input v-model="normalForm.weight" auto-complete="off" style="width:217px;" placeholder="请输入数字"></el-input>
+          <el-input v-model.trim="normalForm.weight" auto-complete="off" style="width:217px;" placeholder="请输入数字"></el-input>
         </el-form-item>
         <el-form-item label="ICON图" prop="productPic">
           <div class="upload">
@@ -114,7 +114,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="商品数量" prop="number" style="width:317px;">
-            <el-input v-model="adjustForm.number" auto-complete="off"></el-input>
+            <el-input v-model.trim="adjustForm.number" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="支付方式" prop="payType">
             <el-select v-model="adjustForm.payType" placeholder="请选择">
@@ -127,10 +127,10 @@
             </el-select>
           </el-form-item>
           <el-form-item label="价格" prop="price">
-            <el-input v-model="adjustForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
+            <el-input v-model.trim="adjustForm.price" auto-complete="off" style="width:217px;"></el-input> 元/积分
           </el-form-item>
           <el-form-item label="权重" prop="weight">
-            <el-input v-model="adjustForm.weight" auto-complete="off" style="width:217px;"></el-input>
+            <el-input v-model.trim="adjustForm.weight" auto-complete="off" style="width:217px;"></el-input>
           </el-form-item>
           <el-form-item label="是否可用">
             <el-radio v-model="radioData" label="true">是</el-radio>
@@ -209,11 +209,6 @@
           }
       },
       methods:{
-        trim(str) {
-          if(str != null){
-            return str.replace(/(^\s+)|(\s+$)/g, "");
-          }
-        },
         // 上传文件到七牛云
         upqiniu(req) {
           const config = {
@@ -284,18 +279,10 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -320,7 +307,7 @@
             },
             params: {
               product:this.normalForm.product,
-              number:this.trim(this.normalForm.number),
+              number:this.normalForm.number,
               price:this.normalForm.price,
               payType:this.normalForm1.payType,
               productPic:this.imageUrl,
@@ -329,17 +316,9 @@
             }
           }).then((res) => {
                 if (res.data.success == false) {
-                  this.$message({
-                    showClose: true,
-                    message: '添加失败',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '添加失败', type: 'warning'});
                 } else if (res.data.success == true) {
-                  this.$message({
-                    showClose: true,
-                    message: '添加成功',
-                    type: 'success'
-                  });
+                  this.$message({showClose: true, message: '添加成功', type: 'success'});
                   this.addFormVisible = false;//关闭弹窗
                   this.handleSearch(1);
                 }
@@ -348,18 +327,10 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -387,7 +358,7 @@
           }
         },
         Adjust:function(){
-          console.log(this.adjustForm.payType)
+          // console.log(this.adjustForm.payType)
           if(this.adjustForm.payType == '微信支付'){
             this.adjustForm1.payType = 'wxpay'
           }
@@ -489,7 +460,20 @@
         }
       },
       mounted(){
-        this.handleSearch()
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success == false){
+            this.$router.replace('/');
+          }else{
+            this.handleSearch()
+          }
+        })
       }
     }
 </script>

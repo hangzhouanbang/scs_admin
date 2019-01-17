@@ -109,11 +109,7 @@
           this.state.endTime = new Date().getTime();
         }
         if (this.state.endTime - this.state.startTime < 0) {
-          this.$message({
-            showClose: true,
-            message: '时间段选择有误',
-            type: 'warning'
-          });
+          this.$message({showClose: true, message: '时间段选择有误', type: 'warning'});
           return;
         }
           axios({
@@ -144,27 +140,15 @@
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 500:
-                  this.$message({
-                    showClose: true,
-                    message: '服务器异常',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
                   break
                 case 405:
-                  this.$message({
-                    showClose: true,
-                    message: '请先登录',
-                    type: 'warning'
-                  });
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
@@ -175,7 +159,20 @@
       },
     },
     mounted(){
-      this.seek();
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success == false){
+          this.$router.replace('/');
+        }else{
+          this.seek();
+        }
+      })
     }
   }
 </script>
