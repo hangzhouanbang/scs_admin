@@ -60,16 +60,12 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "MembershipCardConsumptionRecord",
-
     data() {
       return {
         loading: false,//隐藏加载条
-        filters: {
-          name: ''
-        },
+        filters: {},
         items: [],
         total: 0,
         value1: '',//开始时间
@@ -108,19 +104,19 @@
         if (this.filters.startTime) {
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
+        }else{
+          this.state.startTime = ''
         }
         if (this.filters.endTime) {
           let date = new Date(this.filters.endTime);
           this.state.endTime = date.getTime();
+        }else{
+          this.state.endTime = ''
         }
         if (this.filters.startTime &&
           this.filters.endTime &&
           this.state.endTime - this.state.startTime <= 0) {
-          this.$message({
-            showClose: true,
-            message: '时间段选择有误',
-            type: 'warning'
-          });
+          this.$message({showClose: true, message: '时间段选择有误', type: 'warning'});
           return;
         }
         axios({
@@ -142,56 +138,55 @@
             'numberSort':numberSort
           }
         }).then((res) => {
-              this.po = true;//显示表单
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.total = res.data.data.pageCount;
-              //console.log(res.data.data.items)
-              for (let i = 0; i < this.items.length; i++) {
-                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-              }
-            },
-          ).catch((e) => {
+          this.po = true;//显示表单
+          this.loading = false;//隐藏加载条
+          this.items = res.data.data.items;
+          this.total = res.data.data.pageCount;
+          //console.log(res.data.data.items)
+          for (let i = 0; i < this.items.length; i++) {
+            this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       sort(a){
         this.sorting = a;
-        if(this.sorting.prop == 'accountingTime'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'accountingTime'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.accountingTime = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.accountingTime = 'DESC'
           }
         }
-        if(this.sorting.prop == 'balanceAfter'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'balanceAfter'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.balanceAfter = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.balanceAfter = 'DESC'
           }
         }
-        if(this.sorting.prop == 'number'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'number'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.number = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.number = 'DESC'
           }
         }
@@ -199,7 +194,7 @@
       },
       selsChange: function (sels) {
         this.sels = sels;
-      },
+      }
     },
     mounted() {
       axios({
@@ -210,13 +205,12 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.seek();
+        }else{
+          this.$router.replace('/');
         }
       })
-
     }
   }
 </script>

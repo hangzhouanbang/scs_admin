@@ -91,10 +91,14 @@
           if (this.filters.startTime) {
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
+          }else{
+            this.state.startTime = ''
           }
           if (this.filters.endTime) {
             let date = new Date(this.filters.endTime);
             this.state.endTime = date.getTime();
+          }else{
+            this.state.endTime = ''
           }
           if (this.filters.startTime &&
             this.filters.endTime &&
@@ -117,33 +121,31 @@
               'endTime': this.state.endTime,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                // this.loading = false;//隐藏加载条
-                this.items = res.data.data.items;
-                this.total = res.data.data.pageCount;
-                // console.log(res.data.data.items)
-                for (let i = 0; i < this.items.length; i++) {
-                  this.items[i].receiveTime = this.dateTimeFormat(this.items[i].receiveTime);
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            // this.loading = false;//隐藏加载条
+            this.items = res.data.data.items;
+            this.total = res.data.data.pageCount;
+            // console.log(res.data.data.items)
+            for (let i = 0; i < this.items.length; i++) {
+              this.items[i].receiveTime = this.dateTimeFormat(this.items[i].receiveTime);
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         selsChange (sels) {
           this.sels = sels;
@@ -153,7 +155,20 @@
         }
       },
       mounted(){
-        this.seek(1)
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success){
+            this.seek(1)
+          }else{
+            this.$router.replace('/');
+          }
+        })
       }
     }
 </script>

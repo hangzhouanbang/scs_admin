@@ -117,7 +117,7 @@
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
@@ -141,26 +141,25 @@
             token:sessionStorage.getItem('token')
           }
         }).then((res) => {
-            if (res.data.success == false) {
-              this.$message({showClose: true, message: '添加失败', type: 'warning'});
-            } else if (res.data.success == true) {
-              this.$message({showClose: true, message: '添加成功', type: 'success'});
-              this.addFormVisible = false;//关闭弹窗
-              this.handleSearch(1);
-            }
-          },
-        ).catch((e) => {
+          if (res.data.success) {
+            this.$message({showClose: true, message: '添加成功', type: 'success'});
+            this.addFormVisible = false;//关闭弹窗
+            this.handleSearch(1);
+          } else {
+            this.$message({showClose: true, message: '添加失败', type: 'warning'});
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -179,10 +178,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch(1)
+        }else{
+          this.$router.replace('/');
         }
       })
     }

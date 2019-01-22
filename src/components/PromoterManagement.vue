@@ -502,10 +502,14 @@
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state1.startTime = date.getTime();
+          }else{
+            this.state1.startTime = ''
           }
           if(this.filters.endTime){
             let date = new Date(this.filters.endTime);
             this.state1.endTime = date.getTime();
+          }else{
+            this.state1.endTime = ''
           }
           if(this.filters.startTime &&
             this.filters.endTime &&
@@ -534,7 +538,7 @@
             }
           }).then((res) => {
               // console.log(res.data)
-              this.amount = res.data.data.amount
+              this.amount = res.data.data.amount;
               this.record = res.data.data.agentList.items;
               this.total = res.data.data.agentList.pageCount;
               for(let i = 0;i < this.record.length;i++){
@@ -547,35 +551,35 @@
         },
         sort(a,page){
           this.sorting = a;
-          if(this.sorting.prop == 'inviteMemberNum'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'inviteMemberNum'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.inviteMemberNum = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.inviteMemberNum = 'DESC'
             }
           }
-          if(this.sorting.prop == 'juniorNum'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'juniorNum'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.juniorNum = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.juniorNum = 'DESC'
             }
           }
-          if(this.sorting.prop == 'createTime'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'createTime'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.createTime = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.createTime = 'DESC'
             }
           }
-          if(this.sorting.prop == 'state'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'state'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.state = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.state = 'DESC'
             }
           }
@@ -588,7 +592,7 @@
         //详情
         particulars(index,row){
           this.centerDialogVisible = true;
-          this.form = row
+          this.form = row;
           axios({
             url:this.global.mPath + '/agent/agentdetail',
             method:'post',
@@ -620,7 +624,6 @@
           if(this.form.agentType){
             this.type = this.form.agentType.type
           }
-
         },
         //确认修改
         makeSure(){
@@ -709,8 +712,8 @@
             if(res.data.success){
               this.unlockingDialogVisible = true;
               this.disqualifyDialogVisible = false;
-              this.roles[0].state = res.data.data
-              this.state = '封禁'
+              this.roles[0].state = res.data.data;
+              this.state = '封禁';
               this.handleSearch(this.page)
             }else{
               this.$message.error({showClose: true, message: err.toString(), duration: 2000});
@@ -733,8 +736,8 @@
             if(res.data.success){
               this.unlockingDialogVisible = false;
               this.disqualifyDialogVisible = true;
-              this.roles[0].state = res.data.data
-              this.state = '正常'
+              this.roles[0].state = res.data.data;
+              this.state = '正常';
               this.handleSearch(this.page)
             }else{
               this.$message.error({showClose: true, message: err.toString(), duration: 2000});
@@ -750,16 +753,16 @@
         },
         //确认调整会员卡
         sure() {
-          if(this.publishForm.product == '日卡'){
+          if(this.publishForm.product === '日卡'){
             this.publishForm1.product = 'ri'
           }
-          if(this.publishForm.product == '周卡'){
+          if(this.publishForm.product === '周卡'){
             this.publishForm1.product = 'zhou'
           }
-          if(this.publishForm.product == '月卡'){
+          if(this.publishForm.product === '月卡'){
             this.publishForm1.product = 'yue'
           }
-          if(this.publishForm.product == '季卡'){
+          if(this.publishForm.product === '季卡'){
             this.publishForm1.product = 'ji'
           }
           axios({
@@ -775,32 +778,31 @@
               'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
-              if (res.data.success == false) {
-                this.$message({showClose: true, message: '调整失败', type: 'warning'});
-              } else if (res.data.success == true) {
-                this.$message({showClose: true, message: '调整成功', type: 'success'});
-                this.centerDialogVisible = false;
-                this.notarizeVisible = false;
-                this.handleSearch(this.page)
-              }
-            },
-          ).catch((e) => {
+            if (res.data.success) {
+              this.$message({showClose: true, message: '调整成功', type: 'success'});
+              this.centerDialogVisible = false;
+              this.notarizeVisible = false;
+              this.handleSearch(this.page)
+            } else {
+              this.$message({showClose: true, message: '调整失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         //积分调整
         IntegralAdjustment(){
@@ -820,32 +822,31 @@
               'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
-              if (res.data.success == false) {
-                this.$message({showClose: true, message: '调整失败', type: 'warning'});
-              } else if (res.data.success == true) {
-                this.$message({showClose: true, message: '调整成功', type: 'success'});
-                this.centerDialogVisible = false;
-                this.sureVisible = false;
-                this.handleSearch(this.page)
-              }
-            },
-          ).catch((e) => {
+            if (res.data.success) {
+              this.$message({showClose: true, message: '调整成功', type: 'success'});
+              this.centerDialogVisible = false;
+              this.sureVisible = false;
+              this.handleSearch(this.page)
+            } else {
+              this.$message({showClose: true, message: '调整失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         //查看二维码
         Code(){
@@ -855,7 +856,7 @@
         },
         //查看玩家
         Players(page){
-          this.playersVisible = true
+          this.playersVisible = true;
           this.centerDialogVisible = false;
           axios({
             url:this.global.mPath + '/agent/queryinvitatemember',
@@ -883,7 +884,7 @@
         //查看会员详情
         showother(index,row) {
           this.other = true;
-          this.memberId = row.memberId
+          this.memberId = row.memberId;
           axios({
             method: 'post',
             url: this.global.mPath + '/member/querymemberdetail',
@@ -894,65 +895,58 @@
               'memberId': row.memberId,
               'token':sessionStorage.getItem('token'),
             }
-          })
-            .then((res) => {
-                this.loading = false;//隐藏加载条
-                this.details = res.data.data;
-                this.tableData = res.data.data.roomList;
-                this.recordList = res.data.data.recordList.items;
-                for(let i = 0;i < this.tableData.length;i++){
-                  if(this.tableData[i].vip == true){
-                    this.tableData[i].vip = '是'
-                  }else{
-                    this.tableData[i].vip = '否'
-                  }
-                }
-                for(let j = 0;j < this.recordList.length;j++){
-                  this.recordList[j].finishTime = this.dateTimeFormat(this.recordList[j].finishTime)
-                  if(this.recordList[j].game == 'ruianMajiang'){
-                    this.recordList[j].game = '瑞安麻将'
-                  }
-                  if(this.recordList[j].game == 'wenzhouMajiang'){
-                    this.recordList[j].game = '温州麻将'
-                  }
-                  if(this.recordList[j].game == 'fangpaoMajiang'){
-                    this.recordList[j].game = '放炮麻将'
-                  }
-                  if(this.recordList[j].game == 'dianpaoMajiang'){
-                    this.recordList[j].game = '点炮麻将'
-                  }
-                  if(this.recordList[j].game == 'wenzhouShuangkou'){
-                    this.recordList[j].game = '温州双扣'
-                  }
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            this.loading = false;//隐藏加载条
+            this.details = res.data.data;
+            this.tableData = res.data.data.roomList;
+            this.recordList = res.data.data.recordList.items;
+            for(let i = 0;i < this.tableData.length;i++){
+              if(this.tableData[i].vip === true){
+                this.tableData[i].vip = '是'
+              }else{
+                this.tableData[i].vip = '否'
+              }
+            }
+            for(let j = 0;j < this.recordList.length;j++){
+              this.recordList[j].finishTime = this.dateTimeFormat(this.recordList[j].finishTime);
+              if(this.recordList[j].game === 'ruianMajiang'){
+                this.recordList[j].game = '瑞安麻将'
+              }
+              if(this.recordList[j].game === 'wenzhouMajiang'){
+                this.recordList[j].game = '温州麻将'
+              }
+              if(this.recordList[j].game === 'fangpaoMajiang'){
+                this.recordList[j].game = '放炮麻将'
+              }
+              if(this.recordList[j].game === 'dianpaoMajiang'){
+                this.recordList[j].game = '点炮麻将'
+              }
+              if(this.recordList[j].game === 'wenzhouShuangkou'){
+                this.recordList[j].game = '温州双扣'
+              }
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning' });
                   break
               }
             }
           });
-          this.addForm = {
-            name: '',
-            author: '',
-            publishAt: '',
-            description: ''
-          };
+          this.addForm = {};
         },
         //  查看下级
         LookLower(){
-          if(this.filters.id == this.id){
+          if(this.filters.id === this.id){
             this.filters.id = ''
           }
           this.centerDialogVisible = false;
@@ -962,12 +956,12 @@
         copy(){
           let clipboard = new Clipboard('.copy');
           clipboard.on('success', function(e) {
-            alert('复制成功')
+            alert('复制成功');
             clipboard.destroy()
           });
 
           clipboard.on('error', function(e) {
-            alert('复制失败，请手动复制')
+            alert('复制失败，请手动复制');
             clipboard.destroy()
           });
         },
@@ -1019,7 +1013,7 @@
         },
         //  玉石调整
         GoldAdjustment(){
-          this.Goldtoadjust = true
+          this.Goldtoadjust = true;
           this.centerDialogVisible = false
         },
         goldsure(){
@@ -1051,22 +1045,23 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
+          if(res.data.success){
+            this.handleSearch(1);
+            axios({
+              url:this.global.mPath + '/agent/queryagenttype',
+              method:'post',
+              params:{
+                token:sessionStorage.getItem('token')
+              }
+            }).then((res) => {
+              // console.log(res.data.data.listPage.items)
+              this.options = res.data.data.listPage.items;
+            })
+          }else{
             this.$router.replace('/');
           }
         })
-        this.handleSearch(1);
-        axios({
-          url:this.global.mPath + '/agent/queryagenttype',
-          method:'post',
-          params:{
-            token:sessionStorage.getItem('token')
-          }
-        }).then((res) => {
-          // console.log(res.data.data.listPage.items)
-          this.options = res.data.data.listPage.items;
-        })
-      },
+      }
     }
 </script>
 

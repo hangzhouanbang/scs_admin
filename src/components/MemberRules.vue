@@ -82,29 +82,21 @@
 <script>
   import axios from 'axios'
     export default {
-        name: "MemberRules",
+      name: "MemberRules",
       data() {
         return {
           normalshow:false,
           membershow:false,
           memberDisplay:false,
-          options: [{
-            value: '普通用户',
-            label: '普通用户'
-          }, {
-            value: '会员用户',
-            label: '会员用户'
-          }],
-          card: [{
-            value:'选项1',
-            label:'周卡'
-          },{
-            value:'选项2',
-            label:'月卡'
-          },{
-            value:'选项3',
-            label:'季卡'
-          }],
+          options: [
+            {value: '普通用户', label: '普通用户'},
+            {value: '会员用户', label: '会员用户'}
+          ],
+          card: [
+            {value:'选项1', label:'周卡'},
+            {value:'选项2', label:'月卡'},
+            {value:'选项3', label:'季卡'}
+          ],
           value8: '',
           value:'',
           normalForm: {},
@@ -149,12 +141,12 @@
             gold: [
               { required: true, message: '请输入玉石数量', trigger: 'blur' }
             ]
-          },
+          }
         }
       },
       methods: {
         change(value8){
-          if(this.value8 == '普通用户'){
+          if(this.value8 === '普通用户'){
             this.normalshow = true;
             this.membershow = false;
             axios({
@@ -166,8 +158,7 @@
               params:{
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
+            }).then((res) => {
                 this.normalForm = res.data;
             })
           }else{
@@ -182,10 +173,9 @@
               params:{
                 'token':sessionStorage.getItem('token')
               }
+            }).then((res) => {
+              this.memberForm = res.data;
             })
-              .then((res) => {
-                this.memberForm = res.data;
-              })
           }
         },
         //普通用户
@@ -211,22 +201,20 @@
               goldForAgentInvite:this.normalForm.goldForAgentInvite,
               token:sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-              // console.log(res)
-                if (res.data == "fail") {
-                  this.$message({showClose: true, message: '设置失败', type: 'warning'});
-                } else if (res.data == "success") {
-                  this.$message({showClose: true, message: '设置成功', type: 'success'});
-                  this.change('普通用户');
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+          // console.log(res)
+            if (res.data === "fail") {
+              this.$message({showClose: true, message: '设置失败', type: 'warning'});
+            } else if (res.data === "success") {
+              this.$message({showClose: true, message: '设置成功', type: 'success'});
+              this.change('普通用户');
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
@@ -254,22 +242,20 @@
               vipMemberRoomsAliveHours:this.memberForm.vipMemberRoomsAliveHours,
               token:sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                // console.log(res)
-                if (res.data == "fail") {
-                  this.$message({showClose: true, message: '设置失败', type: 'warning'});
-                } else if (res.data == "success") {
-                  this.$message({showClose: true, message: '设置成功', type: 'success'});
-                  this.change('会员用户');
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            // console.log(res)
+            if (res.data === "fail") {
+              this.$message({showClose: true, message: '设置失败', type: 'warning'});
+            } else if (res.data === "success") {
+              this.$message({showClose: true, message: '设置成功', type: 'success'});
+              this.change('会员用户');
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
@@ -287,7 +273,7 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
+          if(res.data.success === false){
             this.$router.replace('/');
           }
         })

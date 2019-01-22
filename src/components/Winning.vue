@@ -113,10 +113,14 @@
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
+          }else{
+            this.state.startTime = ''
           }
           if(this.filters.endTime){
             let date = new Date(this.filters.endTime);
             this.state.endTime = date.getTime();
+          }else{
+            this.state.endTime = ''
           }
           if(this.filters.startTime &&
             this.filters.endTime &&
@@ -168,10 +172,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.handleSearch(1)
+          }else{
+            this.$router.replace('/');
           }
         })
 

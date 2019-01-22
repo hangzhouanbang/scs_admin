@@ -47,6 +47,7 @@
       <el-table-column prop="nickName" label="昵称" width="120"></el-table-column>
       <el-table-column prop="lotteryName" label="兑换物品" width="120"></el-table-column>
       <el-table-column prop="singleNum" label="兑换数量" width="120" sortable></el-table-column>
+      <el-table-column prop="singleNum" label="联系人" width="120" sortable></el-table-column>
       <el-table-column prop="telephone" label="联系电话" width="120" sortable></el-table-column>
       <el-table-column prop="address" label="收件地址" width="160" sortable></el-table-column>
       <el-table-column prop="exchangeTime" label="兑奖时间" width="120" sortable></el-table-column>
@@ -81,23 +82,23 @@
 <script>
     import axios from 'axios'
     export default {
-        name: "Record",
-        data(){
-          return{
-            options:[
-              {value:'红包'},
-              {value:'会员'},
-              {value:'玉石'},
-            ],
-            filters:{},
-            list:[],
-            state:{},
-            total:0,
-            amount:0,
-            passVisible:false,
-            id:''
-          }
-        },
+      name: "Record",
+      data(){
+        return{
+          options:[
+            {value:'红包'},
+            {value:'会员'},
+            {value:'玉石'},
+          ],
+          filters:{},
+          list:[],
+          state:{},
+          total:0,
+          amount:0,
+          passVisible:false,
+          id:''
+        }
+      },
       methods:{
         dateTimeFormat(value) {
           let time = new Date(+value);
@@ -118,10 +119,14 @@
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
+          }else{
+            this.state.startTime = ''
           }
           if(this.filters.endTime){
             let date = new Date(this.filters.endTime);
             this.state.endTime = date.getTime();
+          }else{
+            this.state.endTime = ''
           }
           if(this.filters.startTime &&
             this.filters.endTime &&
@@ -142,15 +147,14 @@
               endTime:this.state.endTime,
             }
           }).then((res) => {
-              // console.log(res.data.data.list)
-              this.list = res.data.data.list;
-              this.total = res.data.data.count / 10;
-              for(let i = 0;i < this.list.length;i++){
-                this.list[i].exchangeTime = this.dateTimeFormat(this.list[i].exchangeTime)
-                this.list[i].distributeTime = this.dateTimeFormat(this.list[i].distributeTime)
-              }
+            // console.log(res.data.data.list)
+            this.list = res.data.data.list;
+            this.total = res.data.data.count / 10;
+            for(let i = 0;i < this.list.length;i++){
+              this.list[i].exchangeTime = this.dateTimeFormat(this.list[i].exchangeTime);
+              this.list[i].distributeTime = this.dateTimeFormat(this.list[i].distributeTime)
             }
-          ).catch((e) => {
+          }).catch((e) => {
             this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           })
         },
@@ -170,13 +174,13 @@
           }).then((res) => {
             // console.log(res.data)
             if(res.data.success){
-              this.passVisible = false
+              this.passVisible = false;
               this.handleSearch(1)
             }
           })
         },
         handleCurrentChange(val){
-          this.page = val
+          this.page = val;
           this.handleSearch(this.page)
         },
       },
@@ -189,10 +193,8 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
-            this.handleSearch(1)
+          if(res.data.success){
+            this.handleSearch(1);
             axios({
               url:this.global.mPath + '/signin/querypendingreward',
               method:'post',
@@ -203,6 +205,8 @@
               // console.log(res.data.data)
               this.amount = res.data.data
             })
+          }else{
+            this.$router.replace('/');
           }
         })
       }

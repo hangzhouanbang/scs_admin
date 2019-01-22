@@ -37,34 +37,33 @@
 
 <script>
   import axios from 'axios'
-
   export default {
-        name: "MemberLevel",
-        data() {
-          return {
-            setLevelVisible:false,
-            addCard:{},
-            users:[],
-            addLoading: false,
-            editFormRules:{
-              vip1:[
-                {required: true, message: '文本框不为空', trigger: 'blur'}
-              ],
-              vip2:[
-                {required: true, message: '文本框不为空', trigger: 'blur'}
-              ],
-              vip3:[
-                {required: true, message: '文本框不为空', trigger: 'blur'}
-              ],
-              vip4:[
-                {required: true, message: '文本框不为空', trigger: 'blur'}
-              ],
-              vip5:[
-                {required: true, message: '文本框不为空', trigger: 'blur'}
-              ],
-            }
+      name: "MemberLevel",
+      data() {
+        return {
+          setLevelVisible:false,
+          addCard:{},
+          users:[],
+          addLoading: false,
+          editFormRules:{
+            vip1:[
+              {required: true, message: '文本框不为空', trigger: 'blur'}
+            ],
+            vip2:[
+              {required: true, message: '文本框不为空', trigger: 'blur'}
+            ],
+            vip3:[
+              {required: true, message: '文本框不为空', trigger: 'blur'}
+            ],
+            vip4:[
+              {required: true, message: '文本框不为空', trigger: 'blur'}
+            ],
+            vip5:[
+              {required: true, message: '文本框不为空', trigger: 'blur'}
+            ],
           }
-        },
+        }
+      },
       methods: {
         setLevel(){
           axios({
@@ -76,15 +75,13 @@
             params: {
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                // console.log(res)
-                if(res.data.data != null){
-                  this.addCard = res.data.data;
-                  // console.log(this.addCard)
-                }
-              },
-            ).catch((e) => {})
+          }).then((res) => {
+            // console.log(res)
+            if(res.data.data != null){
+              this.addCard = res.data.data;
+              // console.log(this.addCard)
+            }
+          }).catch((e) => {})
         },
         addSubmit(){
           axios({
@@ -101,16 +98,14 @@
               vip5:this.addCard.vip5,
               token:sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                // console.log(res)
-                if(res.data.success){
-                  this.$message({showClose: true, message: '设置成功', type: 'success'});
-                }else{
-                  this.$message({showClose: true, message: '设置失败', type: 'warning'});
-                }
-              },
-            ).catch((e) => {})
+          }).then((res) => {
+            // console.log(res)
+            if(res.data.success){
+              this.$message({showClose: true, message: '设置成功', type: 'success'});
+            }else{
+              this.$message({showClose: true, message: '设置失败', type: 'warning'});
+            }
+          }).catch((e) => {})
         }
       },
       mounted(){
@@ -122,10 +117,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.setLevel();
+          }else{
+            this.$router.replace('/');
           }
         })
       }

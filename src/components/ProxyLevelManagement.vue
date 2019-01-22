@@ -130,7 +130,7 @@
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
@@ -156,26 +156,25 @@
             token:sessionStorage.getItem('token')
           }
         }).then((res) => {
-            if (res.data.success == false) {
-              this.$message({showClose: true, message: '添加失败', type: 'warning'});
-            } else if (res.data.success == true) {
-              this.$message({showClose: true, message: '添加成功', type: 'success'});
-              this.addFormVisible = false;//关闭弹窗
-              this.handleSearch(1);
-            }
-          },
-        ).catch((e) => {
+          if (res.data.success) {
+            this.$message({showClose: true, message: '添加成功', type: 'success'});
+            this.addFormVisible = false;//关闭弹窗
+            this.handleSearch(1);
+          } else {
+            this.$message({showClose: true, message: '添加失败', type: 'warning'});
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -203,21 +202,19 @@
             juniorReward:this.adjustForm.juniorReward,
             token:sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.loading = false;
-              if (res.data.success == true) {
-                this.adjustmentVisible = false;
-                this.$message.success({showClose: true, message: '修改成功', duration: 1500});
-                this.handleSearch(1);
-              } else {
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;
+          if (res.data.success) {
+            this.adjustmentVisible = false;
+            this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+            this.handleSearch(1);
+          } else {
+            this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          }
+        }).catch((e) => {
           this.loading = false;
           this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-        });
+        })
       },
       deleteDialog:function(index,row){
         this.loading = true;
@@ -232,18 +229,17 @@
             'token':sessionStorage.getItem('token')
           }
         }).then((res) => {
-            this.loading = false;
-            if (res.data.success == true) {
-              this.$message.success({showClose: true, message: '删除成功', duration: 1500});
-              this.handleSearch(1);
-            } else {
-              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-            }
-          },
-        ).catch((e) => {
+          this.loading = false;
+          if (res.data.success) {
+            this.$message.success({showClose: true, message: '删除成功', duration: 1500});
+            this.handleSearch(1);
+          } else {
+            this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+          }
+        }).catch((e) => {
           this.loading = false;
           this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-        });
+        })
       },
       batchDeleteBook:function(){
         let ids = this.sels.map(item => item.id).toString();
@@ -262,21 +258,19 @@
               'id': ids,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                that.loading = false;
-                if (res.data.success == true) {
-                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch(1);
-                } else {
-                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            that.loading = false;
+            if (res.data.success) {
+              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              that.handleSearch(1);
+            } else {
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        });
+          })
+        })
       }
     },
     mounted(){
@@ -288,10 +282,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
+        if(res.data.success){
+         this.handleSearch()
         }else{
-          this.handleSearch()
+          this.$router.replace('/');
         }
       })
     }

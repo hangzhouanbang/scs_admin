@@ -140,30 +140,28 @@
               'page':page,
               'size':10
             }
-          })
-            .then((res) => {
-                // this.loading = false;//隐藏加载条
-                this.list = res.data.data.items;
-                this.total = res.data.data.pageCount;
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            // this.loading = false;//隐藏加载条
+            this.list = res.data.data.items;
+            this.total = res.data.data.pageCount;
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
-      },
+          })
+        },
         handleCurrentChange(val){
           this.seek(val)
         },
@@ -179,44 +177,43 @@
               'token':sessionStorage.getItem('token'),
             }
           }).then((res) => {
-              this.type = res.data.data
-            },
-          ).catch((e) => {
+            this.type = res.data.data
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         showAddDialog(){
-          this.addFormVisible = true
+          this.addFormVisible = true;
           this.form()
         },
         addSubmit(){
-          if(this.addForm.exchangeType == '玉石'){
+          if(this.addForm.exchangeType === '玉石'){
             this.addForm.exchangeTypes = 'YUSHI'
           }
-          if(this.addForm.exchangeType == '礼券'){
+          if(this.addForm.exchangeType === '礼券'){
             this.addForm.exchangeTypes = 'LIQUAN'
           }
-          if(this.addForm.exchangeType == '现金'){
+          if(this.addForm.exchangeType === '现金'){
             this.addForm.exchangeTypes = 'HONGBAORMB'
           }
-          if(this.addForm.exchangeType == '红包点'){
+          if(this.addForm.exchangeType === '红包点'){
             this.addForm.exchangeTypes = 'HONGBAODIAN'
           }
-          if(this.addForm.exchangeType == 'VIP时间'){
+          if(this.addForm.exchangeType === 'VIP时间'){
             this.addForm.exchangeTypes = 'VIPTIME'
           }
           axios({
@@ -232,54 +229,52 @@
               'name':this.addForm.itemName,
               'price':this.addForm.exchangeConsumption
             }
-          })
-            .then((res) => {
-                // console.log(res.data)
-              if(res.data.success){
-                this.$message.success({showClose: true, message: '添加成功', duration: 2000});
-                this.addFormVisible = false;
-                this.seek(1)
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.$message.success({showClose: true, message: '添加成功', duration: 2000});
+              this.addFormVisible = false;
+              this.seek(1)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         publishDialog(index,row){
-          this.editFormVisible = true
-          this.editForm = row
+          this.editFormVisible = true;
+          this.editForm = row;
           this.form()
         },
         editSubmit(){
-          if(this.editForm.rewardType == '玉石'){
+          if(this.editForm.rewardType === '玉石'){
             this.editForm.exchangeTypes = 'YUSHI'
           }
-          if(this.editForm.rewardType == '礼券'){
+          if(this.editForm.rewardType === '礼券'){
             this.editForm.exchangeTypes = 'LIQUAN'
           }
-          if(this.editForm.rewardType == '现金'){
+          if(this.editForm.rewardType === '现金'){
             this.editForm.exchangeTypes = 'HONGBAORMB'
           }
-          if(this.editForm.rewardType == '红包点'){
+          if(this.editForm.rewardType === '红包点'){
             this.editForm.exchangeTypes = 'HONGBAODIAN'
           }
-          if(this.editForm.rewardType == 'VIP时间'){
+          if(this.editForm.rewardType === 'VIP时间'){
             this.editForm.exchangeTypes = 'VIPTIME'
           }
           axios({
@@ -296,34 +291,32 @@
               'price':this.editForm.price,
               'id':this.editForm.id
             }
-          })
-            .then((res) => {
-                // console.log(res.data)
-                if(res.data.success){
-                  this.$message.success({showClose: true, message: '编辑成功', duration: 2000});
-                  this.editFormVisible = false;
-                  this.seek(1)
-                }else{
-                  this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.$message.success({showClose: true, message: '编辑成功', duration: 2000});
+              this.editFormVisible = false;
+              this.seek(1)
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         delBook(index,row){
           let that = this;
@@ -341,20 +334,18 @@
                 'ids': row.id,
                 'token': sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  that.loading = false;
-                  if (res.data.success == true) {
-                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    that.seek(1);
-                  } else {
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              that.loading = false;
+              if (res.data.success) {
+                that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                that.seek(1);
+              } else {
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
+            })
           })
         },
         batchDeleteBook(){
@@ -375,25 +366,36 @@
                 'ids': ids,
                 'token': sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  that.loading = false;
-                  if (res.data.success == true) {
-                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    that.seek(1);
-                  } else {
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              that.loading = false;
+              if (res.data.success) {
+                that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                that.seek(1);
+              } else {
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
+            })
           })
         }
-    },
+      },
       mounted(){
-        this.seek(1)
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success){
+            this.seek(1)
+          }else{
+            this.$router.replace('/');
+          }
+        })
       }
     }
 </script>

@@ -88,7 +88,7 @@
         state: [],
         number:'',
         sorting:{},
-        page:1,
+        page:1
       }
     },
     methods: {
@@ -120,10 +120,14 @@
         if (this.filters.startTime) {
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
+        }else{
+          this.state.startTime = ''
         }
         if (this.filters.endTime) {
           let date = new Date(this.filters.endTime);
           this.state.endTime = date.getTime();
+        }else{
+          this.state.endTime = ''
         }
         if (this.filters.startTime &&
           this.filters.endTime &&
@@ -148,49 +152,47 @@
             'accountingTimeSort':accountingTimeSort,
             'costSort':costSort
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.total = res.data.data.pageCount;
-              //console.log(res.data.data.items)
-              for (let i = 0; i < this.items.length; i++) {
-                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.items = res.data.data.items;
+          this.total = res.data.data.pageCount;
+          //console.log(res.data.data.items)
+          for (let i = 0; i < this.items.length; i++) {
+            this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       sort(a){
         this.sorting = a;
-        if(this.sorting.prop == 'accountingTime'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'accountingTime'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.accountingTime = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.accountingTime = 'DESC'
           }
         }
-        if(this.sorting.prop == 'cost'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'cost'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.cost = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.cost = 'DESC'
           }
         }
@@ -209,10 +211,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.seek();
+        }else{
+          this.$router.replace('/');
         }
       })
     }

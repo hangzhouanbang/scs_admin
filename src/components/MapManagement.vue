@@ -62,24 +62,24 @@
   <script>
     import axios from 'axios'
       export default {
-          name: "MapManagement",
-          data(){
-            return{
-              // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
-              domain: 'http://up.qiniu.com',
-              // 这是七牛云空间的外链默认域名
-              qiniuaddr: 'qiniu.3cscy.com',
-              imageUrl: '',
-              imageUrl1: '',
-              imageUrl2: '',
-              order:'',
-              adjustForm:{},
-              id:'',
-              id1:'',
-              id2:'',
-              imageList:[],
-            }
-          },
+        name: "MapManagement",
+        data(){
+          return{
+            // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
+            domain: 'http://up.qiniu.com',
+            // 这是七牛云空间的外链默认域名
+            qiniuaddr: 'qiniu.3cscy.com',
+            imageUrl: '',
+            imageUrl1: '',
+            imageUrl2: '',
+            order:'',
+            adjustForm:{},
+            id:'',
+            id1:'',
+            id2:'',
+            imageList:[],
+          }
+        },
         methods:{
           getImageTypeIndex(index){
             this.order = index;
@@ -91,15 +91,15 @@
             this.dialogVisible = true;
             const config = {
               headers: {'Content-Type': 'multipart/form-data'}
-            }
-            let filetype = ''
+            };
+            let filetype = '';
             if (req.file.type === 'image/png') {
               filetype = 'png'
             } else {
               filetype = 'jpg'
             }
             // 重命名要上传的文件
-            const keyname = 'anbang' + Math.random() + '.' + filetype
+            const keyname = 'anbang' + Math.random() + '.' + filetype;
             // 从后端获取上传凭证token
             axios({
               method: 'post',
@@ -111,10 +111,10 @@
                 token:sessionStorage.getItem('token')
               }
             }).then(res => {
-              const formdata = new FormData()
-              formdata.append('file', req.file)
-              formdata.append('token', res.data.data)
-              formdata.append('key', keyname)
+              const formdata = new FormData();
+              formdata.append('file', req.file);
+              formdata.append('token', res.data.data);
+              formdata.append('key', keyname);
               // 获取到凭证之后再将文件上传到七牛云空间
               axios.post(this.domain, formdata, config).then(res => {
                 // this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
@@ -131,7 +131,7 @@
                   }
                 }).then(res => {
                   // console.log(res.data)
-                  if(res.data.success == true){
+                  if(res.data.success){
                     this.$message({showClose: true, message: '上传成功', type: 'success'});
                     this.handleSearch()
                   }else{
@@ -143,8 +143,8 @@
           },
           // 验证文件合法性
           beforeUpload(file) {
-            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-            const isLt2M = file.size / 1024 / 1024 < 2
+            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
             if (!isJPG) {
               this.$message.error('上传头像图片只能是 JPG 格式!')
             }
@@ -165,18 +165,18 @@
               }
             }).then(res => {
               // console.log(res.data)
-              this.imageList = res.data.data.imageList
+              this.imageList = res.data.data.imageList;
               for(let i = 0;i <  this.imageList.length;i++){
-                if(this.imageList[i].ordinal == '1'){
-                  this.imageUrl = res.data.data.imageList[i].downloadUrl
+                if(this.imageList[i].ordinal === '1'){
+                  this.imageUrl = res.data.data.imageList[i].downloadUrl;
                   this.id = res.data.data.imageList[i].id
                 }
-                if(this.imageList[i].ordinal == '2'){
-                  this.imageUrl1 = res.data.data.imageList[i].downloadUrl
+                if(this.imageList[i].ordinal === '2'){
+                  this.imageUrl1 = res.data.data.imageList[i].downloadUrl;
                   this.id1 = res.data.data.imageList[i].id
                 }
-                if(this.imageList[i].ordinal == '3'){
-                  this.imageUrl2 = res.data.data.imageList[i].downloadUrl
+                if(this.imageList[i].ordinal === '3'){
+                  this.imageUrl2 = res.data.data.imageList[i].downloadUrl;
                   this.id2 = res.data.data.imageList[i].id
                 }
               }
@@ -218,10 +218,10 @@
             }
           }).then((res) => {
             // console.log(res.data.success)
-            if(res.data.success == false){
-              this.$router.replace('/');
-            }else{
+            if(res.data.success){
               this.handleSearch()
+            }else{
+              this.$router.replace('/');
             }
           })
         }

@@ -31,9 +31,9 @@
       </el-table-column>
       <el-table-column prop="id" label="推广员ID" width="120"></el-table-column>
       <el-table-column prop="nickname" label="推广员昵称" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="申请时间" width="160"  sortable="custom"></el-table-column>
-      <el-table-column prop="inviteMemberNum" label="代理级别" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="juniorNum" label="绑定玩家数" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="createTime" label="申请时间" width="160"></el-table-column>
+      <el-table-column prop="inviteMemberNum" label="代理级别" width="120"></el-table-column>
+      <el-table-column prop="juniorNum" label="绑定玩家数" width="120"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="text" @click.native="pass(scope.$index,scope.row)">通过</el-button>
@@ -66,13 +66,14 @@
 
 <script>
     export default {
-        name: "ReviewTheOpeningOfTeahouse",
-        data(){
-          return{
-            filters:{},
-            record:[]
-          }
+      name: "ReviewTheOpeningOfTeahouse",
+      data(){
+        return{
+          filters:{},
+          record:[],
+          passVisible:false
         }
+      }
     }
 </script>
 

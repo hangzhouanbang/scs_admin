@@ -75,151 +75,150 @@
 
 <script>
     import axios from 'axios'
-
     export default {
-        name: "PromoterApplicationRecord",
-        data(){
-          return{
-            filters:{},
-            record:[],
-            total:0,
-            tip:{},
-            frontUrl:'',
-            reverseUrl:'',
-            nickname:'',
-            phone:'',
-            idCard:'',
-            recordDialogVisible:false,
-            applicationRecord:{},
-            AGRDAgreed:false,
-            operator:true,
-            level:'',
-            options:[],
-            typeId:''
-          }
+      name: "PromoterApplicationRecord",
+      data(){
+        return{
+          filters:{},
+          record:[],
+          total:0,
+          tip:{},
+          frontUrl:'',
+          reverseUrl:'',
+          nickname:'',
+          phone:'',
+          idCard:'',
+          recordDialogVisible:false,
+          applicationRecord:{},
+          AGRDAgreed:false,
+          operator:true,
+          level:'',
+          options:[],
+          typeId:''
+        }
+      },
+      methods:{
+        dateTimeFormat(value) {
+          let time = new Date(+value);
+          let rightTwo = (v) => {
+            v = '0' + v;
+            return v.substring(v.length - 2, v.length)
+          };
+          if (time == null) return;
+          let year = time.getFullYear();
+          let month = time.getMonth() + 1;
+          let date = time.getDate();
+          let hours = time.getHours();
+          let minutes = time.getMinutes();
+          let seconds = time.getSeconds();
+          return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
-        methods:{
-          dateTimeFormat(value) {
-            let time = new Date(+value);
-            let rightTwo = (v) => {
-              v = '0' + v;
-              return v.substring(v.length - 2, v.length)
-            };
-            if (time == null) return;
-            let year = time.getFullYear();
-            let month = time.getMonth() + 1;
-            let date = time.getDate();
-            let hours = time.getHours();
-            let minutes = time.getMinutes();
-            let seconds = time.getSeconds();
-            return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
-          },
-          handleSearch(page){
-            axios({
-              url:this.global.mPath + '/agent/queryapplyrecord',
-              method:'post',
-              params:{
-                startTime:'',
-                endTime:'',
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-                // console.log(res.data)
-                this.record = res.data.data.items;
-                this.total = res.data.data.pageCount;
-                let number = res.data.data.totalItemsCount;
-                if(number > 0){
-                  let aa = document.getElementsByClassName('icon-home')[0]
-                  aa.innerHTML = number;
-                  aa.style.backgroundColor='#f56c6c';
-                  aa.style.color='#fff';
-                }
-                for(let i = 0;i < this.record.length;i++){
-                  this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime)
-                  if(this.record[i].state == 'APPLYSUCCESS'){
-                    this.record[i].state1 = true;
-                  }
-                  if(this.record[i].state == 'APPLYFAIL'){
-                    this.record[i].state2 = true;
-                  }
-                  if(this.record[i].state == 'APPLYING'){
-                    this.record[i].state3 = true;
-                  }
-                }
-              }
-            ).catch((e) => {
-            })
-          },
-          handleCurrentChange(val){
-            this.page = val;
-            this.handleSearch(this.page);
-          },
-          operation:function(index, row){
-            this.recordDialogVisible = true;
-            this.applicationRecord = Object.assign({}, row);
-            this.nickname = row.nickname;
-            this.phone = row.phone;
-            this.idCard = row.idCard;
-            axios({
-              url:this.global.mPath + '/agent/queryagenttype',
-              method:'post',
-              params:{
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data.data)
-              this.options = res.data.data.listPage.items;
-            })
-          },
-          pass:function(){
-            axios({
-              url:this.global.mPath + '/agent/applypass',
-              method:'post',
-              params:{
-                recordId:this.applicationRecord.id,
-                type:this.level,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              if(res.data.success){
-                this.recordDialogVisible = false;
-                this.handleSearch(1)
-              }
-            })
-          },
-          unpass:function(){
-            axios({
-              url:this.global.mPath + '/agent/applyrefuse',
-              method:'post',
-              params:{
-                recordId:this.applicationRecord.id,
-                token:sessionStorage.getItem('token')
-              }
-            }).then((res) => {
-              // console.log(res.data)
-              if(res.data.success){
-                this.recordDialogVisible = false;
-                this.handleSearch(1)
-              }
-            })
-          }
-        },
-        mounted(){
+        handleSearch(page){
           axios({
-            url:this.global.mPath + '/login/admin_info',
+            url:this.global.mPath + '/agent/queryapplyrecord',
+            method:'post',
+            params:{
+              startTime:'',
+              endTime:'',
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+              // console.log(res.data)
+              this.record = res.data.data.items;
+              this.total = res.data.data.pageCount;
+              let number = res.data.data.totalItemsCount;
+              if(number > 0){
+                let aa = document.getElementsByClassName('icon-home')[0];
+                aa.innerHTML = number;
+                aa.style.backgroundColor='#f56c6c';
+                aa.style.color='#fff';
+              }
+              for(let i = 0;i < this.record.length;i++){
+                this.record[i].createTime = this.dateTimeFormat(this.record[i].createTime);
+                if(this.record[i].state === 'APPLYSUCCESS'){
+                  this.record[i].state1 = true;
+                }
+                if(this.record[i].state === 'APPLYFAIL'){
+                  this.record[i].state2 = true;
+                }
+                if(this.record[i].state === 'APPLYING'){
+                  this.record[i].state3 = true;
+                }
+              }
+            }
+          ).catch((e) => {
+          })
+        },
+        handleCurrentChange(val){
+          this.page = val;
+          this.handleSearch(this.page);
+        },
+        operation:function(index, row){
+          this.recordDialogVisible = true;
+          this.applicationRecord = Object.assign({}, row);
+          this.nickname = row.nickname;
+          this.phone = row.phone;
+          this.idCard = row.idCard;
+          axios({
+            url:this.global.mPath + '/agent/queryagenttype',
             method:'post',
             params:{
               token:sessionStorage.getItem('token')
             }
           }).then((res) => {
-            // console.log(res.data.success)
-            if(res.data.success == false){
-              this.$router.replace('/');
-            }else{
+            // console.log(res.data.data)
+            this.options = res.data.data.listPage.items;
+          })
+        },
+        pass:function(){
+          axios({
+            url:this.global.mPath + '/agent/applypass',
+            method:'post',
+            params:{
+              recordId:this.applicationRecord.id,
+              type:this.level,
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            if(res.data.success){
+              this.recordDialogVisible = false;
+              this.handleSearch(1)
+            }
+          })
+        },
+        unpass:function(){
+          axios({
+            url:this.global.mPath + '/agent/applyrefuse',
+            method:'post',
+            params:{
+              recordId:this.applicationRecord.id,
+              token:sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.recordDialogVisible = false;
               this.handleSearch(1)
             }
           })
         }
+      },
+      mounted(){
+        axios({
+          url:this.global.mPath + '/login/admin_info',
+          method:'post',
+          params:{
+            token:sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          // console.log(res.data.success)
+          if(res.data.success){
+             this.handleSearch(1)
+          }else{
+            this.$router.replace('/');
+          }
+        })
+      }
     }
 </script>
 

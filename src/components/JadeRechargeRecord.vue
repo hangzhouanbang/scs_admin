@@ -40,11 +40,11 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="id" label="推广员ID" width="120"></el-table-column>
       <el-table-column prop="nickname" label="推广员昵称" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="商品名称" width="160"  sortable="custom"></el-table-column>
-      <el-table-column prop="inviteMemberNum" label="数量" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="createTime" label="商品名称" width="160"></el-table-column>
+      <el-table-column prop="inviteMemberNum" label="数量" width="120"></el-table-column>
       <el-table-column prop="juniorNum" label="使用时间" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="juniorNum" label="使用对象" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="juniorNum" label="剩余茶馆玉石" width="auto"  sortable="custom"></el-table-column>
+      <el-table-column prop="juniorNum" label="使用对象" width="120"></el-table-column>
+      <el-table-column prop="juniorNum" label="剩余茶馆玉石" width="auto"></el-table-column>
     </el-table>
   </el-row>
 </template>
@@ -54,10 +54,15 @@
     export default {
       name: "JadeRechargeRecord",
       data(){
-          return{
-            list:[],
-            filters:{}
-          }
+        return{
+          list:[],
+          filters:{}
+        }
+      },
+      methods:{
+        sort(){
+
+        }
       }
     }
 </script>

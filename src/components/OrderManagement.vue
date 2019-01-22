@@ -117,40 +117,40 @@
   import axios from 'axios'
 
     export default {
-        name: "OrderManagement",
-        data() {
-          return {
-            filters:{
-              memberId:'',
-              nickname:''
-            },
-            users:[],
-            state:{
-              status:'',
-              pay_type:'',
-              startTime:'',
-              endTime:''
-            },
-            total:0,
-            down:[],
-            addFormVisible:false,
-            options:[
-              {value:'支付宝'},
-              {value:'微信'},
-            ],
-            status:[
-              {value:'已付款'},
-              {value:'未付款'},
-              {value:'支付失败'}
-            ],
-            sorting:{},
-            page:1,
-            payCost:'',
-            payAmount:'',
-            notPayCost:'',
-            notPayAmount:''
-          }
-        },
+      name: "OrderManagement",
+      data() {
+        return {
+          filters:{
+            memberId:'',
+            nickname:''
+          },
+          users:[],
+          state:{
+            status:'',
+            pay_type:'',
+            startTime:'',
+            endTime:''
+          },
+          total:0,
+          down:[],
+          addFormVisible:false,
+          options:[
+            {value:'支付宝'},
+            {value:'微信'},
+          ],
+          status:[
+            {value:'已付款'},
+            {value:'未付款'},
+            {value:'支付失败'}
+          ],
+          sorting:{},
+          page:1,
+          payCost:'',
+          payAmount:'',
+          notPayCost:'',
+          notPayAmount:''
+        }
+      },
       methods:{
         handleCurrentChange(val) {
           this.page = val;
@@ -173,19 +173,19 @@
         },
         //导出Excel表
         exportExcel () {
-          if(this.filters.status == '未付款'){
+          if(this.filters.status === '未付款'){
             this.state.status = 0;
           }
-          if(this.filters.status == '支付失败'){
+          if(this.filters.status === '支付失败'){
             this.state.status = -1;
           }
-          if(this.filters.status == '已付款'){
+          if(this.filters.status === '已付款'){
             this.state.status = 1;
           }
-          if(this.filters.pay_type == '支付宝'){
+          if(this.filters.pay_type === '支付宝'){
             this.state.pay_type = 'alipay';
           }
-          if(this.filters.pay_type == '微信'){
+          if(this.filters.pay_type === '微信'){
             this.state.pay_type = 'wxpay';
           }
           if(this.filters.startTime){
@@ -217,28 +217,32 @@
           this.addFormVisible = false;
         },
         handleSearch(productPriceSort,numberSort,totalamountSort,createTimeSort,statusSort,pay_typeSort) {
-          if(this.filters.status == '未付款'){
+          if(this.filters.status === '未付款'){
             this.state.status = 'NOTPAY';
           }
-          if(this.filters.status == '支付失败'){
+          if(this.filters.status === '支付失败'){
             this.state.status = 'PAYFAIL';
           }
-          if(this.filters.status == '已付款'){
+          if(this.filters.status === '已付款'){
             this.state.status = 'PAYSUCCESS';
           }
-          if(this.filters.pay_type == '支付宝'){
+          if(this.filters.pay_type === '支付宝'){
             this.state.pay_type = 'alipay';
           }
-          if(this.filters.pay_type == '微信'){
+          if(this.filters.pay_type === '微信'){
             this.state.pay_type = 'wxpay';
           }
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
+          }else{
+            this.state.startTime = ''
           }
           if(this.filters.endTime){
             let date = new Date(this.filters.endTime);
             this.state.endTime = date.getTime();
+          }else{
+            this.state.endTime = ''
           }
           if(this.filters.startTime &&
             this.filters.endTime &&
@@ -269,20 +273,18 @@
               'statusSort':statusSort,
               'pay_typeSort':pay_typeSort
             }
-          })
-            .then((res) => {
-                this.payCost =  res.data.data.payCost
-                this.payAmount =  res.data.data.payAmount
-                this.notPayCost =  res.data.data.notPayCost
-                this.notPayAmount =  res.data.data.notPayAmount
-                this.users = res.data.data.listPage.items;
-                this.total = res.data.data.listPage.pageCount;
-                for(let i = 0;i < this.users.length;i++){
-                  this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
-                  this.users[i].vipTime = this.users[i].vipTime / 1000 / 60 / 60 / 24;
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            this.payCost =  res.data.data.payCost;
+            this.payAmount =  res.data.data.payAmount;
+            this.notPayCost =  res.data.data.notPayCost;
+            this.notPayAmount =  res.data.data.notPayAmount;
+            this.users = res.data.data.listPage.items;
+            this.total = res.data.data.listPage.pageCount;
+            for(let i = 0;i < this.users.length;i++){
+              this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
+              this.users[i].vipTime = this.users[i].vipTime / 1000 / 60 / 60 / 24;
+            }
+          }).catch((e) => {
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
@@ -293,55 +295,55 @@
                   break;
               }
             }
-          });
+          })
         },
         sort(a){
           this.sorting = a;
-          if(this.sorting.prop == 'productPrice'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'productPrice'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.productPrice = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.productPrice = 'DESC'
             }
           }
-          if(this.sorting.prop == 'number'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'number'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.number = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.number = 'DESC'
             }
           }
-          if(this.sorting.prop == 'totalamount'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'totalamount'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.totalamount = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.totalamount = 'DESC'
             }
           }
-          if(this.sorting.prop == 'createTime'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'createTime'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.createTime = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.createTime = 'DESC'
             }
           }
-          if(this.sorting.prop == 'status'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'status'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.status = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.status = 'DESC'
             }
           }
-          if(this.sorting.prop == 'pay_type'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'pay_type'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.pay_type = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.pay_type = 'DESC'
             }
           }
@@ -357,10 +359,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.handleSearch()
+          }else{
+            this.$router.replace('/');
           }
         })
       }

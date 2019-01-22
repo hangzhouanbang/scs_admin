@@ -102,7 +102,6 @@
 <script>
   import axios from 'axios'
   import vue from 'vue'
-
   export default {
     name: "Admin",
     inject:["reload"],
@@ -110,16 +109,13 @@
       return {
         role: [],//角色
         privilege: [],//权限
-        filters: {
-          name: ''
-        },
+        filters: {},
         total: 0,
         page: 1,
         limit: 10,
         loading: false,
         sels: [], //列表选中列
         sels1: [], //列表选中列
-
         //编辑相关数据
         editFormVisible: false,//编辑界面是否显示
         chooseFormVisible: false,//角色管理界面是否显示
@@ -128,20 +124,8 @@
             {required: true, message: '请输入角色名称', trigger: 'blur'}
           ],
         },
-        editForm: {
-          id: 0,
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        },
-        chooseForm: {
-          id: 0,
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        },
+        editForm: {},
+        chooseForm: {},
         //新增相关数据
         addFormVisible: false,//新增界面是否显示
         addLoading: false,
@@ -150,12 +134,7 @@
             {required: true, message: '请输入用户名', trigger: 'blur'}
           ]
         },
-        addForm: {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        },
+        addForm: {},
       }
     },
     methods: {
@@ -176,24 +155,22 @@
             'role': this.filters.role,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              //console.log(res)
-              this.role = res.data.data.items;
-              this.total = res.data.data.pageCount;
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          //console.log(res)
+          this.role = res.data.data.items;
+          this.total = res.data.data.pageCount;
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -216,21 +193,19 @@
               'id': row.id,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                that.loading = false;
-                if (res.data.success == true) {
-                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch();
-                } else {
-                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            that.loading = false;
+            if (res.data.success) {
+              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              that.handleSearch();
+            } else {
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        });
+          })
+        })
       },
       //显示编辑角色界面
       showEditDialog: function (index, row) {
@@ -250,37 +225,30 @@
             'role': this.editForm.role,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              if (res.data.success == false) {
-                this.$message({showClose: true, message: '编辑失败', type: 'warning'});
-              } else if (res.data.success == true) {
-                this.$message({showClose: true, message: '编辑成功', type: 'success'});
-                this.editFormVisible = false;//关闭编辑角色弹窗
-                this.handleSearch();
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          if (res.data.success) {
+            this.$message({showClose: true, message: '编辑成功', type: 'success'});
+            this.editFormVisible = false;//关闭编辑角色弹窗
+            this.handleSearch();
+          } else {
+            this.$message({showClose: true, message: '编辑失败', type: 'warning'});
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       showAddDialog: function () {
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
+        this.addForm = {};
       },
       //显示角色管理界面
       showchoose: function (index, row) {
@@ -295,21 +263,19 @@
             'roleId':row.id,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.privilege = res.data.data;
-              for(let i = 0;i < this.privilege.length;i++){
-                if(this.privilege[i].selected == true){
-                  this.$refs.table.toggleRowSelection(this.privilege[i],true)
-                }
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.privilege = res.data.data;
+          for(let i = 0;i < this.privilege.length;i++){
+            if(this.privilege[i].selected === true){
+              this.$refs.table.toggleRowSelection(this.privilege[i],true)
+            }
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
@@ -324,10 +290,10 @@
         let ids = this.sels1.map(item => item.id).toString();
         // console.log(ids)
         let that = this;
-        let param = new URLSearchParams()
-        param.append('roleId',this.editForm.id)
-        param.append('privilegeId', ids)
-        param.append('token', sessionStorage.getItem('token'))
+        let param = new URLSearchParams();
+        param.append('roleId',this.editForm.id);
+        param.append('privilegeId', ids);
+        param.append('token', sessionStorage.getItem('token'));
         this.$confirm('确认保存选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
@@ -340,22 +306,21 @@
             },
             data: param,
           }).then((res) => {
-                that.loading = false;
-                if (res.data.success == true) {
-                  that.reload();
-                  that.$message.success({showClose: true, message: '保存成功', duration: 1500});
-                  this.chooseFormVisible = false;//关闭弹窗
-                  this.handleSearch();
-                } else {
-                  this.$message({showClose: true, message: '保存失败', type: 'warning'});
-                  this.chooseFormVisible = false;//关闭弹窗
-                }
-              },
-            ).catch((e) => {
+            that.loading = false;
+            if (res.data.success) {
+              that.reload();
+              that.$message.success({showClose: true, message: '保存成功', duration: 1500});
+              this.chooseFormVisible = false;//关闭弹窗
+              this.handleSearch();
+            } else {
+              this.$message({showClose: true, message: '保存失败', type: 'warning'});
+              this.chooseFormVisible = false;//关闭弹窗
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        });
+          })
+        })
       },
       //新增角色
       addSubmit: function () {
@@ -369,28 +334,26 @@
             'role': this.addForm.role,//角色名称
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              if (res.data.success == false) {
-                this.$message({showClose: true, message: '添加失败', type: 'warning'});
-              } else if (res.data.success == true) {
-                this.$message({showClose: true, message: '添加成功', type: 'success'});
-                this.addFormVisible = false;//关闭弹窗
-                this.handleSearch();
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          if (res.data.success) {
+             this.$message({showClose: true, message: '添加成功', type: 'success'});
+            this.addFormVisible = false;//关闭弹窗
+            this.handleSearch();
+          } else {
+            this.$message({showClose: true, message: '添加失败', type: 'warning'});
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       //批量删除
       batchDeleteBook: function () {
@@ -410,22 +373,19 @@
               'id': ids,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                that.loading = false;
-                if (res.data.success == true) {
-                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch(1);
-                } else {
-                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            that.loading = false;
+            if (res.data.success) {
+              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              that.handleSearch(1);
+            } else {
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-
-        });
+          })
+        })
       }
     },
     mounted() {
@@ -437,10 +397,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch()
+        }else{
+          this.$router.replace('/');
         }
       })
     }

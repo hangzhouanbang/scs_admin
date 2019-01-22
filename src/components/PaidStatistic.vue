@@ -125,96 +125,84 @@
 <script>
     import axios from 'axios'
     export default {
-        name: "PaidStatistic",
-        data(){
-          return{
-            years:[
-              {value:'2018年'},
-              {value:'2019年'},
-              {value:'2020年'},
-              {value:'2021年'},
-              {value:'2022年'},
-              {value:'2023年'},
-              {value:'2024年'},
-            ],
-            months:[
-              {value:'1月'},
-              {value:'2月'},
-              {value:'3月'},
-              {value:'4月'},
-              {value:'5月'},
-              {value:'6月'},
-              {value:'7月'},
-              {value:'8月'},
-              {value:'9月'},
-              {value:'10月'},
-              {value:'11月'},
-              {value:'12月'},
-            ],
-            value:'',
-            value4:'',
-          }
-        },
-        methods:{
-          drawLinepoint(num,text) {
-          // 基于准备好的dom，初始化echarts实例，找到图形容器。
-            let myChart = this.$echarts.init(document.getElementById('myChart'+ num));
-          // 绘制图表
-            myChart.setOption({
-              title: {
-                text: text,
-                x: 'center',
-                top:10
-              },
-              tooltip: {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-              },
-              legend: {
-                orient: 'vertical',
-                left: 10,
-                top: 250,
-                bottom: 20,
-                data: ['日卡', '周卡', '月卡', '季卡'],
-                // selected: data.selected
-              },
-              color: ['#ff7474', '#ffc95e', '#f0a042', '#ff9f8c'],
-              series: [{
-                name: text,
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '50%'],
-                data: [
-                  {
-                    value: 1058,
-                    name: '日卡'
-                  },
-                  {
-                    value: 827,
-                    name: '周卡'
-                  },
-                  {
-                    value: 926,
-                    name: '月卡'
-                  },
-                  {
-                    value: 496,
-                    name: '季卡'
-                  }],
-                itemStyle: {
-                  emphasis: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                  }
+      name: "PaidStatistic",
+      data(){
+        return{
+          years:[
+            {value:'2018年'},
+            {value:'2019年'},
+            {value:'2020年'},
+            {value:'2021年'},
+            {value:'2022年'},
+            {value:'2023年'},
+            {value:'2024年'},
+          ],
+          months:[
+            {value:'1月'},
+            {value:'2月'},
+            {value:'3月'},
+            {value:'4月'},
+            {value:'5月'},
+            {value:'6月'},
+            {value:'7月'},
+            {value:'8月'},
+            {value:'9月'},
+            {value:'10月'},
+            {value:'11月'},
+            {value:'12月'},
+          ],
+          value:'',
+          value4:'',
+        }
+      },
+      methods:{
+        drawLinepoint(num,text) {
+        // 基于准备好的dom，初始化echarts实例，找到图形容器。
+          let myChart = this.$echarts.init(document.getElementById('myChart'+ num));
+        // 绘制图表
+          myChart.setOption({
+            title: {
+              text: text,
+              x: 'center',
+              top:10
+            },
+            tooltip: {
+              trigger: 'item',
+              formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+              orient: 'vertical',
+              left: 10,
+              top: 250,
+              bottom: 20,
+              data: ['日卡', '周卡', '月卡', '季卡'],
+            },
+            color: ['#ff7474', '#ffc95e', '#f0a042', '#ff9f8c'],
+            series: [{
+              name: text,
+              type: 'pie',
+              radius: '55%',
+              center: ['50%', '50%'],
+              data: [
+                {value: 1058, name: '日卡'},
+                {value: 827, name: '周卡'},
+                {value: 926, name: '月卡'},
+                {value: 496, name: '季卡'}
+              ],
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
                 }
-              }]
-            })
-          },
-          look(){
-            this.$router.replace('/reCharge');
-          }
+              }
+            }]
+          })
         },
+        look(){
+          this.$router.replace('/reCharge');
+        }
+      },
       mounted(){
         axios({
           url:this.global.mPath + '/login/admin_info',
@@ -224,12 +212,12 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.drawLinepoint(1,'当前会员玩家属性占比')
             this.drawLinepoint(2,'昨日活跃玩家属性占比')
             this.drawLinepoint(3,'玩家付费占比')
+          }else{
+            this.$router.replace('/');
           }
         })
       }

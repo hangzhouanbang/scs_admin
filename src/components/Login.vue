@@ -18,9 +18,7 @@
 </template>
 
 <script>
-
   import axios from 'axios'
-
   export default {
     data() {
       return {
@@ -38,7 +36,7 @@
           ]
         },
         checked: true
-      };
+      }
     },
     methods: {
       handleLogin() {
@@ -52,18 +50,16 @@
             'nickname': this.account.nickname,
             'pass': this.account.pass
           }
-        })
-          .then((res) => {
-              if (res.data.data == null) {
-                this.$message({showClose: true, message: '账号或密码错误', type: 'warning'});
-              } else {
-                this.$router.replace('/index');
-                this.$message({showClose: true, message: '登录成功', type: 'success'});
-                sessionStorage.setItem('nickname', res.data.data.admin.nickname);
-                sessionStorage.setItem('token', res.data.data.token);
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          if (res.data.data == null) {
+            this.$message({showClose: true, message: '账号或密码错误', type: 'warning'});
+          } else {
+            this.$router.replace('/index');
+            this.$message({showClose: true, message: '登录成功', type: 'success'});
+            sessionStorage.setItem('nickname', res.data.data.admin.nickname);
+            sessionStorage.setItem('token', res.data.data.token);
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
@@ -71,7 +67,7 @@
                 break
             }
           }
-        });
+        })
       }
     },
     mounted(){
@@ -83,7 +79,7 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
+        if(res.data.success === false){
           this.$router.replace('/');
         }
       })

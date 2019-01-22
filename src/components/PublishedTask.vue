@@ -56,7 +56,7 @@
       <el-table-column prop="rewardType" label="奖励类型" width="120"></el-table-column>
       <el-table-column prop="rewardNum" label="奖励数量" width="100"></el-table-column>
       <el-table-column prop="targetNum" label="完成次数" width="100"></el-table-column>
-
+      <el-table-column prop="weight" label="权重" width="100"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" @click="deletetask(scope.$index,scope.row)" size="small">删除</el-button>
@@ -77,24 +77,16 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "PublishedTask",
     data() {
       return {
-        options: [{
-          value: null,
-          label: '所有任务'
-        }, {
-          value: true,
-          label: '会员任务'
-        }, {
-          value: false,
-          label: '非会员任务'
-        }],
-        filters: {
-          name: ''
-        },
+        options: [
+          {value: null, label: '所有任务'},
+          {value: true, label: '会员任务'},
+          {value: false, label: '非会员任务'}
+        ],
+        filters: {},
         loading: false,
         items: [],
         sels: [], //列表选中列
@@ -128,28 +120,26 @@
             'type':this.filters.type
           }
         }).then((res) => {
-              this.items = res.data.data.items;
-              this.total = res.data.data.pageCount;
-            },
-          ).catch((e) => {
+          this.items = res.data.data.items;
+          this.total = res.data.data.pageCount;
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
-
       //删除
       deletetask: function (index, row) {
         let that = this;
@@ -165,23 +155,20 @@
               'taskId': row.id,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                that.loading = false;
-                if (res.data.success == true) {
-                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.showtask();
-                } else if (res.data.success == false) {
-                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            that.loading = false;
+            if (res.data.success) {
+              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              that.showtask();
+            } else {
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        });
+          })
+        })
       },
-
       //批量删除
       deletechecktask: function () {
         let ids = this.sels.map(item => item.id).toString();
@@ -200,21 +187,19 @@
               'taskId': ids,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                that.loading = false;
-                if (res.data.success == true) {
-                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  this.showtask();
-                } else if (res.data.success == false) {
-                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            that.loading = false;
+            if (res.data.success) {
+              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              this.showtask();
+            } else {
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        });
+          })
+        })
       }
     },
     mounted() { //初始化页面
@@ -226,41 +211,40 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
+        if(res.data.success){
+          this.showtask();
+          axios({//查出所有任务类型
+            method: 'post',
+            url: this.global.mPath + '/task/querytasktype',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params:{
+              'token':sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            this.data = res.data.data;
+          }).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 500:
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 405:
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
+                  break
+              }
+            }
+          })
+        }else{
           this.$router.replace('/');
         }
       })
-      this.showtask();
-      axios({//查出所有任务类型
-        method: 'post',
-        url: this.global.mPath + '/task/querytasktype',
-        headers: {
-          'Content-type': 'application/x-www-form-urlencoded'
-        },
-        params:{
-          'token':sessionStorage.getItem('token')
-        }
-      })
-        .then((res) => {
-            this.data = res.data.data;
-          },
-        ).catch((e) => {
-        if (e && e.response) {
-          switch (e.response.status) {
-            case 504:
-              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-              this.loading = false;//隐藏加载条
-              break
-            case 500:
-              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-              this.loading = false;//隐藏加载条
-              break
-            case 405:
-              this.$message({showClose: true, message: '请先登录', type: 'warning'});
-              break
-          }
-        }
-      });
     }
   }
 </script>

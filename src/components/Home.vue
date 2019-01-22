@@ -81,7 +81,7 @@
     methods: {
       handleSelect(index) {
         this.defaultActiveIndex = index;
-        this.handleSearch()
+        this.handleSearch();
         this.handleSearch1()
       },
       //折叠导航栏
@@ -103,12 +103,9 @@
           params:{
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-            this.$router.replace('/');
-            },
-          ).catch((e) => {
-        });
+        }).then((res) => {
+          this.$router.replace('/');
+        }).catch((e) => {})
       },
       css(t,s){
         s=document.createElement('style');
@@ -125,18 +122,16 @@
             token:sessionStorage.getItem('token')
           }
         }).then((res) => {
-            let number = res.data.data.totalItemsCount;
-            // console.log(number)
-            if(number > 0){
-              let aa = document.getElementsByClassName('icon-home')[0]
-              aa.innerHTML = number;
-              aa.style.backgroundColor='#f56c6c';
-              aa.style.color='#fff';
-              this.css('.icon-yewurenyuanxinxiguanli:after{display:block}');
-            }
+          let number = res.data.data.totalItemsCount;
+          // console.log(number)
+          if(number > 0){
+            let aa = document.getElementsByClassName('icon-home')[0];
+            aa.innerHTML = number;
+            aa.style.backgroundColor='#f56c6c';
+            aa.style.color='#fff';
+            this.css('.icon-yewurenyuanxinxiguanli:after{display:block}');
           }
-        ).catch((e) => {
-        })
+        }).catch((e) => {})
       },
       handleSearch1(){
         axios({
@@ -152,26 +147,23 @@
             'page':1,
             'size':10
           }
-        })
-          .then((res) => {
-              this.amount = res.data.data.amount;
-              let aa = document.getElementsByClassName('icon-home1')[0]
-              if(this.amount > 0){
-                aa.innerHTML = this.amount;
-                aa.style.backgroundColor='#f56c6c';
-                aa.style.color='#fff';
-                this.css('.icon-yewurenyuanxinxiguanli:after{display:block}');
-              // }else{
-              //   aa.innerHTML = '';
-              //   aa.style.backgroundColor='#fff';
-              //   aa.style.color='#fff';
-              //   this.css('.icon-yewurenyuanxinxiguanli:after{display:none}');
-              }
-            },
-          ).catch((e) => {
-
-        });
-      },
+        }).then((res) => {
+            this.amount = res.data.data.amount;
+            let aa = document.getElementsByClassName('icon-home1')[0];
+            if(this.amount > 0){
+              aa.innerHTML = this.amount;
+              aa.style.backgroundColor='#f56c6c';
+              aa.style.color='#fff';
+              this.css('.icon-yewurenyuanxinxiguanli:after{display:block}');
+            // }else{
+            //   aa.innerHTML = '';
+            //   aa.style.backgroundColor='#fff';
+            //   aa.style.color='#fff';
+            //   this.css('.icon-yewurenyuanxinxiguanli:after{display:none}');
+            }
+          },
+        ).catch((e) => {})
+      }
     },
     mounted() {
       let user = localStorage.getItem('access-user');
@@ -190,30 +182,29 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
-          this.handleSearch()
+        if(res.data.success){
+          this.handleSearch();
           this.handleSearch1()
+        }else{
+          this.$router.replace('/');
         }
       })
     }
-
   }
 </script>
 
 <style scoped lang="scss">
   .container {
     position: absolute;
-    top: 0px;
-    bottom: 0px;
+    top: 0;
+    bottom: 0;
     width: 100%;
 
     .topbar-wrap {
       height: 50px;
       line-height: 50px;
       background: #373d41;
-      padding: 0px;
+      padding: 0;
 
       .topbar-btn {
         color: #fff;
@@ -257,7 +248,7 @@
       display: flex;
       position: absolute;
       top: 50px;
-      bottom: 0px;
+      bottom: 0;
       overflow: hidden;
     }
 
@@ -278,9 +269,9 @@
         height: -moz-calc(100% - 80px);
         height: -webkit-calc(100% - 80px);
         height: calc(100% - 80px);
-        border-radius: 0px;
+        border-radius: 0;
         background-color: #fff; /*导航栏背景*/
-        border-right: 0px;
+        border-right: 0;
       }
 
       .el-submenu .el-menu-item {

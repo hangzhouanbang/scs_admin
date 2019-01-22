@@ -84,7 +84,7 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
+        if(res.data.success === false){
           this.$router.replace('/');
         }
       })

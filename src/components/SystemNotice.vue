@@ -80,7 +80,6 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "History",
     data() {
@@ -108,7 +107,7 @@
       uniq(array){
         let temp = []; //一个新的临时数组
         for(let i = 0; i < array.length; i++){
-          if(temp.indexOf(array[i]) == -1){
+          if(temp.indexOf(array[i]) === -1){
             temp.push(array[i]);
           }
         }
@@ -127,25 +126,24 @@
             'token':sessionStorage.getItem('token')
           }
         }).then((res) => {
-              this.handleSearch()
-            },
-          ).catch((e) => {
+          this.handleSearch()
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       //点击禁用按钮
       off(index, row) {
@@ -159,27 +157,25 @@
             'id': row.id,
             'token':sessionStorage.getItem('token'),
           }
-        })
-          .then((res) => {
-              this.handleSearch()
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.handleSearch()
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       //删除
       del(index,row){
@@ -193,27 +189,25 @@
             'id': row.id,
             'token':sessionStorage.getItem('token'),
           }
-        })
-          .then((res) => {
-              this.handleSearch()
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.handleSearch()
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       handleCheckedChange(val){
         this.place.push(val)
@@ -224,7 +218,7 @@
       //发布公告
       issue() {
         this.place = this.uniq(this.place);
-        if (this.normalForm.notice == undefined || this.normalForm.notice == "") {
+        if (this.normalForm.notice === undefined || this.normalForm.notice === "") {
           this.$message({showClose: true, message: '公告内容不能为空', type: 'warning'});
         } else {
           axios({
@@ -239,17 +233,16 @@
               'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
-                this.$message({showClose: true, message: '发布成功', type: 'success'});
-                this.normalForm.notice = ''
-                this.place = []
-                let checkbox = document.getElementsByClassName('el-checkbox__input');
-                for(let i = 0;i < checkbox.length;i++){
-                  checkbox[i].classList.remove("is-checked")
-                }
-                this.addFormVisible = false;//关闭弹窗
-                this.handleSearch();
-              },
-            ).catch((e) => {
+            this.$message({showClose: true, message: '发布成功', type: 'success'});
+            this.normalForm.notice = '';
+            this.place = [];
+            let checkbox = document.getElementsByClassName('el-checkbox__input');
+            for(let i = 0;i < checkbox.length;i++){
+              checkbox[i].classList.remove("is-checked")
+            }
+            this.addFormVisible = false;//关闭弹窗
+            this.handleSearch();
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
@@ -265,7 +258,7 @@
                   break
               }
             }
-          });
+          })
         }
       },
       handleCurrentChange(val) {
@@ -286,13 +279,11 @@
             'adminName': this.filters.adminname,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.list = res.data.data.listPage.items;
-              this.total = res.data.count;//总页数
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.list = res.data.data.listPage.items;
+          this.total = res.data.count;//总页数
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
@@ -308,11 +299,11 @@
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
-      },
+      }
     },
     mounted() { //初始化页面
       axios({
@@ -323,10 +314,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
+        if(res.data.success){
+           this.handleSearch()
         }else{
-          this.handleSearch()
+          this.$router.replace('/');
         }
       })
     }

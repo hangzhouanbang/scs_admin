@@ -113,12 +113,11 @@
           ]
         },
         items: [],
-        filters: {
-          name: ''
-        },
+        filters: {},
         total: 0,
         loading: false,
         addFormVisible: false,//系统维护页面是否显示
+        addForm:{}
       }
     },
     methods: {
@@ -127,8 +126,8 @@
         // console.log(req)
         const config = {
           headers: {'Content-Type': 'multipart/form-data'}
-        }
-        let filetype = ''
+        };
+        let filetype = '';
         if (req.file.type === 'image/png') {
           filetype = 'png'
         } else {
@@ -173,11 +172,7 @@
       //发布
       issue(req) {
         if (this.normalForm.title == undefined || this.normalForm.title == "") {
-          this.$message({
-             showClose: true,
-            message: '标题和图片不能为空',
-            type: 'warning'
-          });
+          this.$message({showClose: true, message: '标题和图片不能为空', type: 'warning'});
         } else {
           axios({
             method: 'post',
@@ -192,46 +187,38 @@
               'promulgator': sessionStorage.getItem('nickname'),
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                if (res.data.success == false) {
-                  this.$message({showClose: true, message: '新建活动失败', type: 'warning'});
-                } else if (res.data.success == true) {
-                  this.$message({showClose: true, message: '新建活动成功', type: 'success'});
-                  this.normalForm.title = ''
-                  this.imageUrl = ''
-                  this.normalForm.address = ''
-                  this.addFormVisible = false;//关闭弹窗
-                  this.handleSearch();
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            if(res.data.success){
+              this.$message({showClose: true, message: '新建活动成功', type: 'success'});
+              this.normalForm.title = '';
+              this.imageUrl = '';
+              this.normalForm.address = '';
+              this.addFormVisible = false;//关闭弹窗
+              this.handleSearch();
+            }else{
+              this.$message({showClose: true, message: '新建活动失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         }
       },
       showAddDialog: function () {
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
       },
       handleCurrentChange(val) {
         this.page = val;
@@ -250,29 +237,27 @@
             'theme': this.filters.title,//标题
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.total = res.data.data.pageCount;//总页数
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.items = res.data.data.items;
+          this.total = res.data.data.pageCount;//总页数
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -291,26 +276,25 @@
               'activityId': sessionStorage.getItem('id'),
               'token': sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-              if (res.data.success == true) {
-                this.$message.success({showClose: true, message: '停用成功', duration: 1500});
-                this.handleSearch();
-              } else {
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            if (res.data.success) {
+              this.$message.success({showClose: true, message: '停用成功', duration: 1500});
+              this.handleSearch();
+            } else {
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }
+          ).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
@@ -333,26 +317,24 @@
               'activityId': sessionStorage.getItem('id'),
               'token': sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-              if (res.data.success == true) {
-                this.$message.success({showClose: true, message: '启用成功', duration: 1500});
-                this.handleSearch();
-              } else {
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            if (res.data.success) {
+              this.$message.success({showClose: true, message: '启用成功', duration: 1500});
+              this.handleSearch();
+            } else {
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
@@ -374,25 +356,24 @@
               'activityId': row.id,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-              if(res.data.success == true){
-                this.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                this.handleSearch();
-              }else{
-                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-              }
-            }).catch((e) => {
+          }).then((res) => {
+            if(res.data.success){
+              this.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              this.handleSearch();
+            }else{
+              this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
@@ -411,13 +392,13 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch()
+        }else{
+          this.$router.replace('/');
         }
       })
-    },
+    }
   }
 </script>
 

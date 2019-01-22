@@ -79,7 +79,6 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "SystemMaintenance",
     data() {
@@ -113,15 +112,15 @@
         // console.log(req)
         const config = {
           headers: {'Content-Type': 'multipart/form-data'}
-        }
-        let filetype = ''
+        };
+        let filetype = '';
         if (req.file.type === 'image/png') {
           filetype = 'png'
         } else {
           filetype = 'jpg'
         }
         // 重命名要上传的文件
-        const keyname = 'anbang' + Math.random() + '.' + filetype
+        const keyname = 'anbang' + Math.random() + '.' + filetype;
         // 从后端获取上传凭证token
         axios({
           method: 'post',
@@ -133,10 +132,10 @@
             token:sessionStorage.getItem('token')
           }
         }).then(res => {
-          const formdata = new FormData()
-          formdata.append('file', req.file)
-          formdata.append('token', res.data.data)
-          formdata.append('key', keyname)
+          const formdata = new FormData();
+          formdata.append('file', req.file);
+          formdata.append('token', res.data.data);
+          formdata.append('key', keyname);
           // 获取到凭证之后再将文件上传到七牛云空间
           axios.post(this.domain, formdata, config).then(res => {
             this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
@@ -146,8 +145,8 @@
       },
       // 验证文件合法性
       beforeUpload(file) {
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-        const isLt2M = file.size / 1024 / 1024 < 2
+        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isJPG) {
           this.$message.error('上传头像图片只能是 JPG 格式!')
         }
@@ -156,15 +155,10 @@
         }
         return isJPG && isLt2M
       },
-
       //发布
       issue(req) {
-        if (this.normalForm.title == undefined || this.normalForm.title == "") {
-          this.$message({
-            showClose: true,
-            message: '标题和图片不能为空',
-            type: 'warning'
-          });
+        if (this.normalForm.title === undefined || this.normalForm.title === "") {
+          this.$message({showClose: true, message: '标题和图片不能为空', type: 'warning'});
         } else {
           axios({
             method: 'post',
@@ -178,41 +172,34 @@
               'file': this.imageUrl,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                this.$message({showClose: true, message: '发布成功', type: 'success'});
-                this.normalForm.title = ''
-                this.normalForm.file = ''
-                this.addFormVisible = false;//关闭弹窗
-                this.handleSearch();
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            this.$message({showClose: true, message: '发布成功', type: 'success'});
+            this.normalForm.title = '';
+            this.normalForm.file = '';
+            this.addFormVisible = false;//关闭弹窗
+            this.handleSearch();
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         }
       },
       showAddDialog: function () {
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
+        this.addForm = {};
       },
       handleCurrentChange(val) {
         this.page = val;
@@ -233,29 +220,27 @@
             'adminname': this.filters.adminname,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.list = res.data.list;
-              this.total = res.data.count;//总页数
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.list = res.data.list;
+          this.total = res.data.count;//总页数
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -270,10 +255,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch()
+        }else{
+          this.$router.replace('/');
         }
       })
     }

@@ -96,17 +96,21 @@
           return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
         handleCurrentChange(val){
-          this.page = val
+          this.page = val;
           this.handleSearch(this.page)
         },
         handleSearch(){
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
+          }else{
+            this.state.startTime = ''
           }
           if(this.filters.endTime){
             let date = new Date(this.filters.endTime);
             this.state.endTime = date.getTime();
+          }else{
+            this.state.endTime = ''
           }
           if(this.filters.startTime &&
             this.filters.endTime &&
@@ -129,37 +133,35 @@
               'page':this.page,
               'size':10
             }
-          })
-            .then((res) => {
-                this.loading = false;//隐藏加载条
-                // console.log(res.data.data)
-                this.list = res.data.data.listPage.items
-                this.total = res.data.data.listPage.pageCount
-                for(let i = 0;i < this.list.length;i++){
-                  this.list[i].accountingTime = this.dateTimeFormat(this.list[i].accountingTime)
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            this.loading = false;//隐藏加载条
+            // console.log(res.data.data)
+            this.list = res.data.data.listPage.items;
+            this.total = res.data.data.listPage.pageCount;
+            for(let i = 0;i < this.list.length;i++){
+              this.list[i].accountingTime = this.dateTimeFormat(this.list[i].accountingTime)
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         selsChange: function (sels) {
           this.sels = sels;
-        },
+        }
       },
       mounted(){
         axios({
@@ -170,10 +172,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
+          if(res.data.success){
+             this.handleSearch()
           }else{
-            this.handleSearch()
+            this.$router.replace('/');
           }
         })
       }

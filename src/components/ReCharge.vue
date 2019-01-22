@@ -2,16 +2,32 @@
   <el-row class="warp">
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }"><b>充值系统</b></el-breadcrumb-item>
-        <el-breadcrumb-item>充值记录</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/' }"><b>财务系统</b></el-breadcrumb-item>
+        <el-breadcrumb-item>游戏充值记录</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
-    <el-row :gutter="20" style="margin-top:30px;">
+    <el-row :gutter="20" style="margin-top:30px;" class="order">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="type">订单总金额</div>
-          <div class="num">{{cost}}元</div>
+          <div class="left-hand">
+            <img src="../assets/images/order_total.png" alt="">
+          </div>
+          <div class="right">
+            <div class="type">订单总金额</div>
+            <div class="num">{{totalCost}}</div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="grid-content bg-purple">
+          <div class="left-hand">
+            <img src="../assets/images/order_number.png" alt="">
+          </div>
+          <div class="right">
+            <div class="type">订单总数量</div>
+            <div class="num">{{totalRecord}}</div>
+          </div>
         </div>
       </el-col>
     </el-row>
@@ -27,10 +43,10 @@
         <el-form-item label="支付方式" label-width="68px">
           <el-select v-model="filters.pay_type" placeholder="请选择"  clearable>
             <el-option
-              v-for="item in options"
-              :key="item.value"
+              v-for="item in options.agentPayType"
+              :key="item"
               :label="item.label"
-              :value="item.value">
+              :value="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -59,7 +75,7 @@
 
     <!-- 充值记录列表-->
     <el-table :data="users" highlight-current-row
-              style="width: 100%;" id="out-table" @sort-change="sort">
+              style="width: 100%;" id="out-table" @sort-change="sort" ref="table" :height="tableHeight">
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="id" label="订单编号" width="120"></el-table-column>
       <el-table-column prop="transaction_id" label="支付流水" width="120"></el-table-column>
@@ -93,19 +109,16 @@
 
 <script>
   import axios from 'axios'
-    export default {
-        name: "ReCharge",
-        data() {
+  export default {
+      name: "ReCharge",
+      data() {
           return {
             filters:{
-              memberId:'',
-              nickname:''
+              payerId:'',
+              payerName:''
             },
             users:[],
-            options:[
-              {value:'支付宝'},
-              {value:'微信'},
-            ],
+            options:[],
             sorting:{},
             page:1,
             total:0,
@@ -115,8 +128,10 @@
               startTime:'',
               endTime:''
             },
-            cost:'',
-           addFormVisible:false,
+            totalCost:0,
+            addFormVisible:false,
+            tableHeight:0,
+            totalRecord:0
           }
         },
       methods:{
@@ -135,33 +150,43 @@
           let seconds = time.getSeconds();
           return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
+        agentPayType(){
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/order/adminmapping',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params: {
+              'token':sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            this.options = res.data.data
+          })
+        },
         handleCurrentChange(val) {
           this.page = val;
           this.sort(this.sorting);
         },
-        handleSearch(productPriceSort,numberSort,totalamountSort,createTimeSort,statusSort,pay_typeSort) {
-          if(this.filters.status == '未付款'){
-            this.state.status = 'NOTPAY';
-          }
-          if(this.filters.status == '支付失败'){
-            this.state.status = 'PAYFAIL';
-          }
-          if(this.filters.status == '已付款'){
-            this.state.status = 'PAYSUCCESS';
-          }
-          if(this.filters.pay_type == '支付宝'){
+        handleSearch(totalamountSort,createTimeSort) {
+          if(this.filters.pay_type === '支付宝'){
             this.state.pay_type = 'alipay';
-          }
-          if(this.filters.pay_type == '微信'){
+          }else if(this.filters.pay_type === '微信'){
             this.state.pay_type = 'wxpay';
+          }else{
+            this.state.pay_type = ''
           }
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
             this.state.startTime = date.getTime();
+          }else{
+            this.state.startTime = ''
           }
           if(this.filters.endTime){
             let date = new Date(this.filters.endTime);
             this.state.endTime = date.getTime();
+          }else{
+            this.state.endTime = ''
           }
           if(this.filters.startTime &&
             this.filters.endTime &&
@@ -170,37 +195,35 @@
           }
           axios({
             method: 'post',
-            url: this.global.mPath + '/order/queryrecharge',
+            url: this.global.mPath + '/order/queryrechargerecord',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
               'page':this.page,
-              'size': '10',
+              'size': '50',
               'payerId': this.filters.payerId,
               'payerName': this.filters.payerName,
               'pay_type':this.state.pay_type,
               'startTime':this.state.startTime,
               'endTime':this.state.endTime,
-              'status':this.state.status,
               'token':sessionStorage.getItem('token'),
-              'productPriceSort':productPriceSort,
-              'numberSort':numberSort,
               'totalamountSort':totalamountSort,
               'createTimeSort':createTimeSort,
-              'statusSort':statusSort,
-              'pay_typeSort':pay_typeSort
             }
           }).then((res) => {
-                this.cost =  res.data.data.cost
-                this.users = res.data.data.listPage.items;
-                this.total = res.data.data.listPage.pageCount;
-                for(let i = 0;i < this.users.length;i++){
-                  this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
-                  this.users[i].vipTime = this.users[i].vipTime / 1000 / 60 / 60 / 24;
-                }
-              },
-            ).catch((e) => {
+            this.totalCost =  res.data.data.totalCost;
+            this.totalRecord =  res.data.data.totalRecord;
+            this.users = res.data.data.listPage.items;
+            this.total = res.data.data.listPage.pageCount;
+            for(let i = 0;i < this.users.length;i++){
+              this.users[i].createTime = this.dateTimeFormat(this.users[i].createTime);
+              this.users[i].vipTime = this.users[i].vipTime / 1000 / 60 / 60 / 24;
+            }
+            setTimeout(() => {
+              this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 100;
+            },100)
+          }).catch((e) => {
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
@@ -211,76 +234,36 @@
                   break;
               }
             }
-          });
+          })
         },
         sort(a){
           this.sorting = a;
-          if(this.sorting.prop == 'productPrice'){
-            if(this.sorting.order == 'ascending'){
-              this.sorting.productPrice = 'ASC'
-            }
-            if(this.sorting.order == 'descending'){
-              this.sorting.productPrice = 'DESC'
-            }
-          }
-          if(this.sorting.prop == 'number'){
-            if(this.sorting.order == 'ascending'){
-              this.sorting.number = 'ASC'
-            }
-            if(this.sorting.order == 'descending'){
-              this.sorting.number = 'DESC'
-            }
-          }
-          if(this.sorting.prop == 'totalamount'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'productPrice'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.totalamount = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.totalamount = 'DESC'
             }
           }
-          if(this.sorting.prop == 'createTime'){
-            if(this.sorting.order == 'ascending'){
+          if(this.sorting.prop === 'createTime'){
+            if(this.sorting.order === 'ascending'){
               this.sorting.createTime = 'ASC'
             }
-            if(this.sorting.order == 'descending'){
+            if(this.sorting.order === 'descending'){
               this.sorting.createTime = 'DESC'
             }
           }
-          if(this.sorting.prop == 'status'){
-            if(this.sorting.order == 'ascending'){
-              this.sorting.status = 'ASC'
-            }
-            if(this.sorting.order == 'descending'){
-              this.sorting.status = 'DESC'
-            }
-          }
-          if(this.sorting.prop == 'pay_type'){
-            if(this.sorting.order == 'ascending'){
-              this.sorting.pay_type = 'ASC'
-            }
-            if(this.sorting.order == 'descending'){
-              this.sorting.pay_type = 'DESC'
-            }
-          }
-          this.handleSearch(this.sorting.productPrice,this.sorting.number,this.sorting.totalamount,this.sorting.createTime,this.sorting.status,this.sorting.pay_type)
+          this.handleSearch(this.sorting.totalamount,this.sorting.createTime)
         },
         //导出Excel表
         exportExcel () {
-          if(this.filters.status == '未付款'){
-            this.state.status = 0;
-          }
-          if(this.filters.status == '支付失败'){
-            this.state.status = -1;
-          }
-          if(this.filters.status == '已付款'){
-            this.state.status = 1;
-          }
-          if(this.filters.pay_type == '支付宝'){
+          if(this.filters.pay_type === '支付宝'){
             this.state.pay_type = 'alipay';
-          }
-          if(this.filters.pay_type == '微信'){
+          }else if(this.filters.pay_type === '微信'){
             this.state.pay_type = 'wxpay';
+          }else{
+            this.state.pay_type = ''
           }
           if(this.filters.startTime){
             let date = new Date(this.filters.startTime);
@@ -297,19 +280,16 @@
           }
           this.addFormVisible = true;
           let download = document.getElementById('download');
-          download.href = this.global.mPath + '/order/rechargedownload?out_trade_no='
-            +'&pay_type='+this.state.pay_type
-            +'&payerId='+this.filters.memberId
-            +'&payerName='+this.filters.nickname
-            +'&status='+this.state.status
+          download.href = this.global.mPath + '/order/rechargedownload?&pay_type='+this.state.pay_type
+            +'&payerId='+this.filters.payerId
+            +'&payerName='+this.filters.payerName
             +'&startTime='+this.state.startTime
             +'&endTime='+this.state.endTime
-            +'&deliverTime='
             +'&token='+sessionStorage.getItem('token');
         },
         addSubmit(){
           this.addFormVisible = false;
-        },
+        }
       },
       mounted() {
         axios({
@@ -320,17 +300,18 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
+          if(res.data.success){
+            this.handleSearch();
+            this.agentPayType()
           }else{
-            this.handleSearch()
+            this.$router.replace('/');
           }
         })
       }
     }
 </script>
 
-<style scoped>
+<style lang="scss">
   .bg-purple{
     width:200px;
     height:100px;
@@ -339,12 +320,24 @@
     border-radius: 5px;
     border:1px solid #eee;
   }
-  .bg-purple div:nth-child(1){
-    margin-top:20px;
-    font-size:20px;
-  }
-  .bg-purple div:nth-child(2){
-    margin-top:10px;
+  .order{
+    .left-hand{
+      float:left;
+      img{
+        width: 70px;
+        height: 70px;
+        margin: 15px 0 0 5px;
+      }
+    }
+    .right{
+      text-align: center;
+      .type{
+        margin-top:23px;
+      }
+      .num{
+        margin-top:10px;
+      }
+    }
   }
   #download{
     display: inline-block;

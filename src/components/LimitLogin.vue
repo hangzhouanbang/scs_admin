@@ -8,7 +8,7 @@
     </el-col>
 
     <!--工具条-->
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0;margin-top:30px;">
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0;">
       <el-form :inline="true" :model="filters">
         <el-form-item>
           <el-input v-model.trim="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch()"></el-input>
@@ -64,152 +64,149 @@
 <script>
     import axios from 'axios'
     export default {
-        name: "LimitLogin",
-        data(){
-          return{
-            filters:{},
-            total:0,
-            addLimitVisible:false,
-            addLimitForm:{},
-            time:'',
-            rules: {
-              memberId: [
-                {required: true, message: '请输入用户ID', trigger: 'blur'}
-              ],
-              desc: [
-                {required: true, message: '请输入备注', trigger: 'blur'}
-              ],
-            },
-            page:1,
-            limit:[],
-            sels:[]
-          }
+      name: "LimitLogin",
+      data(){
+        return{
+          filters:{},
+          total:0,
+          addLimitVisible:false,
+          addLimitForm:{},
+          time:'',
+          rules: {
+            memberId: [
+              {required: true, message: '请输入用户ID', trigger: 'blur'}
+            ],
+            desc: [
+              {required: true, message: '请输入备注', trigger: 'blur'}
+            ],
+          },
+          page:1,
+          limit:[],
+          sels:[]
+        }
+      },
+      methods:{
+        dateTimeFormat(value) {
+          let time = new Date(+value);
+          let rightTwo = (v) => {
+            v = '0' + v;
+            return v.substring(v.length - 2, v.length)
+          };
+          if (time == null) return;
+          let year = time.getFullYear();
+          let month = time.getMonth() + 1;
+          let date = time.getDate();
+          let hours = time.getHours();
+          let minutes = time.getMinutes();
+          let seconds = time.getSeconds();
+          return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
         },
-        methods:{
-          dateTimeFormat(value) {
-            let time = new Date(+value);
-            let rightTwo = (v) => {
-              v = '0' + v;
-              return v.substring(v.length - 2, v.length)
-            };
-            if (time == null) return;
-            let year = time.getFullYear();
-            let month = time.getMonth() + 1;
-            let date = time.getDate();
-            let hours = time.getHours();
-            let minutes = time.getMinutes();
-            let seconds = time.getSeconds();
-            return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
-          },
-          handleSearch(){
-            axios({
-              url:this.global.mPath + '/member/querylimit',
-              method:'post',
-              params:{
-                page:this.page,
-                size:10,
-                token:sessionStorage.getItem('token'),
-                memberId:this.filters.id
+        handleSearch(){
+          axios({
+            url:this.global.mPath + '/member/querylimit',
+            method:'post',
+            params:{
+              page:this.page,
+              size:10,
+              token:sessionStorage.getItem('token'),
+              memberId:this.filters.id
+            }
+          }).then((res) => {
+              // console.log(res.data)
+              this.limit = res.data.data.listPage.items;
+              this.total = res.data.data.listPage.pageCount;
+              for(let i = 0;i < this.limit.length;i++){
+                this.limit[i].createTime = this.dateTimeFormat(this.limit[i].createTime)
               }
-            }).then((res) => {
-                // console.log(res.data)
-                this.limit = res.data.data.listPage.items;
-                this.total = res.data.data.listPage.pageCount
-                for(let i = 0;i < this.limit.length;i++){
-                  this.limit[i].createTime = this.dateTimeFormat(this.limit[i].createTime)
-                }
-              }
-            ).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          addLimit(){
-            this.addLimitVisible = true;
-          },
-          sure(){
-            axios({
-              url:this.global.mPath + '/member/addlimit',
-              method:'post',
-              params:{
-                desc:this.addLimitForm.desc,
-                token:sessionStorage.getItem('token'),
-                memberId:this.addLimitForm.memberId
-              }
-            }).then((res) => {
-                // console.log(res.data)
-                if(res.data.success){
-                  this.$message({showClose: true, message: '请求出现异常', duration: 2000});
-                }if(res.data.success == true){
-                  this.$message({showClose: true, message: '添加成功', type: 'success'});
-                  this.addLimitVisible = false;
-                  this.handleSearch()
-                }else{
-                  this.$message({showClose: true, message: '添加失败', type: 'warning'});
-                }
-              }
-            ).catch((e) => {
-              this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            })
-          },
-          handleCurrentChange(val){
-            this.page = val;
-            this.handleSearch();
-          },
-          del(index,row){
-            this.$confirm('确认删除吗？', '提示', {
-              type: 'warning'
-            }).then(() => {
-              axios({
-                method: 'post',
-                url: this.global.mPath + '/member/deletelimits',
-                headers: {
-                  'Content-type': 'application/x-www-form-urlencoded'
-                },
-                params: {
-                  token: sessionStorage.getItem('token'),
-                  recordId: row.id
-                }
-              }).then(res => {
-                // console.log(res.data)
-                if (res.data.success) {
-                  this.$message({showClose: true, message: '删除成功', type: 'success'});
-                  this.handleSearch()
-                } else {
-                  this.$message({showClose: true, message: '删除失败', type: 'warning'});
-                }
-              })
-            })
-          },
-          batchDeleteBook(){
-            let ids = this.sels.map(item => item.id).toString();
-            this.$confirm('确认删除吗？', '提示', {
-              type: 'warning'
-            }).then(() => {
-              axios({
-                method: 'post',
-                url: this.global.mPath + '/member/deletelimits',
-                headers: {
-                  'Content-type': 'application/x-www-form-urlencoded'
-                },
-                params: {
-                  token: sessionStorage.getItem('token'),
-                  recordId: ids
-                }
-              }).then(res => {
-                // console.log(res.data)
-                if (res.data.success) {
-                  this.$message({showClose: true, message: '删除成功', type: 'success'});
-                  this.handleSearch()
-                } else {
-                  this.$message({showClose: true, message: '删除失败', type: 'warning'});
-                }
-              })
-            })
-          },
-          selsChange(sels){
-            this.sels = sels;
-          }
+            }
+          ).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
         },
+        addLimit(){
+          this.addLimitVisible = true;
+        },
+        sure(){
+          axios({
+            url:this.global.mPath + '/member/addlimit',
+            method:'post',
+            params:{
+              desc:this.addLimitForm.desc,
+              token:sessionStorage.getItem('token'),
+              memberId:this.addLimitForm.memberId
+            }
+          }).then((res) => {
+            // console.log(res.data)
+            if(res.data.success){
+              this.$message({showClose: true, message: '添加成功', type: 'success'});
+              this.addLimitVisible = false;
+              this.handleSearch()
+            }else{
+              this.$message({showClose: true, message: '添加失败', type: 'warning'});
+            }
+          }).catch((e) => {
+            this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+          })
+        },
+        handleCurrentChange(val){
+          this.page = val;
+          this.handleSearch();
+        },
+        del(index,row){
+          this.$confirm('确认删除吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/member/deletelimits',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                token: sessionStorage.getItem('token'),
+                recordId: row.id
+              }
+            }).then(res => {
+              // console.log(res.data)
+              if (res.data.success) {
+                this.$message({showClose: true, message: '删除成功', type: 'success'});
+                this.handleSearch()
+              } else {
+                this.$message({showClose: true, message: '删除失败', type: 'warning'});
+              }
+            })
+          })
+        },
+        batchDeleteBook(){
+          let ids = this.sels.map(item => item.id).toString();
+          this.$confirm('确认删除吗？', '提示', {
+            type: 'warning'
+          }).then(() => {
+            axios({
+              method: 'post',
+              url: this.global.mPath + '/member/deletelimits',
+              headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                token: sessionStorage.getItem('token'),
+                recordId: ids
+              }
+            }).then(res => {
+              // console.log(res.data)
+              if (res.data.success) {
+                this.$message({showClose: true, message: '删除成功', type: 'success'});
+                this.handleSearch()
+              } else {
+                this.$message({showClose: true, message: '删除失败', type: 'warning'});
+              }
+            })
+          })
+        },
+        selsChange(sels){
+          this.sels = sels;
+        }
+      },
       mounted(){
         axios({
           url:this.global.mPath + '/login/admin_info',
@@ -219,10 +216,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
+          if(res.data.success){
+             this.handleSearch()
           }else{
-            this.handleSearch()
+            this.$router.replace('/');
           }
         })
       }
@@ -230,5 +227,7 @@
 </script>
 
 <style scoped>
-
+.toolbar{
+  margin-top:30px;
+}
 </style>

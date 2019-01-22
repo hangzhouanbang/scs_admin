@@ -35,9 +35,9 @@
     <el-table :data="list" highlight-current-row @selection-change="selsChange"
               style="width: 100%;">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="memberId" label="用户ID" width="120"></el-table-column>
-      <el-table-column prop="memberName" label="用户昵称" width="200"></el-table-column>
-      <el-table-column prop="desc" label="操作类型" width="160"></el-table-column>
+      <el-table-column prop="memberId" label="用户ID" width="100"></el-table-column>
+      <el-table-column prop="memberName" label="用户昵称" width="120"></el-table-column>
+      <el-table-column prop="desc" label="操作类型" width="120"></el-table-column>
       <el-table-column prop="param" label="赠送数量" width="100"></el-table-column>
       <el-table-column prop="operationTime" label="操作时间" width="160"></el-table-column>
       <el-table-column prop="operator" label="操作人"></el-table-column>
@@ -101,16 +101,14 @@
                 'memberId':this.filters.memberId,
                 'desc':this.filters.type,
               }
-            })
-              .then((res) => {
-                  this.loading = false;//隐藏加载条
-                  this.list = res.data.data.items;
-                  this.total = res.data.data.pageCount;
-                  for(let i = 0;i < this.list.length;i++){
-                    this.list[i].operationTime = this.dateTimeFormat(this.list[i].operationTime)
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              this.loading = false;//隐藏加载条
+              this.list = res.data.data.items;
+              this.total = res.data.data.pageCount;
+              for(let i = 0;i < this.list.length;i++){
+                this.list[i].operationTime = this.dateTimeFormat(this.list[i].operationTime)
+              }
+            }).catch((e) => {
               if (e && e.response) {
                 switch (e.response.status) {
                   case 504:
@@ -126,7 +124,7 @@
                     break
                 }
               }
-            });
+            })
           },
           ChangePage(val){
             this.page = val;
@@ -145,10 +143,10 @@
             }
           }).then((res) => {
             // console.log(res.data.success)
-            if(res.data.success == false){
-              this.$router.replace('/');
-            }else{
+            if(res.data.success){
               this.handleSearch()
+            }else{
+              this.$router.replace('/');
             }
           })
         }

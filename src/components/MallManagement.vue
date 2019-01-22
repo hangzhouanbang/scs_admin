@@ -163,65 +163,65 @@
 <script>
     import axios from 'axios'
     export default {
-        name: "MallManagement",
+      name: "MallManagement",
       data(){
-          return{
-            addFormVisible:false,
-            loading:false,
-            adjustmentVisible:false,
-            total:0,
-            list:[],
-            img:true,
-            normalForm:{},
-            normalForm1:{},
-            adjustForm:{},
-            adjustForm1:{},
-            filters: {},
-            radioData:'',
-            // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
-            domain: 'http://up.qiniu.com',
-            // 这是七牛云空间的外链默认域名
-            qiniuaddr: 'qiniu.3cscy.com',
-            rules: {
-              title: [
-                {required: true, message: '请输入标题', trigger: 'blur'}
-              ],
-              file: [
-                {required: true, message: '请选择图片', trigger: 'blur'}
-              ],
-              address: [
-                {required: true, message: '请选择图片', trigger: 'blur'}
-              ]
-            },
-            imageUrl: '',
-            options:[
-              {value:'日卡'},
-              {value:'周卡'},
-              {value:'月卡'},
-              {value:'季卡'},
-              {value:'玉石'}
+        return{
+          addFormVisible:false,
+          loading:false,
+          adjustmentVisible:false,
+          total:0,
+          list:[],
+          img:true,
+          normalForm:{},
+          normalForm1:{},
+          adjustForm:{},
+          adjustForm1:{},
+          filters: {},
+          radioData:'',
+          // 七牛云的上传地址，根据自己所在地区选择，这里是华东区
+          domain: 'http://up.qiniu.com',
+          // 这是七牛云空间的外链默认域名
+          qiniuaddr: 'qiniu.3cscy.com',
+          rules: {
+            title: [
+              {required: true, message: '请输入标题', trigger: 'blur'}
             ],
-            payment:[
-              {value:'微信支付'},
-              {value:'积分兑换'}
+            file: [
+              {required: true, message: '请选择图片', trigger: 'blur'}
             ],
-            sels: [],
-          }
+            address: [
+              {required: true, message: '请选择图片', trigger: 'blur'}
+            ]
+          },
+          imageUrl: '',
+          options:[
+            {value:'日卡'},
+            {value:'周卡'},
+            {value:'月卡'},
+            {value:'季卡'},
+            {value:'玉石'}
+          ],
+          payment:[
+            {value:'微信支付'},
+            {value:'积分兑换'}
+          ],
+          sels: [],
+        }
       },
       methods:{
         // 上传文件到七牛云
         upqiniu(req) {
           const config = {
             headers: {'Content-Type': 'multipart/form-data'}
-          }
-          let filetype = ''
+          };
+          let filetype = '';
           if (req.file.type === 'image/png') {
             filetype = 'png'
           } else {
             filetype = 'jpg'
           }
           // 重命名要上传的文件
-          const keyname = 'anbang' + Math.random() + '.' + filetype
+          const keyname = 'anbang' + Math.random() + '.' + filetype;
           // 从后端获取上传凭证token
           axios({
             method: 'post',
@@ -233,21 +233,21 @@
               token:sessionStorage.getItem('token')
             }
           }).then(res => {
-            const formdata = new FormData()
-            formdata.append('file', req.file)
-            formdata.append('token', res.data.data)
-            formdata.append('key', keyname)
+            const formdata = new FormData();
+            formdata.append('file', req.file);
+            formdata.append('token', res.data.data);
+            formdata.append('key', keyname);
             // 获取到凭证之后再将文件上传到七牛云空间
             axios.post(this.domain, formdata, config).then(res => {
-              this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
+              this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key;
               this.img = false;
             })
           })
         },
         // 验证文件合法性
         beforeUpload(file) {
-          const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-          const isLt2M = file.size / 1024 / 1024 < 2
+          const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+          const isLt2M = file.size / 1024 / 1024 < 2;
           if (!isJPG) {
             this.$message.error('上传头像图片只能是 JPG 格式!')
           }
@@ -269,7 +269,7 @@
             this.list = res.data.data.items;
             this.total = res.data.data.pageCount;
             for(let i = 0;i < this.list.length;i++){
-              if(this.list[i].sale == true){
+              if(this.list[i].sale){
                 this.list[i].sale = '是'
               }else{
                 this.list[i].sale = '否'
@@ -280,7 +280,7 @@
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
@@ -293,10 +293,10 @@
           this.addFormVisible = true;
         },
         issue:function() {
-          if(this.normalForm.payType == '微信支付'){
+          if(this.normalForm.payType === '微信支付'){
             this.normalForm1.payType = 'wxpay'
           }
-          if(this.normalForm.payType == '积分兑换'){
+          if(this.normalForm.payType === '积分兑换'){
             this.normalForm1.payType = 'scorepay'
           }
           axios({
@@ -315,26 +315,25 @@
               token:sessionStorage.getItem('token')
             }
           }).then((res) => {
-                if (res.data.success == false) {
-                  this.$message({showClose: true, message: '添加失败', type: 'warning'});
-                } else if (res.data.success == true) {
-                  this.$message({showClose: true, message: '添加成功', type: 'success'});
-                  this.addFormVisible = false;//关闭弹窗
-                  this.handleSearch(1);
-                }
-              },
-            ).catch((e) => {
+           if (res.data.success) {
+              this.$message({showClose: true, message: '添加成功', type: 'success'});
+              this.addFormVisible = false;//关闭弹窗
+              this.handleSearch(1);
+            }else{
+              this.$message({showClose: true, message: '添加失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         selsChange: function (sels) {
           this.sels = sels;
@@ -347,22 +346,22 @@
           this.imageUrl = '';
           this.adjustmentVisible = true;
           this.adjustForm = Object.assign({}, row);
-          if(this.adjustForm.sale == '是'){
+          if(this.adjustForm.sale === '是'){
             this.radioData = 'true';
           }
-          if(this.adjustForm.sale == '否'){
+          if(this.adjustForm.sale === '否'){
             this.radioData = 'false';
           }
-          if(this.imageUrl == ''){
+          if(this.imageUrl === ''){
             this.imageUrl = this.adjustForm.productPic;
           }
         },
         Adjust:function(){
           // console.log(this.adjustForm.payType)
-          if(this.adjustForm.payType == '微信支付'){
+          if(this.adjustForm.payType === '微信支付'){
             this.adjustForm1.payType = 'wxpay'
           }
-          if(this.adjustForm.payType == '积分兑换'){
+          if(this.adjustForm.payType === '积分兑换'){
             this.adjustForm1.payType = 'scorepay'
           }
             this.loading = true;
@@ -383,21 +382,19 @@
                 weight:this.adjustForm.weight,
                 token:sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  this.loading = false;
-                  if (res.data.success == true) {
-                    this.adjustmentVisible = false;
-                    this.$message.success({showClose: true, message: '修改成功', duration: 1500});
-                    this.handleSearch(1);
-                  } else {
-                    this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              this.loading = false;
+              if (res.data.success) {
+                this.adjustmentVisible = false;
+                this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+                this.handleSearch(1);
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               this.loading = false;
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
+            })
           },
         deleteDialog:function(index,row){
           this.loading = true;
@@ -413,7 +410,7 @@
             }
           }).then((res) => {
               this.loading = false;
-              if (res.data.success == true) {
+              if (res.data.success) {
                 this.$message.success({showClose: true, message: '删除成功', duration: 1500});
                 this.handleSearch(1);
               } else {
@@ -442,17 +439,15 @@
                 'cardId': ids,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  that.loading = false;
-                  if (res.data.success == true) {
-                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    that.handleSearch(1);
-                  } else {
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              that.loading = false;
+              if (res.data.success) {
+                that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                that.handleSearch(1);
+              } else {
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
             });
@@ -468,10 +463,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.handleSearch()
+          }else{
+            this.$router.replace('/');
           }
         })
       }

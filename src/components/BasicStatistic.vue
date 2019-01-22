@@ -314,25 +314,25 @@
             },
             params: {}
           }).then((res) => {
-              // console.log(res.data.data)
-              this.addCountToday = res.data.data.addCountToday;
-              this.onlineCount = res.data.data.onlineCount;
-              this.activeUserCount = res.data.data.activeUserCount;
-              this.powerCount = res.data.data.powerCount;
-            })
+            // console.log(res.data.data)
+            this.addCountToday = res.data.data.addCountToday;
+            this.onlineCount = res.data.data.onlineCount;
+            this.activeUserCount = res.data.data.activeUserCount;
+            this.powerCount = res.data.data.powerCount;
+          })
         },
         handleClick(tab, event) {
-          if(tab.index == '0'){
+          if(tab.index === '0'){
             this.linechart()
           }
-          if(tab.index == '1'){
+          if(tab.index === '1'){
             this.usercount()
           }
-          if(tab.index == '2'){
+          if(tab.index === '2'){
             this.startnumber()
           }
-          if(tab.index == '3'){
-            this.yesterdayactive()
+          if(tab.index === '3'){
+            this.yesterdayactive();
             this.active_user_subtotal()
           }
         },
@@ -364,21 +364,21 @@
             }
           }).then((res) => {
             // console.log(res.data.data)
-            this.tableData = res.data.data
+            this.tableData = res.data.data;
             for(let i = 0;i < this.tableData.length;i++){
-              this.tableData[i].createTime = this.dateTimeFormat(this.tableData[i].createTime)
-              this.tableData[i].maxOnlineTime = this.dateTimeFormat(this.tableData[i].maxOnlineTime)
+              this.tableData[i].createTime = this.dateTimeFormat(this.tableData[i].createTime);
+              this.tableData[i].maxOnlineTime = this.dateTimeFormat(this.tableData[i].maxOnlineTime);
               this.tableData[i].dayOnlineTime = Math.ceil(this.tableData[i].dayOnlineTime / 1000 / 60 / 60)
             }
           })
         },
         particulars(){
-          let year = this.year.substring(0,4)
-          let month = this.month.split("月")[0]
-          if(month.length == 1){
+          let year = this.year.substring(0,4);
+          let month = this.month.split("月")[0];
+          if(month.length === 1){
             month = '0' + month
           }
-          let date = year + '-' + month
+          let date = year + '-' + month;
           this.information(new Date(date).getTime())
         },
         linechart(){
@@ -391,28 +391,28 @@
             params: {}
           }).then((res) => {
             // console.log(res.data.data)
-            this.countByToday = res.data.data.countByToday
-            this.countByWeek = res.data.data.countByWeek
-            this.countByMonth = res.data.data.countByMonth
-            if(this.type == '本周新增'){
+            this.countByToday = res.data.data.countByToday;
+            this.countByWeek = res.data.data.countByWeek;
+            this.countByMonth = res.data.data.countByMonth;
+            if(this.type === '本周新增'){
               for(let i = 1;i < 8;i++){
                 this.week.push('周'+i)
               }
-              this.drawLine('',this.week,this.countByWeek)
+              this.drawLine('',this.week,this.countByWeek);
               this.week = []
             }
-            if(this.type == '本月新增'){
+            if(this.type === '本月新增'){
               for(let i = 0;i < 31;i++){
                 this.yue.push(i+1+'号')
               }
-              this.drawLine('',this.yue,this.countByMonth)
+              this.drawLine('',this.yue,this.countByMonth);
               this.yue = []
             }
-            if(this.type == '本日新增' || this.type == ''){
+            if(this.type === '本日新增' || this.type === ''){
               for(let i = 0;i < 24;i++){
                 this.today.push(i+'点')
               }
-              this.drawLine('',this.today,this.countByToday)
+              this.drawLine('',this.today,this.countByToday);
               this.today = []
             }
           })
@@ -428,29 +428,29 @@
             params: {}
           }).then((res) => {
             // console.log(res.data.data)
-            this.countByToday = res.data.data.countByToday
-            this.countByWeek = res.data.data.countByWeek
-            this.countByMonth = res.data.data.countByMonth
+            this.countByToday = res.data.data.countByToday;
+            this.countByWeek = res.data.data.countByWeek;
+            this.countByMonth = res.data.data.countByMonth;
             // console.log(this.countByToday)
-            if(this.online == '本周在线'){
+            if(this.online === '本周在线'){
               for(let i = 1;i < 8;i++){
                 this.week.push('周'+i)
               }
-              this.drawLine(1,this.week,this.countByWeek)
+              this.drawLine(1,this.week,this.countByWeek);
               this.week = []
             }
-            if(this.online == '本月在线'){
+            if(this.online === '本月在线'){
               for(let i = 0;i < 31;i++){
                 this.yue.push(i+1+'号')
               }
-              this.drawLine(1,this.yue,this.countByMonth)
+              this.drawLine(1,this.yue,this.countByMonth);
               this.yue = []
             }
-            if(this.online == '本日在线' || this.online == ''){
+            if(this.online === '本日在线' || this.online === ''){
               for(let i = 0;i < 24;i++){
                 this.today.push(i+'点')
               }
-              this.drawLine(1,this.today,this.countByToday)
+              this.drawLine(1,this.today,this.countByToday);
               this.today = []
             }
           })
@@ -466,29 +466,29 @@
             params: {}
           }).then((res) => {
             // console.log(res.data.data)
-            this.countByToday = res.data.data.countByToday
-            this.countByWeek = res.data.data.countByWeek
-            this.countByMonth = res.data.data.countByMonth
+            this.countByToday = res.data.data.countByToday;
+            this.countByWeek = res.data.data.countByWeek;
+            this.countByMonth = res.data.data.countByMonth;
             // console.log(this.countByToday)
-            if(this.start == '本周启动'){
+            if(this.start === '本周启动'){
               for(let i = 1;i < 8;i++){
                 this.week.push('周'+i)
               }
-              this.drawLine(2,this.week,this.countByWeek)
+              this.drawLine(2,this.week,this.countByWeek);
               this.week = []
             }
-            if(this.start == '本月启动'){
+            if(this.start === '本月启动'){
               for(let i = 0;i < 31;i++){
                 this.yue.push(i+1+'号')
               }
-              this.drawLine(2,this.yue,this.countByMonth)
+              this.drawLine(2,this.yue,this.countByMonth);
               this.yue = []
             }
-            if(this.start == '本日启动' || this.start == ''){
+            if(this.start === '本日启动' || this.start === ''){
               for(let i = 0;i < 24;i++){
                 this.today.push(i+'点')
               }
-              this.drawLine(2,this.today,this.countByToday)
+              this.drawLine(2,this.today,this.countByToday);
               this.today = []
             }
           })
@@ -504,21 +504,21 @@
             params: {}
           }).then((res) => {
             // console.log(res.data.data)
-            this.countByWeek = res.data.data.countByWeek
-            this.countByMonth = res.data.data.countByMonth
+            this.countByWeek = res.data.data.countByWeek;
+            this.countByMonth = res.data.data.countByMonth;
             // console.log(this.active)
-            if(this.active == '本周活跃' || this.active == ''){
+            if(this.active === '本周活跃' || this.active === ''){
               for(let i = 1;i < 8;i++){
                 this.week.push('周'+i)
               }
-              this.drawLine(3,this.week,this.countByWeek)
+              this.drawLine(3,this.week,this.countByWeek);
               this.week = []
             }
-            if(this.active == '本月活跃'){
+            if(this.active === '本月活跃'){
               for(let i = 0;i < 31;i++){
                 this.yue.push(i+1+'号')
               }
-              this.drawLine(3,this.yue,this.countByMonth)
+              this.drawLine(3,this.yue,this.countByMonth);
               this.yue = []
             }
           })
@@ -534,18 +534,18 @@
             params: {}
           }).then((res) => {
             // console.log(res.data.data)
-            this.activeUser = res.data.data[0].activeUser
-            this.dayOnlineTime = res.data.data[0].dayOnlineTime
-            this.activeUser1 = res.data.data[1].activeUser
-            this.dayOnlineTime1 = res.data.data[1].dayOnlineTime
-            this.activeUser2 = res.data.data[2].activeUser
+            this.activeUser = res.data.data[0].activeUser;
+            this.dayOnlineTime = res.data.data[0].dayOnlineTime;
+            this.activeUser1 = res.data.data[1].activeUser;
+            this.dayOnlineTime1 = res.data.data[1].dayOnlineTime;
+            this.activeUser2 = res.data.data[2].activeUser;
             this.dayOnlineTime2 = res.data.data[2].dayOnlineTime
           })
         },
         //折线图
         drawLine(number,time,loginMember){
           // 基于准备好的dom，初始化echarts实例
-          let myChart = this.$echarts.init(document.getElementById('myChart'+number))
+          let myChart = this.$echarts.init(document.getElementById('myChart'+number));
           myChart.setOption({
             title: {
               text: ''
@@ -595,15 +595,15 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
-            this.linechart()
-            this.handleSearch()
-            this.information(new Date().getTime())
+          if(res.data.success){
+            this.linechart();
+            this.handleSearch();
+            this.information(new Date().getTime());
             let myDate = new Date();
-            this.year = myDate.getFullYear() + '年'
+            this.year = myDate.getFullYear() + '年';
             this.month = myDate.getMonth() + 1 + '月'
+          }else{
+            this.$router.replace('/');
           }
         })
       }

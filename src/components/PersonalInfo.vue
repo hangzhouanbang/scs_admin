@@ -37,13 +37,13 @@
 <script>
   import axios from 'axios'
     export default {
-        name: "PersonalInfo",
-        data(){
-          return{
-            filters:{},
-            items:[]
-          }
-        },
+      name: "PersonalInfo",
+      data(){
+        return{
+          filters:{},
+          items:[]
+        }
+      },
       methods:{
         handleSearch() {
           axios({//根据昵称查询
@@ -55,22 +55,20 @@
             params: {
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                this.items = res.data.data.admin;
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            this.items = res.data.data.admin;
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         }
       },
       mounted(){
@@ -82,10 +80,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.handleSearch()
+          }else{
+            this.$router.replace('/');
           }
         })
       }

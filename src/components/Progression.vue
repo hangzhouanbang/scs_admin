@@ -48,181 +48,178 @@
   import axios from 'axios'
 
   export default {
-      name: "Progression",
-      data() {
-        return {
-          filters:{
-            startTime:'',
-            endTime:'',
-            pay_type:'瑞安麻将'
-          },
-          state:{},
-          currentMember:[],
-          gameNum:[],
-          loginMember:[],
-          Time:[],
-          options:[
-            {value:'瑞安麻将'},
-            {value:'温州麻将'},
-            {value:'放炮麻将'},
-            {value:'点炮麻将'},
-            {value:'温州双扣'}
-          ]
-        }
-      },
-      methods: {
-        handleSearch(){
-          if(this.filters.pay_type){
-            if(this.filters.pay_type == '瑞安麻将'){
-              this.state.pay_type = 'ruianMajiang'
-            }
-            if(this.filters.pay_type == '温州麻将'){
-              this.state.pay_type = 'wenzhouMajiang'
-            }
-            if(this.filters.pay_type == '放炮麻将'){
-              this.state.pay_type = 'fangpaoMajiang'
-            }
-            if(this.filters.pay_type == '点炮麻将'){
-              this.state.pay_type = 'dianpaoMajiang'
-            }
-            if(this.filters.pay_type == '温州双扣'){
-              this.state.pay_type = 'wenzhouShuangkou'
-            }
-          }
-          if(this.filters.startTime){
-            // console.log(this.filters.startTime)
-            let date = new Date(this.filters.startTime).getTime();
-            this.filters.startTime = date
-            this.state.startTime = date;
-          }else{
-            let date = new Date(new Date() - 24*7*60*60*1000).getTime();
-            this.filters.startTime = date
-            this.state.startTime = date
-          }
-          if(this.filters.endTime){
-            let date = new Date(this.filters.endTime).getTime();
-            this.state.endTime = date;
-            this.filters.endTime = date;
-          }else{
-            let date = new Date().getTime();
-            this.filters.endTime = date
-            this.state.endTime = date
-          }
-          if(this.state.endTime - this.state.startTime < 0){
-            return;
-          }
-          axios({
-            url:this.global.mPath + '/datareport/gamereport',
-            method: 'post',
-            params:{
-              startTime:this.state.startTime,
-              endTime:this.state.endTime,
-              game:this.state.pay_type,
-              token:sessionStorage.getItem('token')
-            }
-          }).then((res) => {
-            this.currentMember=[]
-            this.gameNum=[]
-            this.loginMember=[]
-            this.Time=[]
-              for(let i = 0;i < res.data.data.length;i++){
-                this.currentMember.push(res.data.data[i].currentMember);
-                this.gameNum.push(res.data.data[i].gameNum);
-                this.loginMember.push(res.data.data[i].loginMember);
-                this.Time.push(this.dateTimeFormat(res.data.data[i].date));
-              }
-              this.drawLine(this.loginMember,this.gameNum,this.currentMember)
-            },
-          ).catch((e) => {})
+    name: "Progression",
+    data() {
+      return {
+        filters:{
+          startTime:'',
+          endTime:'',
+          pay_type:'瑞安麻将'
         },
-        dateTimeFormat(value) {
-          let time = new Date(+value);
-          let rightTwo = (v) => {
-            v = '0' + v;
-            return v.substring(v.length - 2, v.length)
-          };
-          if (time == null) return;
-          let year = time.getFullYear();
-          let month = time.getMonth() + 1;
-          let date = time.getDate();
-          let hours = time.getHours();
-          let minutes = time.getMinutes();
-          let seconds = time.getSeconds();
-          return year + '-' + rightTwo(month) + '-' + rightTwo(date);
-        },
-        //折线图
-        drawLine(loginMember,gameNum,currentMember){
-          // 基于准备好的dom，初始化echarts实例
-          let myChart = this.$echarts.init(document.getElementById('myChart'))
-          myChart.setOption({
-            title: {
-              text: ''
-            },
-            tooltip: {
-              trigger: 'axis'
-            },
-            legend: {
-              data:['独立玩家','游戏局数','会员人数']
-            },
-            grid: {
-              left: '3%',
-              right: '4%',
-              bottom: '3%',
-              containLabel: true
-            },
-            toolbox: {
-              feature: {
-                // saveAsImage: {} //下载
-              }
-            },
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              data: this.Time
-            },
-            yAxis: {
-              type: 'value'
-            },
-            series: [
-              {
-                name:'独立玩家',
-                type:'line',
-                stack: '总量',
-                data:loginMember
-              },
-              {
-                name:'游戏局数',
-                type:'line',
-                stack: '总量',
-                data:gameNum
-              },
-              {
-                name:'会员人数',
-                type:'line',
-                stack: '总量',
-                data:currentMember
-              }
-            ]
-          })
+        state:{},
+        currentMember:[],
+        gameNum:[],
+        loginMember:[],
+        Time:[],
+        options:[
+          {value:'瑞安麻将'},
+          {value:'温州麻将'},
+          {value:'放炮麻将'},
+          {value:'点炮麻将'},
+          {value:'温州双扣'}
+        ]
+      }
+    },
+    methods: {
+      handleSearch(){
+        if(this.filters.pay_type){
+          if(this.filters.pay_type === '瑞安麻将'){
+            this.state.pay_type = 'ruianMajiang'
+          }
+          if(this.filters.pay_type === '温州麻将'){
+            this.state.pay_type = 'wenzhouMajiang'
+          }
+          if(this.filters.pay_type === '放炮麻将'){
+            this.state.pay_type = 'fangpaoMajiang'
+          }
+          if(this.filters.pay_type === '点炮麻将'){
+            this.state.pay_type = 'dianpaoMajiang'
+          }
+          if(this.filters.pay_type === '温州双扣'){
+            this.state.pay_type = 'wenzhouShuangkou'
+          }
         }
-      },
-      mounted(){
+        if(this.filters.startTime){
+          // console.log(this.filters.startTime)
+          let date = new Date(this.filters.startTime).getTime();
+          this.filters.startTime = date;
+          this.state.startTime = date;
+        }else{
+          let date = new Date(new Date() - 24*7*60*60*1000).getTime();
+          this.filters.startTime = date;
+          this.state.startTime = date
+        }
+        if(this.filters.endTime){
+          let date = new Date(this.filters.endTime).getTime();
+          this.state.endTime = date;
+          this.filters.endTime = date;
+        }else{
+          let date = new Date().getTime();
+          this.filters.endTime = date;
+          this.state.endTime = date
+        }
+        if(this.state.endTime - this.state.startTime < 0){
+          return;
+        }
         axios({
-          url:this.global.mPath + '/login/admin_info',
-          method:'post',
+          url:this.global.mPath + '/datareport/gamereport',
+          method: 'post',
           params:{
+            startTime:this.state.startTime,
+            endTime:this.state.endTime,
+            game:this.state.pay_type,
             token:sessionStorage.getItem('token')
           }
         }).then((res) => {
-          // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
-            this.handleSearch()
+          this.currentMember=[];
+          this.gameNum=[];
+          this.loginMember=[];
+          this.Time=[];
+          for(let i = 0;i < res.data.data.length;i++){
+            this.currentMember.push(res.data.data[i].currentMember);
+            this.gameNum.push(res.data.data[i].gameNum);
+            this.loginMember.push(res.data.data[i].loginMember);
+            this.Time.push(this.dateTimeFormat(res.data.data[i].date));
           }
+          this.drawLine(this.loginMember,this.gameNum,this.currentMember)
+        }).catch((e) => {})
+      },
+      dateTimeFormat(value) {
+        let time = new Date(+value);
+        let rightTwo = (v) => {
+          v = '0' + v;
+          return v.substring(v.length - 2, v.length)
+        };
+        if (time == null) return;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+        let hours = time.getHours();
+        let minutes = time.getMinutes();
+        let seconds = time.getSeconds();
+        return year + '-' + rightTwo(month) + '-' + rightTwo(date);
+      },
+      //折线图
+      drawLine(loginMember,gameNum,currentMember){
+        // 基于准备好的dom，初始化echarts实例
+        let myChart = this.$echarts.init(document.getElementById('myChart'));
+        myChart.setOption({
+          title: {
+            text: ''
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data:['独立玩家','游戏局数','会员人数']
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          toolbox: {
+            feature: {}
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: this.Time
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [
+            {
+              name:'独立玩家',
+              type:'line',
+              stack: '总量',
+              data:loginMember
+            },
+            {
+              name:'游戏局数',
+              type:'line',
+              stack: '总量',
+              data:gameNum
+            },
+            {
+              name:'会员人数',
+              type:'line',
+              stack: '总量',
+              data:currentMember
+            }
+          ]
         })
       }
+    },
+    mounted(){
+      axios({
+        url:this.global.mPath + '/login/admin_info',
+        method:'post',
+        params:{
+          token:sessionStorage.getItem('token')
+        }
+      }).then((res) => {
+        // console.log(res.data.success)
+        if(res.data.success){
+          this.handleSearch()
+        }else{
+          this.$router.replace('/');
+        }
+      })
     }
+  }
 </script>
 
 <style scoped>

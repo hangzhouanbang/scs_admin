@@ -101,7 +101,6 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "MemberCard",
     data() {
@@ -150,24 +149,22 @@
           params: {
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-            // console.log(res)
-              this.users = res.data.data;
-              this.total = res.data.pageNumber;
-            },
-          ).catch((e) => {
+        }).then((res) => {
+        // console.log(res)
+          this.users = res.data.data;
+          this.total = res.data.pageNumber;
+        }).catch((e) => {
           if(e && e.response){
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
@@ -187,22 +184,20 @@
               'id':row.id,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                // console.log(res)
-                that.loading = false;
-                if(res.data.success == true){
-                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch();
-                }else{
-                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              }
-            ).catch((e) => {
+          }).then((res) => {
+            // console.log(res)
+            that.loading = false;
+            if(res.data.success){
+              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              that.handleSearch();
+            }else{
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        });
+          })
+        })
       },
       //批量删除
       batchDeleteCard: function () {
@@ -222,21 +217,19 @@
               'id':ids,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                that.loading = false;
-                if(res.data.success == true){
-                  that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                  that.handleSearch();
-                }else{
-                  that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            that.loading = false;
+            if(res.data.success){
+              that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+              that.handleSearch();
+            }else{
+              that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            }
+          }).catch((e) => {
             that.loading = false;
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-          });
-        });
+          })
+        })
       },
       //显示新增界面
       addCards: function () {
@@ -261,29 +254,27 @@
             'firstDiscountPrice':this.addCard.firstDiscountPrice,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-            // console.log(res.data)
-              if (res.data.success == false) {
-                this.$message({showClose: true, message: '添加失败', type: 'warning'});
-              } else if (res.data.success == true) {
-                this.$message({showClose: true, message: '添加成功', type: 'success'});
-                this.addCardVisible = false;//关闭弹窗
-                this.handleSearch();
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+        // console.log(res.data)
+          if (res.data.success) {
+            this.$message({showClose: true, message: '添加成功', type: 'success'});
+            this.addCardVisible = false;//关闭弹窗
+            this.handleSearch();
+          } else {
+            this.$message({showClose: true, message: '添加失败', type: 'warning'});
+          }
+        }).catch((e) => {
           if(e && e.response){
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       //编辑界面显示
       showEditCard: function(index,row){
@@ -312,24 +303,22 @@
                 'firstDiscountPrice':this.editCard.firstDiscountPrice,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  this.loading = false;
-                  if (res.data.success == true) {
-                    this.editCardVisible = false;
-                    this.$message.success({showClose: true, message: '修改成功', duration: 1500});
-                    this.handleSearch();
-                  } else {
-                    this.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              this.loading = false;
+              if (res.data.success) {
+                this.editCardVisible = false;
+                this.$message.success({showClose: true, message: '修改成功', duration: 1500});
+                this.handleSearch();
+              } else {
+                this.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               this.loading = false;
               this.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
+            })
           }
-        });
-      },
+        })
+      }
     },
     mounted() {
       axios({
@@ -340,10 +329,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch()
+        }else{
+          this.$router.replace('/');
         }
       })
     }

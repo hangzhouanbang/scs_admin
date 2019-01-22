@@ -74,7 +74,6 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "PromoterOperationRecord",
     data() {
@@ -126,29 +125,33 @@
         if(this.filters.startTime){
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
+        }else{
+          this.state.startTime = ''
         }
         if(this.filters.endTime){
           let date = new Date(this.filters.endTime);
           this.state.endTime = date.getTime();
+        }else{
+          this.state.endTime = ''
         }
         if(this.filters.startTime &&
           this.filters.endTime &&
           this.state.endTime - this.state.startTime < 0){
           return;
         }
-        if(this.filters.mailType == '充值'){
+        if(this.filters.mailType === '充值'){
           this.filters1.mailType = 'recharge'
         }
-        if(this.filters.mailType == '购买'){
+        if(this.filters.mailType === '购买'){
           this.filters1.mailType = 'buy'
         }
-        if(this.filters.mailType == '上级转增'){
+        if(this.filters.mailType === '上级转增'){
           this.filters1.mailType = 'boss'
         }
-        if(this.filters.mailType == '转增下级'){
+        if(this.filters.mailType === '转增下级'){
           this.filters1.mailType = 'junior'
         }
-        if(this.filters.mailType == '积分兑换'){
+        if(this.filters.mailType === '积分兑换'){
           this.filters1.mailType = 'score'
         }
         axios({
@@ -171,65 +174,63 @@
             'balanceAfterYueSort':balanceAfterYueSort,
             'balanceAfterJiSort':balanceAfterJiSort
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.items = res.data.data.items;
-              this.total = res.data.data.pageCount;
-              for (let i = 0; i < this.items.length; i++) {
-                this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.items = res.data.data.items;
+          this.total = res.data.data.pageCount;
+          for (let i = 0; i < this.items.length; i++) {
+            this.items[i].accountingTime = this.dateTimeFormat(this.items[i].accountingTime);
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       sort(a){
         // console.log(this.page)
         this.sorting = a;
-        if(this.sorting.prop == 'accountingTime'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'accountingTime'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.accountingTime = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.accountingTime = 'DESC'
           }
         }
-        if(this.sorting.prop == 'balanceAfterZhou'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'balanceAfterZhou'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.balanceAfterZhou = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.balanceAfterZhou = 'DESC'
           }
         }
-        if(this.sorting.prop == 'balanceAfterYue'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'balanceAfterYue'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.balanceAfterYue = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.balanceAfterYue = 'DESC'
           }
         }
-        if(this.sorting.prop == 'balanceAfterJi'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'balanceAfterJi'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.balanceAfterJi = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.balanceAfterJi = 'DESC'
           }
         }
@@ -252,10 +253,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch()
+        }else{
+          this.$router.replace('/');
         }
       })
     }

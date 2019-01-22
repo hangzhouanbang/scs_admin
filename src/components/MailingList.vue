@@ -65,21 +65,21 @@
 <script>
     import axios from 'axios'
     export default {
-        name: "MailingList",
-        data(){
-          return{
-            filters:{},
-            email:[],
-            sels: [],
-            total:0,
-            options:[
-              {value:'活动奖励'},
-              {value:'系统通知'},
-              {value:'活动通知'}
-            ],
-            page:''
-          }
-        },
+      name: "MailingList",
+      data(){
+        return{
+          filters:{},
+          email:[],
+          sels: [],
+          total:0,
+          options:[
+            {value:'活动奖励'},
+            {value:'系统通知'},
+            {value:'活动通知'}
+          ],
+          page:''
+        }
+      },
       methods:{
         handleCurrentChange(val) {
           this.page = val;
@@ -114,35 +114,33 @@
               size:'10',
               token:sessionStorage.getItem('token'),
             }
-          })
-            .then((res) => {
-                // console.log(res.data.data)
-                this.email = res.data.data.items;
-                this.total = res.data.data.pageCount;
-                for(let i = 0; i < this.email.length;i++){
-                  // console.log(this.email[i])
-                  if(this.email[i].receive == 1){
-                    this.email[i].receive = '未领取';
-                  }
-                  if(this.email[i].receive == 0){
-                    this.email[i].receive = '已领取';
-                  }
-                  this.email[i].systemMail.createtime = this.dateTimeFormat(this.email[i].systemMail.createtime);
-                  this.email[i].systemMail.validTime = this.dateTimeFormat(this.email[i].systemMail.validTime);
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            // console.log(res.data.data)
+            this.email = res.data.data.items;
+            this.total = res.data.data.pageCount;
+            for(let i = 0; i < this.email.length;i++){
+              // console.log(this.email[i])
+              if(this.email[i].receive === 1){
+                this.email[i].receive = '未领取';
+              }
+              if(this.email[i].receive === 0){
+                this.email[i].receive = '已领取';
+              }
+              this.email[i].systemMail.createtime = this.dateTimeFormat(this.email[i].systemMail.createtime);
+              this.email[i].systemMail.validTime = this.dateTimeFormat(this.email[i].systemMail.validTime);
+            }
+          }).catch((e) => {
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         selsChange: function (sels) {
           this.sels = sels;
@@ -161,22 +159,20 @@
                 'ids':row.id,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                // console.log(res.data.success)
-                  that.loading = false;
-                  if(res.data.success == true){
-                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    that.handleSearch(1);
-                  }else{
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+            // console.log(res.data.success)
+              that.loading = false;
+              if(res.data.success){
+                that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                that.handleSearch(1);
+              }else{
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
-          });
+            })
+          })
         },
         batchDeleteBook:function(){
           let ids = this.sels.map(item => item.id).toString();
@@ -193,21 +189,19 @@
                 'ids':ids,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  that.loading = false;
-                  if(res.data.success == true){
-                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    that.handleSearch(1);
-                  }else{
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((error) => {
+            }).then((res) => {
+              that.loading = false;
+              if(res.data.success){
+                that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                that.handleSearch(1);
+              }else{
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((error) => {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
-          });
+            })
+          })
         }
       },
       mounted() {
@@ -219,10 +213,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.handleSearch(1);
+          }else{
+            this.$router.replace('/');
           }
         })
       }

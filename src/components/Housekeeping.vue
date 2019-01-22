@@ -25,18 +25,25 @@
     <el-table :data="list" highlight-current-row
               style="width: 100%;" id="out-table">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="roomNo" label="房间号" width="120"></el-table-column>
-      <el-table-column prop="roomType" label="房间类型" width="120"></el-table-column>
+      <el-table-column prop="roomNo" label="房间号" width="100"></el-table-column>
+      <el-table-column prop="roomType" label="房间类型" width="160"></el-table-column>
       <el-table-column prop="countPan" label="房间盘数" width="90"></el-table-column>
-      <el-table-column prop="playersCount" label="参与人数" width="120"></el-table-column>
-      <el-table-column prop="playerIds" label="参与玩家ID" width="160"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="100"></el-table-column>
+      <el-table-column prop="playersCount" label="参与人数" width="100"></el-table-column>
+      <el-table-column prop="playerIds" label="参与玩家ID" width="130"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" width="160"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="text" @click.native="particulars(scope.$index,scope.row)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
+
+    <!--工具条-->
+    <el-col :span="24" class="toolbar">
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
+                     style="float:right;">
+      </el-pagination>
+    </el-col>
 
     <!--详情-->
     <el-dialog title="对局详情" :visible.sync="GameDetailsDialogVisible" :close-on-click-modal="false" class="game">
@@ -75,7 +82,8 @@
               GameDetailsDialogVisible:false,
               totalScore:[],
               List:[],
-              info:{}
+              info:{},
+              total:0
             }
           },
           methods:{
@@ -180,6 +188,9 @@
                     this.particulars()
                   }
                 })
+            },
+            handleCurrentChange(val){
+              this.handleSearch(val)
             }
           },
           mounted(){

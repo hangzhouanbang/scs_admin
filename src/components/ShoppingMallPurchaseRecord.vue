@@ -40,11 +40,11 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="id" label="推广员ID" width="120"></el-table-column>
       <el-table-column prop="nickname" label="推广员昵称" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="商品类型" width="160"  sortable="custom"></el-table-column>
-      <el-table-column prop="inviteMemberNum" label="数量" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="juniorNum" label="购买金额" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="createTime" label="商品类型" width="160"></el-table-column>
+      <el-table-column prop="inviteMemberNum" label="数量" width="120"></el-table-column>
+      <el-table-column prop="juniorNum" label="购买金额" width="120"></el-table-column>
       <el-table-column prop="juniorNum" label="购买时间" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="juniorNum" label="说明" width="auto"  sortable="custom"></el-table-column>
+      <el-table-column prop="juniorNum" label="说明" width="auto"></el-table-column>
     </el-table>
 
   </el-row>
@@ -54,10 +54,13 @@
     export default {
       name: "ShoppingMallPurchaseRecord",
       data(){
-          return{
-            filters:{},
-            list:[]
-          }
+        return{
+          filters:{},
+          list:[]
+        }
+      },
+      methods:{
+        sort(){}
       }
     }
 </script>

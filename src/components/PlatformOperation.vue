@@ -96,7 +96,7 @@
       //搜索
       seek() {
         if (this.filters.startTime) {
-          this.filters.startTime = new Date(this.filters.startTime) - 24*60*60*1000
+          this.filters.startTime = new Date(this.filters.startTime) - 24*60*60*1000;
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
         }else{
@@ -112,51 +112,49 @@
           this.$message({showClose: true, message: '时间段选择有误', type: 'warning'});
           return;
         }
-          axios({
-            method: 'post',
-            url: this.global.mPath + '/datareport/platformreport',
-            headers: {
-              'Content-type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              'size': '15',//每页数量
-              'page': this.page,//当前页
-              'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
-              'endTime': this.state.endTime,
-              'token':sessionStorage.getItem('token')
-            }
-          })
-            .then((res) => {
-                this.po = true;//显示表单
+        axios({
+          method: 'post',
+          url: this.global.mPath + '/datareport/platformreport',
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            'size': '15',//每页数量
+            'page': this.page,//当前页
+            'startTime': this.state.startTime, /*日期转换为时间戳（毫秒数）发送到后台*/
+            'endTime': this.state.endTime,
+            'token':sessionStorage.getItem('token')
+          }
+        }).then((res) => {
+          this.po = true;//显示表单
+          this.loading = false;//隐藏加载条
+          this.items = res.data.data.items;
+          this.total = res.data.data.pageCount;
+          //console.log(res.data.data.items)
+          for (let i = 0; i < this.items.length; i++) {
+            this.items[i].date = this.dateTimeFormat(this.items[i].date);
+          }
+        }).catch((e) => {
+          if (e && e.response) {
+            switch (e.response.status) {
+              case 504:
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                this.items = res.data.data.items;
-                this.total = res.data.data.pageCount;
-                //console.log(res.data.data.items)
-                for (let i = 0; i < this.items.length; i++) {
-                  this.items[i].date = this.dateTimeFormat(this.items[i].date);
-                }
-              },
-            ).catch((e) => {
-            if (e && e.response) {
-              switch (e.response.status) {
-                case 504:
-                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  this.loading = false;//隐藏加载条
-                  break
-                case 500:
-                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  this.loading = false;//隐藏加载条
-                  break
-                case 405:
-                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
-                  break
-              }
+                break;
+              case 500:
+                this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                this.loading = false;//隐藏加载条
+                break;
+              case 405:
+                this.$message({showClose: true, message: '请先登录', type: 'warning'});
+                break
             }
-          });
+          }
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
-      },
+      }
     },
     mounted(){
       axios({
@@ -167,10 +165,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.seek();
+        }else{
+          this.$router.replace('/');
         }
       })
     }

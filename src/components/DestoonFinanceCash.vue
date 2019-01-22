@@ -142,13 +142,13 @@
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
       handleSearch(page){
-        if(this.filters.upgrade == '待处理'){
+        if(this.filters.upgrade === '待处理'){
           this.filters1.upgrade = 'APPLYING'
         }
-        if(this.filters.upgrade == '已通过'){
+        if(this.filters.upgrade === '已通过'){
           this.filters1.upgrade = 'SUCCESS'
         }
-        if(this.filters.upgrade == '已驳回'){
+        if(this.filters.upgrade === '已驳回'){
           this.filters1.upgrade = 'FAIL'
         }
         axios({
@@ -164,55 +164,53 @@
             'page':page,
             'size':10
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              // console.log(res.data.data)
-              this.amount = res.data.data.amount;
-              localStorage.setItem('amount',this.amount)
-              let aa = document.getElementsByClassName('icon-home1')[0]
-              if(this.amount > 0){
-                aa.innerHTML = this.amount;
-                aa.style.backgroundColor='#f56c6c';
-                aa.style.color='#fff';
-              }else{
-                aa.style.display='none';
-              }
-              this.list = res.data.data.listPage.items;
-              this.total = res.data.data.listPage.pageCount;
-              for(let i = 0;i < this.list.length;i++){
-                this.list[i].accountingTime = this.dateTimeFormat(this.list[i].accountingTime)
-                if(this.list[i].state == 'APPLYING'){
-                  this.list[i].state = '待处理'
-                }
-                if(this.list[i].state == 'SUCCESS'){
-                  this.list[i].state = '已通过'
-                }
-                if(this.list[i].state == 'FAIL'){
-                  this.list[i].state = '已驳回'
-                }
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          // console.log(res.data.data)
+          this.amount = res.data.data.amount;
+          localStorage.setItem('amount',this.amount);
+          let aa = document.getElementsByClassName('icon-home1')[0];
+          if(this.amount > 0){
+            aa.innerHTML = this.amount;
+            aa.style.backgroundColor='#f56c6c';
+            aa.style.color='#fff';
+          }else{
+            aa.style.display='none';
+          }
+          this.list = res.data.data.listPage.items;
+          this.total = res.data.data.listPage.pageCount;
+          for(let i = 0;i < this.list.length;i++){
+            this.list[i].accountingTime = this.dateTimeFormat(this.list[i].accountingTime);
+            if(this.list[i].state === 'APPLYING'){
+              this.list[i].state = '待处理'
+            }
+            if(this.list[i].state === 'SUCCESS'){
+              this.list[i].state = '已通过'
+            }
+            if(this.list[i].state === 'FAIL'){
+              this.list[i].state = '已驳回'
+            }
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       handleCurrentChange(val){
-        this.page = val
+        this.page = val;
         this.handleSearch(this.page)
       },
       pass:function (index,row) {
@@ -232,8 +230,8 @@
           }
         }).then((res) => {
           this.loading = false;
-          this.msg = res.data.msg
-          if (res.data.success == true) {
+          this.msg = res.data.msg;
+          if (res.data.success) {
             this.passVisible = false;//关闭弹窗
             this.handleSearch(this.page)
           } else {
@@ -280,12 +278,12 @@
         }).then((res) => {
           this.loading = false;
           // console.log(res.data)
-          if (res.data.success == true) {
+          if (res.data.success) {
             // that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
             this.rejectVisible = false;//关闭弹窗
             this.handleSearch(this.page)
           } else {
-            that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+            this.$message.error({showClose: true, message: err.toString(), duration: 2000});
           }
         }).catch((e) => {
           if (e && e.response) {
@@ -322,10 +320,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch(1)
+        }else{
+          this.$router.replace('/');
         }
       })
     }

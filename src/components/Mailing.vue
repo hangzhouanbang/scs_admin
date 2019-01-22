@@ -91,28 +91,22 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "Mailing",
     data() {
       return {
-        options: [{
-          value: '活动奖励',
-        }, {
-          value: '系统通知',
-        }, {
-          value: '活动通知',
-        }],
+        options: [
+          {value: '活动奖励'},
+          {value: '系统通知'},
+          {value: '活动通知'}
+        ],
         value: '活动奖励',
-        day: [{
-          value2: '1',
-        }, {
-          value2: '3',
-        }, {
-          value2: '7',
-        }, {
-          value2: '30',
-        }],
+        day: [
+          {value2: '1'},
+          {value2: '3'},
+          {value2: '7'},
+          {value2: '30'}
+        ],
         value2: '1',
         data: [],
         id: this.data,
@@ -125,10 +119,7 @@
         rules: {
           ids: [
             {required: true, message: '请输入ID', trigger: 'blur'}
-          ],
-          // number:[
-          //   {required: true, message: '请输入玉石数', trigger: 'blur'}
-          // ]
+          ]
         },
         radio:'',
         visible:false
@@ -140,15 +131,15 @@
         //console.log(req)
         const config = {
           headers: {'Content-Type': 'multipart/form-data'}
-        }
-        let filetype = ''
+        };
+        let filetype = '';
         if (req.file.type === 'image/png') {
           filetype = 'png'
         } else {
           filetype = 'jpg'
         }
         // 重命名要上传的文件
-        const keyname = 'anbang' + Math.random() + '.' + filetype
+        const keyname = 'anbang' + Math.random() + '.' + filetype;
         // 从后端获取上传凭证token
         axios({
           method: 'post',
@@ -160,10 +151,10 @@
             token:sessionStorage.getItem('token')
           }
         }).then(res => {
-          const formdata = new FormData()
-          formdata.append('file', req.file)
-          formdata.append('token', res.data.data)
-          formdata.append('key', keyname)
+          const formdata = new FormData();
+          formdata.append('file', req.file);
+          formdata.append('token', res.data.data);
+          formdata.append('key', keyname);
           // 获取到凭证之后再将文件上传到七牛云空间
           axios.post(this.domain, formdata, config).then(res => {
             this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
@@ -173,8 +164,8 @@
       },
       // 验证文件合法性
       beforeUpload(file) {
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-        const isLt2M = file.size / 1024 / 1024 < 2
+        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isJPG) {
           this.$message.error('上传头像图片只能是 JPG 格式!')
         }
@@ -185,13 +176,13 @@
       },
       //重置
       reset() {
-        this.filters.ids = ''
-        this.filters.number = ''
-        this.filters.integral = ''
+        this.filters.ids = '';
+        this.filters.number = '';
+        this.filters.integral = '';
         this.id = ''
       },
       changeInput(){
-        if(this.radio == 0){
+        if(this.radio === 0){
           this.visible = true;
         }else{
           this.visible = false;
@@ -201,12 +192,8 @@
       send() {
         // console.log(this.radio)
         if (this.filters.number < 0 || this.filters.integral < 0) {
-          this.$message({
-            showClose: true,
-            message: '金币或积分为正整数',
-            type: 'warning'
-          });
-        } else if(this.radio == 0){
+          this.$message({showClose: true, message: '金币或积分为正整数', type: 'warning'});
+        } else if(this.radio === 0){
           axios({
             method: 'post',
             url: this.global.mPath + '/mailctrl/addmailbyid',
@@ -224,35 +211,33 @@
               'validDay': this.value2,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                if (res.data.success == false) {
-                  this.$message({showClose: true, message: '发布失败', type: 'warning'});
-                } else if (res.data.success == true) {
-                  this.$message({showClose: true, message: '发布成功', type: 'success'});
-                  this.filters.ids = ''
-                  this.filters.number = ''
-                  this.filters.integral = ''
-                  this.id = ''
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            if (res.data.success) {
+              this.$message({showClose: true, message: '发布成功', type: 'success'});
+              this.filters.ids = '';
+              this.filters.number = '';
+              this.filters.integral = '';
+              this.id = ''
+            } else {
+              this.$message({showClose: true, message: '发布失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         }else{
           axios({
             method: 'post',
@@ -271,35 +256,33 @@
               'sendType': this.radio,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                if (res.data.success == false) {
-                  this.$message({showClose: true, message: '发布失败', type: 'warning'});
-                } else if (res.data.success == true) {
-                  this.$message({showClose: true, message: '发布成功', type: 'success'});
-                  this.filters.ids = ''
-                  this.filters.number = ''
-                  this.filters.integral = ''
-                  this.id = ''
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            if (res.data.success) {
+               this.$message({showClose: true, message: '发布成功', type: 'success'});
+              this.filters.ids = '';
+              this.filters.number = '';
+              this.filters.integral = '';
+              this.id = ''
+            } else {
+              this.$message({showClose: true, message: '发布失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 500:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                   this.loading = false;//隐藏加载条
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         }
       }
     },
@@ -312,10 +295,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
+        if(res.data.success === false){
           this.$router.replace('/');
         }
-      })
+      });
       axios({//查出所有会员卡
         method: 'post',
         url: this.global.mPath + '/mailctrl/find_vipcard',
@@ -325,28 +308,26 @@
         params:{
           'token':sessionStorage.getItem('token')
         }
-      })
-        .then((res) => {
-            this.data = res.data.data;
-            //console.log(this.data)
-          },
-        ).catch((e) => {
+      }).then((res) => {
+        this.data = res.data.data;
+        //console.log(this.data)
+      }).catch((e) => {
         if (e && e.response) {
           switch (e.response.status) {
             case 504:
               this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
-              break
+              break;
             case 500:
               this.$message({showClose: true, message: '服务器异常', type: 'warning'});
               this.loading = false;//隐藏加载条
-              break
+              break;
             case 405:
               this.$message({showClose: true, message: '请先登录', type: 'warning'});
               break
           }
         }
-      });
+      })
     }
   }
 </script>

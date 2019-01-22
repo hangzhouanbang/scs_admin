@@ -100,7 +100,6 @@
 
 <script>
   import axios from 'axios'
-
   export default {
     name: "SystemRecovery",
     data() {
@@ -111,13 +110,10 @@
         // 这是七牛云空间的外链默认域名
         qiniuaddr: 'qiniu.3cscy.com',
         memberDisplay: false,
-        options: [{
-          value: '选项1',
-          label: '不设置奖励'
-        }, {
-          value: '选项2',
-          label: '设置奖励'
-        }],
+        options: [
+          {value: '选项1', label: '不设置奖励'},
+          {value: '选项2', label: '设置奖励'}
+        ],
         value: '',
         normalForm: {},
         rules: {
@@ -129,9 +125,7 @@
           ]
         },
         list: [],
-        filters: {
-          name: ''
-        },
+        filters: {},
         total: 0,
         loading: false,
         addFormVisible: false,//系统维护页面是否显示
@@ -143,15 +137,15 @@
         //console.log(req)
         const config = {
           headers: {'Content-Type': 'multipart/form-data'}
-        }
-        let filetype = ''
+        };
+        let filetype = '';
         if (req.file.type === 'image/png') {
           filetype = 'png'
         } else {
           filetype = 'jpg'
         }
         // 重命名要上传的文件
-        const keyname = 'anbang' + Math.random() + '.' + filetype
+        const keyname = 'anbang' + Math.random() + '.' + filetype;
         // 从后端获取上传凭证token
         axios({
           method: 'post',
@@ -163,10 +157,10 @@
             token:sessionStorage.getItem('token')
           }
         }).then(res => {
-          const formdata = new FormData()
-          formdata.append('file', req.file)
-          formdata.append('token', res.data.data)
-          formdata.append('key', keyname)
+          const formdata = new FormData();
+          formdata.append('file', req.file);
+          formdata.append('token', res.data.data);
+          formdata.append('key', keyname);
           // 获取到凭证之后再将文件上传到七牛云空间
           axios.post(this.domain, formdata, config).then(res => {
             this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
@@ -176,8 +170,8 @@
       },
       // 验证文件合法性
       beforeUpload(file) {
-        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-        const isLt2M = file.size / 1024 / 1024 < 2
+        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isJPG) {
           this.$message.error('上传头像图片只能是 JPG 格式!')
         }
@@ -186,17 +180,16 @@
         }
         return isJPG && isLt2M
       },
-
       change() {
-        if (this.value == '选项1') {
+        if (this.value === '选项1') {
           this.memberDisplay = false;
-        } else if (this.value == '选项2') {
+        } else if (this.value === '选项2') {
           this.memberDisplay = true;
         }
       },
       //发布
       issue() {
-        if (this.normalForm.title == undefined || this.normalForm.title == "") {
+        if (this.normalForm.title === undefined || this.normalForm.title === "") {
           this.$message({showClose: true, message: '标题和图片不能为空', type: 'warning'});
         } else if (this.normalForm.number < 0 || this.normalForm.integral < 0 || this.normalForm.vipcard < 0) {
           this.$message({showClose: true, message: '请输入正整数', type: 'warning'});
@@ -216,18 +209,16 @@
               'vipcard': this.normalForm.vipcard,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                this.$message({showClose: true, message: '发布成功', type: 'success'});
-                this.normalForm.title = '';
-                this.normalForm.file = '';
-                this.normalForm.number = '';
-                this.normalForm.integral = '';
-                this.normalForm.vipcard = '';
-                this.addFormVisible = false;//关闭弹窗
-                this.handleSearch();
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            this.$message({showClose: true, message: '发布成功', type: 'success'});
+            this.normalForm.title = '';
+            this.normalForm.file = '';
+            this.normalForm.number = '';
+            this.normalForm.integral = '';
+            this.normalForm.vipcard = '';
+            this.addFormVisible = false;//关闭弹窗
+            this.handleSearch();
+          }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {
                 case 504:
@@ -246,17 +237,12 @@
                   break;
               }
             }
-          });
+          })
         }
       },
       showAddDialog: function () {
         this.addFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
+        this.addForm = {};
       },
       handleCurrentChange(val) {
         this.page = val;
@@ -277,33 +263,31 @@
             'adminname': this.filters.adminname,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              this.loading = false;//隐藏加载条
-              this.list = res.data.list;
-              this.total = res.data.count;//总页数
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          this.loading = false;//隐藏加载条
+          this.list = res.data.list;
+          this.total = res.data.count;//总页数
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
+        })
       },
       selsChange: function (sels) {
         this.sels = sels;
-      },
+      }
     },
     mounted() { //初始化页面
       axios({
@@ -314,10 +298,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
-        }else{
+        if(res.data.success){
           this.handleSearch()
+        }else{
+          this.$router.replace('/');
         }
       })
     }

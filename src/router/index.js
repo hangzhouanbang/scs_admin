@@ -59,6 +59,8 @@ import RedEnvelopeTaskRecord from '@/components/RedEnvelopeTaskRecord.vue'
 import CashManagement from '@/components/CashManagement.vue'
 import ForRecord from '@/components/ForRecord.vue'
 import WhitelistManagement from '@/components/WhitelistManagement.vue'
+import ProxyConsumptionRecord from '@/components/ProxyConsumptionRecord.vue'
+import AgentIncomeQuery from '@/components/AgentIncomeQuery.vue'
 
 Vue.config.devtools = true;
 Vue.use(Router)
@@ -146,12 +148,14 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-      name: '充值系统',
+      name: '财务系统',
       menuShow: true,
       iconCls: 'iconfont icon-chongzhi',
       children: [
         {path: '/orderManagement', component: OrderManagement, name: '订单管理', menuShow: true},
-        {path: '/reCharge', component: ReCharge, name: '充值记录', menuShow: true},
+        {path: '/reCharge', component: ReCharge, name: '游戏充值记录', menuShow: true},
+        {path: '/proxyConsumptionRecord', component: ProxyConsumptionRecord, name: '代理消费记录', menuShow: true},
+        {path: '/agentIncomeQuery', component: AgentIncomeQuery, name: '代理收益查询', menuShow: true},
       ]
     },
     {

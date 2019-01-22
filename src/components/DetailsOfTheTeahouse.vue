@@ -25,8 +25,8 @@
       <el-table-column prop="headimgurl" label="茶馆编码" width="120"></el-table-column>
       <el-table-column prop="id" label="茶馆名称" width="120"></el-table-column>
       <el-table-column prop="nickname" label="茶馆人数" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="所属推广员" width="160"  sortable="custom"></el-table-column>
-      <el-table-column prop="inviteMemberNum" label="创建时间" width="120"  sortable="custom"></el-table-column>
+      <el-table-column prop="createTime" label="所属推广员" width="160"></el-table-column>
+      <el-table-column prop="inviteMemberNum" label="创建时间" width="120"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="text" @click.native="manage(scope.$index,scope.row)">管理</el-button>
@@ -112,11 +112,11 @@
     export default {
       name: "DetailsOfTheTeahouse",
       data(){
-          return{
-            filters:{},
-            details:false,
-            list:[]
-          }
+        return{
+          filters:{},
+          details:false,
+          list:[]
+        }
       },
       methods:{
         manage(){

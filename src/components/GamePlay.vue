@@ -153,31 +153,29 @@
               size:'10',
               token:sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                this.playmethod = res.data.data.items;
-                this.total = res.data.data.pageCount;
-                for(let i = 0; i < this.playmethod.length;i++){
-                  // console.log(this.playmethod[i])
-                  if(this.playmethod[i].vip == true){
-                    this.playmethod[i].vip = '是';
-                  }else{
-                    this.playmethod[i].vip = '否';
-                  }
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            this.playmethod = res.data.data.items;
+            this.total = res.data.data.pageCount;
+            for(let i = 0; i < this.playmethod.length;i++){
+              // console.log(this.playmethod[i])
+              if(this.playmethod[i].vip === true){
+                this.playmethod[i].vip = '是';
+              }else{
+                this.playmethod[i].vip = '否';
+              }
+            }
+          }).catch((e) => {
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         selsChange: function (sels) {
           this.sels = sels;
@@ -188,7 +186,7 @@
         },
         referSubmit:function(){
           // console.log(this.adjustGame.id)
-          if(this.adjustGame.vip == '是'){
+          if(this.adjustGame.vip === '是'){
             this.adjustGame1.vip = true;
           }else{
             this.adjustGame1.vip = false;
@@ -208,28 +206,26 @@
               'vip':this.adjustGame1.vip,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                if (res.data.success == false) {
-                  this.$message({showClose: true, message: '调整失败', type: 'warning'});
-                } else if (res.data.success == true) {
-                  this.$message({showClose: true, message: '调整成功', type: 'success'});
-                  this.adjustGameVisible = false;//关闭弹窗
-                  this.handleSearch(1);
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            if (res.data.success) {
+              this.$message({showClose: true, message: '调整成功', type: 'success'});
+              this.adjustGameVisible = false;//关闭弹窗
+              this.handleSearch(1);
+            } else{
+              this.$message({showClose: true, message: '调整失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         },
         delBook:function(index,row){
           let that = this;
@@ -245,22 +241,20 @@
                 'lawId':row.id,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  // console.log(res.data.success)
-                  that.loading = false;
-                  if(res.data.success == true){
-                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    that.handleSearch(1);
-                  }else{
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((e) => {
+            }).then((res) => {
+              // console.log(res.data.success)
+              that.loading = false;
+              if(res.data.success){
+                that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                that.handleSearch(1);
+              }else{
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((e) => {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
-          });
+            })
+          })
         },
         batchDeleteBook:function(){
           let ids = this.sels.map(item => item.id).toString();
@@ -277,27 +271,25 @@
                 'lawId':ids,
                 'token':sessionStorage.getItem('token')
               }
-            })
-              .then((res) => {
-                  that.loading = false;
-                  if(res.data.success == true){
-                    that.$message.success({showClose: true, message: '删除成功', duration: 1500});
-                    that.handleSearch(1);
-                  }else{
-                    that.$message.error({showClose: true, message: err.toString(), duration: 2000});
-                  }
-                },
-              ).catch((error) => {
+            }).then((res) => {
+              that.loading = false;
+              if(res.data.success){
+                that.$message.success({showClose: true, message: '删除成功', duration: 1500});
+                that.handleSearch(1);
+              }else{
+                that.$message.error({showClose: true, message: err.toString(), duration: 2000});
+              }
+            }).catch((error) => {
               that.loading = false;
               that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
-            });
-          });
+            })
+          })
         },
         addplay:function(){
           this.addGameVisible = true;
         },
         addSubmit:function(){
-          if(this.addGame.vip == '是'){
+          if(this.addGame.vip === '是'){
             this.addGame1.vip = true;
           }else{
             this.addGame1.vip = false;
@@ -316,28 +308,26 @@
               'vip':this.addGame1.vip,
               'token':sessionStorage.getItem('token')
             }
-          })
-            .then((res) => {
-                if (res.data.success == false) {
-                  this.$message({showClose: true, message: '添加失败', type: 'warning'});
-                } else if (res.data.success == true) {
-                  this.$message({showClose: true, message: '添加成功', type: 'success'});
-                  this.addGameVisible = false;//关闭弹窗
-                  this.handleSearch(1);
-                }
-              },
-            ).catch((e) => {
+          }).then((res) => {
+            if (res.data.success) {
+              this.$message({showClose: true, message: '添加成功', type: 'success'});
+              this.addGameVisible = false;//关闭弹窗
+              this.handleSearch(1);
+            } else if (res.data.success) {
+              this.$message({showClose: true, message: '添加失败', type: 'warning'});
+            }
+          }).catch((e) => {
             if(e && e.response){
               switch (e.response.status) {
                 case 504:
                   this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-                  break
+                  break;
                 case 405:
                   this.$message({showClose: true, message: '请先登录', type: 'warning'});
                   break
               }
             }
-          });
+          })
         }
       },
       mounted(){
@@ -349,10 +339,10 @@
           }
         }).then((res) => {
           // console.log(res.data.success)
-          if(res.data.success == false){
-            this.$router.replace('/');
-          }else{
+          if(res.data.success){
             this.handleSearch(1)
+          }else{
+            this.$router.replace('/');
           }
         })
       }

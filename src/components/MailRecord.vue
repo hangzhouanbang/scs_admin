@@ -102,10 +102,7 @@
         filters: {},
         items: [],
         options: [
-          {
-            value: '',
-            label: '所有'
-          },
+          {value: '', label: '所有'},
           {value: '活动奖励'},
           {value: '系统通知'},
           {value: '活动通知'}
@@ -152,39 +149,37 @@
             'adminName': this.nickname,
             'token':sessionStorage.getItem('token')
           }
-        })
-          .then((res) => {
-              if (res.data.success == false) {
-                this.$message({showClose: true, message: '发布失败', type: 'warning'});
-              } else if (res.data.success == true) {
-                this.items = res.data.data.items;
-                this.total = res.data.data.pageCount;//总页数
-                //console.log(this.data)
-                for (let i = 0; i < this.items.length; i++) {
-                  this.items[i].systemMail.validTime = this.dateTimeFormat(this.items[i].systemMail.validTime);
-                  this.items[i].systemMail.createtime = this.dateTimeFormat(this.items[i].systemMail.createtime);
-                  this.items[i].rewardTime = this.dateTimeFormat(this.items[i].rewardTime);
-                }
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+          if (res.data.success) {
+            this.items = res.data.data.items;
+            this.total = res.data.data.pageCount;//总页数
+            //console.log(this.data)
+            for (let i = 0; i < this.items.length; i++) {
+              this.items[i].systemMail.validTime = this.dateTimeFormat(this.items[i].systemMail.validTime);
+              this.items[i].systemMail.createtime = this.dateTimeFormat(this.items[i].systemMail.createtime);
+              this.items[i].rewardTime = this.dateTimeFormat(this.items[i].rewardTime);
+            }
+          } else {
+            this.$message({showClose: true, message: '发布失败', type: 'warning'});
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
-      },
+        })
+      }
     },
     mounted() {
       axios({
@@ -195,42 +190,41 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
+        if(res.data.success){
+          this.handleSearch();
+          axios({//查出所有管理员名称
+            method: 'post',
+            url: this.global.mPath + '/admin/queryadmin',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
+            },
+            params:{
+              'token':sessionStorage.getItem('token')
+            }
+          }).then((res) => {
+            this.adminList = res.data.data.items;
+            //console.log(this.data)
+          }).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 500:
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 405:
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
+                  break
+              }
+            }
+          })
+        }else{
           this.$router.replace('/');
         }
       })
-      this.handleSearch();
-      axios({//查出所有管理员名称
-        method: 'post',
-        url: this.global.mPath + '/admin/queryadmin',
-        headers: {
-          'Content-type': 'application/x-www-form-urlencoded'
-        },
-        params:{
-          'token':sessionStorage.getItem('token')
-        }
-      })
-        .then((res) => {
-            this.adminList = res.data.data.items;
-            //console.log(this.data)
-          },
-        ).catch((e) => {
-        if (e && e.response) {
-          switch (e.response.status) {
-            case 504:
-              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-              this.loading = false;//隐藏加载条
-              break
-            case 500:
-              this.$message({showClose: true, message: '服务器异常', type: 'warning'});
-              this.loading = false;//隐藏加载条
-              break
-            case 405:
-              this.$message({showClose: true, message: '请先登录', type: 'warning'});
-              break
-          }
-        }
-      });
     }
   }
 </script>

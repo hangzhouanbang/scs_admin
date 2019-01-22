@@ -297,7 +297,6 @@
 <script>
   import axios from 'axios'
   import Clipboard from 'clipboard'
-
   export default {
     name: "NewVip",
     data() {
@@ -327,9 +326,7 @@
         tableData:[],
         details:{},
         vip: [],
-        filters: {
-          name: ''
-        },
+        filters: {},
         total: 0,
         page: 1,
         page1: 0,
@@ -351,12 +348,7 @@
             {required: true, message: '请输入身份证号', trigger: 'blur'}
           ]
         },
-        addForm: {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        },
+        addForm: {},
         giftcourse:false,
         noVipAmount:'',
         vipAmount:'',
@@ -406,62 +398,54 @@
             'memberId': row.id,
             'token':sessionStorage.getItem('token'),
           }
-        })
-          .then((res) => {
-            // console.log(res.data.data)
-              this.loading = false;//隐藏加载条
-              this.details = res.data.data;
-              this.tableData = res.data.data.roomList;
-              this.recordList = res.data.data.recordList.items;
-              for(let i = 0;i < this.tableData.length;i++){
-                if(this.tableData[i].vip == true){
-                  this.tableData[i].vip = '是'
-                }else{
-                  this.tableData[i].vip = '否'
-                }
-              }
-              for(let j = 0;j < this.recordList.length;j++){
-                this.recordList[j].finishTime = this.dateTimeFormat(this.recordList[j].finishTime)
-                if(this.recordList[j].game == 'ruianMajiang'){
-                  this.recordList[j].game = '瑞安麻将'
-                }
-                if(this.recordList[j].game == 'wenzhouMajiang'){
-                  this.recordList[j].game = '温州麻将'
-                }
-                if(this.recordList[j].game == 'fangpaoMajiang'){
-                  this.recordList[j].game = '放炮麻将'
-                }
-                if(this.recordList[j].game == 'dianpaoMajiang'){
-                  this.recordList[j].game = '点炮麻将'
-                }
-                if(this.recordList[j].game == 'wenzhouShuangkou'){
-                  this.recordList[j].game = '温州双扣'
-                }
-              }
-            },
-          ).catch((e) => {
+        }).then((res) => {
+        // console.log(res.data.data)
+          this.loading = false;//隐藏加载条
+          this.details = res.data.data;
+          this.tableData = res.data.data.roomList;
+          this.recordList = res.data.data.recordList.items;
+          for(let i = 0;i < this.tableData.length;i++){
+            if(this.tableData[i].vip === true){
+              this.tableData[i].vip = '是'
+            }else{
+              this.tableData[i].vip = '否'
+            }
+          }
+          for(let j = 0;j < this.recordList.length;j++){
+            this.recordList[j].finishTime = this.dateTimeFormat(this.recordList[j].finishTime);
+            if(this.recordList[j].game === 'ruianMajiang'){
+              this.recordList[j].game = '瑞安麻将'
+            }
+            if(this.recordList[j].game === 'wenzhouMajiang'){
+              this.recordList[j].game = '温州麻将'
+            }
+            if(this.recordList[j].game === 'fangpaoMajiang'){
+              this.recordList[j].game = '放炮麻将'
+            }
+            if(this.recordList[j].game === 'dianpaoMajiang'){
+              this.recordList[j].game = '点炮麻将'
+            }
+            if(this.recordList[j].game === 'wenzhouShuangkou'){
+              this.recordList[j].game = '温州双扣'
+            }
+          }
+        }).catch((e) => {
           if (e && e.response) {
             switch (e.response.status) {
               case 504:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 500:
                 this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                 this.loading = false;//隐藏加载条
-                break
+                break;
               case 405:
                 this.$message({showClose: true, message: '请先登录', type: 'warning'});
                 break
             }
           }
-        });
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
+        })
       },
       //赠送玉石
       givegold() {
@@ -470,9 +454,8 @@
         this.$confirm('确认赠送玉石吗？', '提示', {
           type: 'warning'
         }).then(() => {
-          if (this.normalForm.amount == undefined || this.normalForm.amount == "") {
-            this.$message({showClose: true, message: '不能为空', type: 'warning'
-            });
+          if (this.normalForm.amount === undefined || this.normalForm.amount === "") {
+            this.$message({showClose: true, message: '不能为空', type: 'warning'});
           }else {
             that.loading = true;
             axios({
@@ -488,7 +471,7 @@
               }
             }).then((res) => {
               that.loading = false;
-              if (res.data.success == true) {
+              if (res.data.success) {
                 that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
                 this.normalForm.amount = '';//清空内容
                 this.giveFormVisible = false;//关闭弹窗
@@ -504,17 +487,14 @@
                     this.loading = false;//隐藏加载条
                     break;
                   case 500:
-                    this.$message({showClose: true, message: '服务器异常', type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                     this.loading = false;//隐藏加载条
                     break;
                   case 405:
-                    this.$message({showClose: true, message: '请先登录', type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请先登录', type: 'warning'});
                     break;
                   case 400:
-                    this.$message({showClose: true, message: '请按要求输入', type: 'warning'
-                    });
+                    this.$message({showClose: true, message: '请按要求输入', type: 'warning'});
                     that.loading = false;
                     break;
                 }
@@ -526,12 +506,7 @@
       //赠送金币弹窗
       showgold: function () {
         this.giveFormVisible = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
+        this.addForm = {};
       },
       //赠送礼券
       giveintegral() {
@@ -541,7 +516,7 @@
         this.$confirm('确认赠送礼券吗？', '提示', {
           type: 'warning'
         }).then(() => {
-          if (this.normalForm.amount == undefined || this.normalForm.amount == "") {
+          if (this.normalForm.amount === undefined || this.normalForm.amount === "") {
             this.$message({showClose: true, message: '不能为空', type: 'warning'});
           }else {
             that.loading = true;
@@ -558,7 +533,7 @@
               }
             }).then((res) => {
               that.loading = false;
-              if (res.data.success == true) {
+              if (res.data.success) {
                 that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
                 this.normalForm.amount = '';//清空内容
                 this.givefromintegral = false;//关闭弹窗
@@ -592,12 +567,7 @@
       //赠送积分弹窗
       showintegral: function (index, row) {
         this.givefromintegral = true;
-        this.addForm = {
-          name: '',
-          author: '',
-          publishAt: '',
-          description: ''
-        };
+        this.addForm = {};
       },
       //赠送会员卡
       showcard:function(){
@@ -605,16 +575,16 @@
         this.other = false;
       },
       givecard:function(){
-        if(this.cardForm.mold == '日卡'){
+        if(this.cardForm.mold === '日卡'){
           this.cardForm1.mold = 1;
         }
-        if(this.cardForm.mold == '周卡'){
+        if(this.cardForm.mold === '周卡'){
           this.cardForm1.mold = 7;
         }
-        if(this.cardForm.mold == '月卡'){
+        if(this.cardForm.mold === '月卡'){
           this.cardForm1.mold = 30;
         }
-        if(this.cardForm.mold == '季卡'){
+        if(this.cardForm.mold === '季卡'){
           this.cardForm1.mold = 90;
         }
         let ids = this.sels.map(item => item.id).toString();
@@ -636,7 +606,7 @@
             }
           }).then((res) => {
             that.loading = false;
-            if (res.data.success == true) {
+            if (res.data.success) {
               that.$message.success({showClose: true, message: '赠送成功', duration: 1500});
               this.cardForm.mold = '';//清空内容
               this.givefromcard = false;//关闭弹窗
@@ -717,7 +687,7 @@
                 break
             }
           }
-        });
+        })
       },
       //按积分筛选
       integral(id) {
@@ -762,7 +732,7 @@
                 break
             }
           }
-        });
+        })
       },
       //绑定调整
       Bindingadjust:function(agentId){
@@ -817,16 +787,16 @@
         this.sels = sels;
       },
       handleSearch(goldSort,scoreSort,createTimeSort,vipSort,vipEndTimeSort,vipLevelSort,vipScoreSort,onlineStateSort,verifyUserSort){
-        if (this.identity == '会员用户') {//查询会员用户
+        if (this.identity === '会员用户') {//查询会员用户
           this.identity1 = true;
-        }else if(this.identity == '非会员用户') {
+        }else if(this.identity === '非会员用户') {
           this.identity1 = false;
         }else{
           this.identity1 = '';
         }
-        if(this.state == '在线'){
+        if(this.state === '在线'){
           this.state1 = 'online'
-        }else if(this.state == '下线'){
+        }else if(this.state === '下线'){
           this.state1 = 'offline'
         }else{
           this.state1 = ''
@@ -867,12 +837,12 @@
           for (let i = 0; i < this.vip.length; i++) {
             this.vip[i].vipEndTime = this.dateTimeFormat(this.vip[i].vipEndTime);
             this.vip[i].createTime = this.dateTimeFormat(this.vip[i].createTime);
-            if(this.vip[i].vip == true){
+            if(this.vip[i].vip === true){
               this.vip[i].vip = '是'
             }else{
               this.vip[i].vip = '否'
             }
-            if(this.vip[i].verifyUser == true){
+            if(this.vip[i].verifyUser === true){
               this.vip[i].verifyUser = '是'
             }else{
               this.vip[i].verifyUser = '否'
@@ -894,79 +864,79 @@
                 break
             }
           }
-        });
+        })
       },
       sort(a){
         this.sorting = a;
-        if(this.sorting.prop == 'gold'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'gold'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.gold = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.gold = 'DESC'
           }
         }
-        if(this.sorting.prop == 'score'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'score'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.score = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.score = 'DESC'
           }
         }
-        if(this.sorting.prop == 'createTime'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'createTime'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.createTime = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.createTime = 'DESC'
           }
         }
-        if(this.sorting.prop == 'vip'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'vip'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.vip = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.vip = 'DESC'
           }
         }
-        if(this.sorting.prop == 'vipEndTime'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'vipEndTime'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.vipEndTime = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.vipEndTime = 'DESC'
           }
         }
-        if(this.sorting.prop == 'vipLevel'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'vipLevel'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.vipLevel = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.vipLevel = 'DESC'
           }
         }
-        if(this.sorting.prop == 'vipScore'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'vipScore'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.vipScore = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.vipScore = 'DESC'
           }
         }
-        if(this.sorting.prop == 'onlineState'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'onlineState'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.onlineState = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.onlineState = 'DESC'
           }
         }
-        if(this.sorting.prop == 'verifyUser'){
-          if(this.sorting.order == 'ascending'){
+        if(this.sorting.prop === 'verifyUser'){
+          if(this.sorting.order === 'ascending'){
             this.sorting.verifyUser = 'ASC'
           }
-          if(this.sorting.order == 'descending'){
+          if(this.sorting.order === 'descending'){
             this.sorting.verifyUser = 'DESC'
           }
         }
@@ -975,12 +945,12 @@
       copy(){
         let clipboard = new Clipboard('.copy');
         clipboard.on('success', function(e) {
-          alert('复制成功')
+          alert('复制成功');
           clipboard.destroy()
         });
 
         clipboard.on('error', function(e) {
-          alert('复制失败，请手动复制')
+          alert('复制失败，请手动复制');
           clipboard.destroy()
         });
       }
@@ -994,10 +964,10 @@
         }
       }).then((res) => {
         // console.log(res.data.success)
-        if(res.data.success == false){
-          this.$router.replace('/');
+        if(res.data.success){
+           this.handleSearch()
         }else{
-          this.handleSearch()
+          this.$router.replace('/');
         }
       })
     }
