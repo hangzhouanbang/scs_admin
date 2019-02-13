@@ -25,13 +25,13 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="用户ID" label-width="68px">
-            <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+            <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入用户ID"></el-input>
           </el-form-item>
           <el-form-item label="昵称" label-width="68px">
-            <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+            <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入昵称"></el-input>
           </el-form-item>
           <el-form-item label="支付方式" label-width="68px">
-            <el-select v-model="filters.pay_type" placeholder="请选择"  clearable>
+            <el-select v-model="filters.pay_type" placeholder="请选择支付方式" @change="search()" clearable>
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -55,7 +55,7 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="订单状态" label-width="68px">
-            <el-select v-model="filters.status" placeholder="所有状态" clearable>
+            <el-select v-model="filters.status" placeholder="请选择订单状态" @change="search()" clearable>
               <el-option
                 v-for="item in status"
                 :key="item.value"
@@ -65,7 +65,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" v-on:click="handleSearch()">查询</el-button>
+            <el-button type="primary" v-on:click="chaxun()">查询</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="exportExcel">导出</el-button>
@@ -76,22 +76,22 @@
     <!-- 充值记录列表-->
     <el-table :data="users" highlight-current-row
               style="width: 100%;" id="out-table" @sort-change="sort">
-      <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="id" label="订单编号" width="120"></el-table-column>
-      <el-table-column prop="transaction_id" label="支付流水" width="120"></el-table-column>
-      <el-table-column prop="payerId" label="付款人ID" width="90"></el-table-column>
-      <el-table-column prop="payerName" label="付款人昵称" width="120"></el-table-column>
-      <el-table-column prop="productId" label="会员卡ID" width="120"></el-table-column>
-      <el-table-column prop="productName" label="会员卡名称" width="100"></el-table-column>
-      <el-table-column prop="productPrice" label="会员卡价格" width="120" sortable="custom"></el-table-column>
-      <el-table-column prop="number" label="购买数量" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="gold" label="单张会员卡赠送玉石" width="120"></el-table-column>
-      <el-table-column prop="score" label="单张会员卡赠送礼券" width="120"></el-table-column>
-      <el-table-column prop="vipTime" label="单张会员卡赠送VIP时间" width="120"></el-table-column>
-      <el-table-column prop="totalamount" label="总金额" width="100"  sortable="custom"></el-table-column>
-      <el-table-column prop="createTime" label="下单时间" width="110"  sortable="custom"></el-table-column>
-      <el-table-column prop="status" label="订单状态" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="pay_type" label="支付方式" width="120"  sortable="custom"></el-table-column>
+      <el-table-column type="index" width="auto"></el-table-column>
+      <el-table-column prop="id" label="订单编号" width="auto"></el-table-column>
+      <el-table-column prop="transaction_id" label="支付流水" width="auto"></el-table-column>
+      <el-table-column prop="payerId" label="付款人ID" width="auto"></el-table-column>
+      <el-table-column prop="payerName" label="付款人昵称" width="auto"></el-table-column>
+      <el-table-column prop="productId" label="会员卡ID" width="auto"></el-table-column>
+      <el-table-column prop="productName" label="会员卡名称" width="auto"></el-table-column>
+      <el-table-column prop="productPrice" label="会员卡价格" width="auto" sortable="custom"></el-table-column>
+      <el-table-column prop="number" label="购买数量" width="auto" sortable="custom"></el-table-column>
+      <el-table-column prop="gold" label="单张会员卡赠送玉石" width="auto"></el-table-column>
+      <el-table-column prop="score" label="单张会员卡赠送礼券" width="auto"></el-table-column>
+      <el-table-column prop="vipTime" label="单张会员卡赠送VIP时间" width="auto"></el-table-column>
+      <el-table-column prop="totalamount" label="总金额" width="auto" sortable="custom"></el-table-column>
+      <el-table-column prop="createTime" label="下单时间" width="auto" sortable="custom"></el-table-column>
+      <el-table-column prop="status" label="订单状态" width="auto" sortable="custom"></el-table-column>
+      <el-table-column prop="pay_type" label="支付方式" width="auto" sortable="custom"></el-table-column>
       <el-table-column prop="reqIP" label="下单地址" width="auto"></el-table-column>
     </el-table>
 
@@ -106,8 +106,8 @@
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
-                     style="float:right;">
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange"
+                     :page-size="1" :total="total" :current-page.sync = "page" style="float:right;">
       </el-pagination>
     </el-col>
   </el-row>
@@ -215,6 +215,13 @@
         },
         addSubmit(){
           this.addFormVisible = false;
+        },
+        search(){
+          this.page = 1;
+          this.handleSearch()
+        },
+        chaxun(){
+          this.search()
         },
         handleSearch(productPriceSort,numberSort,totalamountSort,createTimeSort,statusSort,pay_typeSort) {
           if(this.filters.status === '未付款'){

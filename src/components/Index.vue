@@ -35,7 +35,7 @@
             <img src="../assets/images/GA.png" alt="">
           </div>
           <div class="rightText">
-            <div class="num">{{filters1.amount}}</div>
+            <div class="num">{{filters.agentAmount}}</div>
             <div class="type">代理总数</div>
           </div>
         </div>
@@ -46,7 +46,7 @@
             <img src="../assets/images/sale.png" alt="">
           </div>
           <div class="rightText">
-            <div class="num">{{filters1.amount}}</div>
+            <div class="num">{{filters.totalSale}}</div>
             <div class="type">总销售额</div>
           </div>
         </div>
@@ -54,26 +54,26 @@
     </el-row>
 
     <!--柱状图-->
-    <div id="main" :style="{width: '400px', height: '400px',margin:'30px 0 30px 50px'}"></div>
+    <div id="main" :style="{width: 'auto', height: '400px',margin:'30px 0 30px 50px'}"></div>
 
     <div class="title">销售详情</div>
     <el-col :span="24" class="toolbar" style="padding-bottom: 0;margin-top:20px;">
-      <el-select v-model="year" placeholder="请选择年份" clearable style="margin-left:40px;" @change="handleSearch1(value1)">
+      <el-select v-model="year" placeholder="请选择年份" clearable style="margin-left:40px;width:120px;" @change="handleSearch1(value)">
         <el-option
           v-for="item in years"
           :key="item.value"
           :label="item.value"
           :value="item.value">
         </el-option>
-      </el-select>
-      <el-select v-model="value" clearable placeholder="请选择月份" style="margin-left:40px;" @change="handleSearch(value)">
+      </el-select> 年
+      <el-select v-model="yue" clearable placeholder="请选择月份" style="margin-left:20px;width:120px;" @change="handleSearch1(value)">
         <el-option
           v-for="item in month"
           :key="item.value"
           :label="item.value"
           :value="item.value">
         </el-option>
-      </el-select>
+      </el-select> 月
     </el-col>
 
     <div class="number" style="padding-top:56px;">平台消费</div>
@@ -84,8 +84,8 @@
             <img src="../assets/images/icon_rika.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters.memberRiAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.memberRiNum}}张</div>
+            <div class="type grey">{{filters1.memberRiAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -95,8 +95,8 @@
             <img src="../assets/images/icon_zhouka.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters.memberZhouAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.memberZhouNum}}张</div>
+            <div class="type grey">{{filters1.memberZhouAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -106,8 +106,8 @@
             <img src="../assets/images/icon_yueka.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters.memberYueAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.memberYueNum}}张</div>
+            <div class="type grey">{{filters1.memberYueAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -117,8 +117,8 @@
             <img src="../assets/images/icon_jika.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters.memberJiAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.memberJiAmount}}张</div>
+            <div class="type grey">{{filters1.memberJiNum}}元</div>
           </div>
         </div>
       </el-col>
@@ -132,8 +132,8 @@
             <img src="../assets/images/icon_rika.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters1.agentRiAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.agentRiNum}}张</div>
+            <div class="type grey">{{filters1.agentRiAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -143,8 +143,8 @@
             <img src="../assets/images/icon_zhouka.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters1.agentZhouAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.agentZhouNum}}张</div>
+            <div class="type grey">{{filters1.agentZhouAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -154,8 +154,8 @@
             <img src="../assets/images/icon_yueka.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters1.agentYueAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.agentYueNum}}张</div>
+            <div class="type grey">{{filters1.agentYueAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -165,8 +165,8 @@
             <img src="../assets/images/icon_jika.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters1.agentJiAmount}}张</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.agentJiNum}}张</div>
+            <div class="type grey">{{filters1.agentJiAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -176,8 +176,8 @@
             <img src="../assets/images/icon_jade.png" alt="" class="card">
           </div>
           <div class="rightText">
-            <div class="num">{{filters1.agentGoldAmount}}个</div>
-            <div class="type grey">412.00元</div>
+            <div class="num">{{filters1.agentYuNum}}个</div>
+            <div class="type grey">{{filters1.agentYuAmount}}元</div>
           </div>
         </div>
       </el-col>
@@ -192,60 +192,55 @@
       data(){
         return{
           years:[
-            {value:'2018年'},
-            {value:'2019年'},
-            {value:'2020年'},
-            {value:'2021年'},
-            {value:'2022年'},
-            {value:'2023年'},
-            {value:'2024年'},
-            {value:'2025年'},
+            {value:'2018'},
+            {value:'2019'},
+            {value:'2020'},
+            {value:'2021'},
+            {value:'2022'},
+            {value:'2023'},
+            {value:'2024'},
+            {value:'2025'},
           ],
           month:[
-            {value:'1月'},
-            {value:'2月'},
-            {value:'3月'},
-            {value:'4月'},
-            {value:'5月'},
-            {value:'6月'},
-            {value:'7月'},
-            {value:'8月'},
-            {value:'9月'},
-            {value:'10月'},
-            {value:'11月'},
-            {value:'12月'},
+            {value:'1'},
+            {value:'2'},
+            {value:'3'},
+            {value:'4'},
+            {value:'5'},
+            {value:'6'},
+            {value:'7'},
+            {value:'8'},
+            {value:'9'},
+            {value:'10'},
+            {value:'11'},
+            {value:'12'},
           ],
           filters:[],
           filters1:[],
           value:'',
           value1:'',
-          year:''
+          year:'',
+          yue:'',
+          yue1:'',
+          agentBuy:[],
+          totalAmount:[],
+          memberBuy:[]
         }
       },
       methods:{
-        handleSearch(month){
-          let myDate = new Date();
-          if(!month){
-            this.year = myDate.getFullYear() + '年';
-            this.value = myDate.getMonth()+1 +'月';
-          }
-          for(let i = 1;i < 13;i++){
-            if(month === i + '月'){
-              month = i
-            }
-          }
+        handleSearch(year){
           axios({
             method: 'post',
-            url: this.global.mPath + '/index/memberindex',
+            url: this.global.mPath + '/index/statistics',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'month': month,
+              'year': year,
               'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
-            // console.log(res.data)
+            // console.log(res.data.data)
             this.filters = res.data.data;
           }).catch((e) => {
             if (e && e.response) {
@@ -268,26 +263,34 @@
         handleSearch1(month){
           let myDate = new Date();
           if(!month){
-            this.value1 = myDate.getMonth()+1+'月';
-            this.year = myDate.getFullYear() + '年';
-          }
-          for(let i = 1;i < 13;i++){
-            if(month === i + '月'){
-              month = i
+            this.year = myDate.getFullYear();
+            this.yue = myDate.getMonth()+1;
+            if(this.yue < 10){
+              this.yue1 = '0' + this.yue
+            }else{
+              this.yue1 = this.yue
             }
+            this.value =  this.year +''+ this.yue1;
+          }else{
+            if(this.yue < 10){
+              this.yue1 = '0' + this.yue
+            }else{
+              this.yue1 = this.yue
+            }
+            this.value =  this.year + '' + this.yue1
           }
           axios({
             method: 'post',
-            url: this.global.mPath + '/index/agentindex',
+            url: this.global.mPath + '/index/salesDetails',
             headers: {
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'month': month,
+              'yearMonth': this.value,
               'token':sessionStorage.getItem('token')
             }
           }).then((res) => {
-            // console.log(res.data)
+            // console.log(res.data.data)
             this.filters1 = res.data.data;
           }).catch((e) => {
             if (e && e.response) {
@@ -308,108 +311,146 @@
           })
         },
         //柱状图
-        drawLine(){
-          let myChart = this.$echarts.init(document.getElementById('main'));
-          let option = {
-            tooltip : {
-              axisPointer : {
-                type : 'shadow'
-              }
+        drawLine(year){
+          let myDate = new Date();
+          this.value1 = myDate.getFullYear();
+          axios({
+            method: 'post',
+            url: this.global.mPath + '/index/histogram',
+            headers: {
+              'Content-type': 'application/x-www-form-urlencoded'
             },
-            title: {
-              text:'销售总额',
-              left:'left' ,
-              top:'0',
-              textStyle: {
-                color: '#666',
-                fontWeight: 'normal'
-              }
-            },
-            toolbox: {
-              feature: {
-                dataView: {show: false, readOnly: false},
-                magicType: {show: false, type: ['line', 'bar']},
-                restore: {show: false},
-                saveAsImage: {show: false}
-              }
-            },
-            grid: {
-              y: '10%',
-              y2: '10%',
-              x: '15%'
-            },
-            legend: {
-              data:['玩家消费收入','代理消费收入']
-            },
-            xAxis:{
-              type: 'category',
-              axisLabel:{
-                interval: 0,    // {number}
-                rotate: 0
-              },
-              data: ['星期三','星期四']
-            },
-            yAxis:{
-              type: 'value',
-              min: 0,
-              interval: 10000
-            },
-            series: [
-              {
-                name:'玩家消费收入',
-                type:'bar',
-                stack:'xxx',
-                barWidth: 50,
-                itemStyle: {
-                  normal: {
-                    color: '#37a2da'
-                  }
-                },
-                data: [["星期三",10000],["星期四",20000]]
-              },
-              {
-                name:'代理消费收入',
-                type:'bar',
-                stack:'xxx',
-                barWidth: 50,
-                itemStyle: {
-                  normal: {
-                    color: '#ffd85c'
-                  }
-                },
-                data:  [["星期三",11000],["星期四",21000]]
-              },
-              {
-                name:'合计',
-                type:'bar',
-                stack:'xxx',
-                barWidth: 50,
-                label: {
-                  normal: {
-                    show: true,
-                    position: 'top',
-                    textStyle: {
-                      color: '#000'
-                    },
-                    formatter:''
-                  }
-                },
-                data:  [["星期三",0],["星期四",0]]    //思路一：给series集合末尾多加一栏用于展示合计，但是值都是0；缺点：必须根据xAxis的data生成一组为空的数据，且tooltip不能加trigger: 'axis',这个条件，不然会展示合计：0
-              }
-            ]
-          };
-          let series = option["series"];
-          let arrayData = function (params) {
-            let data3 =0;
-            for(let i=0,l=series.length;i<l;i++){
-              data3 += series[i].data[params.dataIndex][1]
+            params: {
+              'year': year,
+              'token':sessionStorage.getItem('token')
             }
-            return data3
-          };
-          //加载页面时候替换最后一个series的formatter
-          series[series.length-1]["label"]["normal"]["formatter"] = arrayData;
-          // 使用刚指定的配置项和数据显示图表。
-          myChart.setOption(option);
+          }).then((res) => {
+            // console.log(res.data.data);
+            this.filters2 = res.data.data;
+            for(let i = 0;i < this.filters2.length;i++){
+              this.agentBuy.push([i+1+'月',this.filters2[i].agentBuy]);
+              this.memberBuy.push([i+1+'月',this.filters2[i].memberBuy]);
+              this.totalAmount.push([i+1+'月',this.filters2[i].totalAmount])
+            }
+
+            let myChart = this.$echarts.init(document.getElementById('main'));
+            let dataMouth = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+            let option = {
+              tooltip : {
+                axisPointer : {
+                  type : 'shadow'
+                }
+              },
+              title: {
+                text:'销售总额',
+                left:'left' ,
+                top:'0',
+                textStyle: {
+                  color: '#666',
+                  fontWeight: 'normal'
+                }
+              },
+              toolbox: {
+                feature: {
+                  dataView: {show: false, readOnly: false},
+                  magicType: {show: false, type: ['line', 'bar']},
+                  restore: {show: false},
+                  saveAsImage: {show: false}
+                }
+              },
+              grid: {
+                y: '10%',
+                y2: '10%',
+                x: '5%'
+              },
+              legend: {
+                data:['玩家消费收入','代理消费收入']
+              },
+              xAxis:{
+                type: 'category',
+                axisLabel:{
+                  interval: 0,    // {number}
+                  rotate: 0
+                },
+                data: dataMouth
+              },
+              yAxis:{
+                type: 'value',
+                min: 0,
+                interval: 10000
+              },
+              series: [
+                {
+                  name:'玩家消费收入',
+                  type:'bar',
+                  stack:'sum',
+                  barWidth: 50,
+                  itemStyle: {
+                    normal: {
+                      label:{
+                        show:true
+                      },
+                      color: '#37a2da'
+                    }
+                  },
+                  data: this.memberBuy
+                },
+                {
+                  name:'代理消费收入',
+                  type:'bar',
+                  stack:'sum',
+                  barWidth: 50,
+                  itemStyle: {
+                    normal: {
+                      label:{
+                        show:true
+                      },
+                      color: '#ffd85c'
+                    }
+                  },
+                  data: this.agentBuy
+                },
+                {
+                  name: '总计',
+                  type: 'bar',
+                  stack: 'sum',
+                  label: {
+                    normal: {
+                      offset:['50', '80'],
+                      show: true,
+                      position: 'insideBottom',
+                      formatter:'{c}',
+                      textStyle:{ color:'#000' }
+                    }
+                  },
+                  itemStyle:{
+                    normal:{
+                      color:'rgba(128, 128, 128, 0)'
+                    }
+                  },
+                  data: this.totalAmount
+                }
+              ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+          }).catch((e) => {
+            if (e && e.response) {
+              switch (e.response.status) {
+                case 504:
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 500:
+                  this.$message({showClose: true, message: '服务器异常', type: 'warning'});
+                  this.loading = false;//隐藏加载条
+                  break;
+                case 405:
+                  this.$message({showClose: true, message: '请先登录', type: 'warning'});
+                  break
+              }
+            }
+          })
         }
       },
       mounted(){
@@ -422,9 +463,11 @@
         }).then((res) => {
           // console.log(res.data.success)
           if(res.data.success){
-            this.handleSearch('');
+            let myDate = new Date();
+            this.year = myDate.getFullYear();
+            this.handleSearch( this.year);
             this.handleSearch1('');
-            this.drawLine()
+            this.drawLine(this.year);
           }else{
             this.$router.replace('/');
           }
@@ -464,6 +507,7 @@
   }
   .bg-purple div:first-child{
     font-size:20px;
+    margin-top:0;
   }
   .leftImg,
   .rightText{

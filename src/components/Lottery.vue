@@ -22,21 +22,21 @@
     <!-- 奖品设置列表-->
     <el-table :data="lottery" highlight-current-row
               style="width:100%;" id="out-table">
-      <el-table-column type="index" width="60" label="序号"></el-table-column>
-      <el-table-column prop="name" label="奖励备注" width="160"></el-table-column>
-      <el-table-column prop="type" label="类型" width="120"></el-table-column>
-      <el-table-column prop="singleNum" label="单奖数量" width="120"></el-table-column>
-      <el-table-column prop="lotteryNum" label="已抽取数量" width="120"></el-table-column>
-      <el-table-column prop="storeNum" label="库存数量" width="120"></el-table-column>
-      <el-table-column prop="iconUrl" label="icon图" width="120">
+      <el-table-column type="index" width="auto" label="序号"></el-table-column>
+      <el-table-column prop="name" label="奖励备注" width="auto"></el-table-column>
+      <el-table-column prop="type" label="类型" width="auto"></el-table-column>
+      <el-table-column prop="singleNum" label="单奖数量" width="auto"></el-table-column>
+      <el-table-column prop="lotteryNum" label="已抽取数量" width="auto"></el-table-column>
+      <el-table-column prop="storeNum" label="库存数量" width="auto"></el-table-column>
+      <el-table-column prop="iconUrl" label="icon图" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.iconUrl" alt="" style="width: 50px;height: 50px">
         </template>
       </el-table-column>
-      <el-table-column prop="prizeProb" label="中奖概率" width="120"></el-table-column>
-      <el-table-column prop="firstPrizeProb" label="首次中奖概率" width="160"></el-table-column>
-      <el-table-column prop="overstep" label="超额奖池" width="160"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="prizeProb" label="中奖概率" width="auto"></el-table-column>
+      <el-table-column prop="firstPrizeProb" label="首次中奖概率" width="auto"></el-table-column>
+      <el-table-column prop="overstep" label="超额奖池" width="auto"></el-table-column>
+      <el-table-column label="操作" width="auto">
         <template slot-scope="scope">
           <el-button size="small" @click="adjustmentDialog(scope.$index,scope.row)">调整</el-button>
           <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small" v-if="scope.row.type != null">删除</el-button>

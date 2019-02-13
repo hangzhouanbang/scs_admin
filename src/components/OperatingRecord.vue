@@ -12,10 +12,10 @@
       <el-col :span="24" class="toolbar" style="margin-top:30px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="用户ID">
-            <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch" placeholder="请输入用户ID"></el-input>
           </el-form-item>
           <el-form-item label="类型">
-            <el-select v-model="filters.type" clearable placeholder="请选择">
+            <el-select v-model="filters.type" clearable placeholder="请选择类型">
               <el-option
                 v-for="item in options"
                 :key="item.value"

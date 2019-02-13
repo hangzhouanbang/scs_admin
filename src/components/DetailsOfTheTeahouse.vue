@@ -11,7 +11,7 @@
     <el-col :span="24" class="toolbar" style="margin-top: 30px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="推广员ID">
-          <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch(1)" placeholder="请输入推广员ID"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>

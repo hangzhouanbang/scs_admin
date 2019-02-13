@@ -40,12 +40,12 @@
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;" @sort-change="sort">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
-        <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
-        <el-table-column prop="product" label="商品名称" width="100"></el-table-column>
-        <el-table-column prop="number" label="数量" width="100" sortable></el-table-column>
-        <el-table-column prop="accountingAmount" label="兑换消耗" width="100"></el-table-column>
-        <el-table-column prop="accountingTime" label="兑换时间" width="160" sortable></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="auto"></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="auto"></el-table-column>
+        <el-table-column prop="product" label="商品名称" width="auto"></el-table-column>
+        <el-table-column prop="number" label="数量" width="auto" sortable></el-table-column>
+        <el-table-column prop="accountingAmount" label="兑换消耗" width="auto"></el-table-column>
+        <el-table-column prop="accountingTime" label="兑换时间" width="auto" sortable></el-table-column>
         <el-table-column prop="balanceAfter" label="剩余积分" width="auto" sortable></el-table-column>
       </el-table>
       <!--工具条-->

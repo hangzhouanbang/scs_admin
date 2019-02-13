@@ -11,10 +11,10 @@
       <div class="stay_out">待处理（{{amount}}）</div>
       <el-form :inline="true" :model="filters" style="margin-top:10px;">
         <el-form-item label="推广员ID">
-          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch" placeholder="请输入推广员ID"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="filters.upgrade" placeholder="请选择">
+          <el-select v-model="filters.upgrade" placeholder="请选择状态">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -32,18 +32,18 @@
     <!-- 列表-->
     <el-table :data="list" highlight-current-row style="width:100%;" id="out-table">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="agentId" label="推广员ID" width="160"></el-table-column>
-      <el-table-column prop="agentName" label="昵称" width="120"></el-table-column>
-      <el-table-column prop="agentHeadimgurl" label="头像" width="100">
+      <el-table-column prop="agentId" label="推广员ID" width="auto"></el-table-column>
+      <el-table-column prop="agentName" label="昵称" width="auto"></el-table-column>
+      <el-table-column prop="agentHeadimgurl" label="头像" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.agentHeadimgurl" alt="" style="width: 50px;height: 50px;">
         </template>
       </el-table-column>
-      <el-table-column prop="agentType" label="等级" width="120"></el-table-column>
-      <el-table-column prop="accountingAmount" label="申请金额" width="120" sortable></el-table-column>
-      <el-table-column prop="accountingTime" label="申请时间" width="120" sortable></el-table-column>
-      <el-table-column prop="state" label="状态" width="160" sortable></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="agentType" label="等级" width="auto"></el-table-column>
+      <el-table-column prop="accountingAmount" label="申请金额" width="auto" sortable></el-table-column>
+      <el-table-column prop="accountingTime" label="申请时间" width="auto" sortable></el-table-column>
+      <el-table-column prop="state" label="状态" width="auto" sortable></el-table-column>
+      <el-table-column label="操作" width="auto">
         <template slot-scope="scope">
           <el-button size="small" @click="pass(scope.$index,scope.row)" v-if="scope.row.state == '待处理'">通过</el-button>
           <el-button size="small" @click="unpass(scope.$index,scope.row)" v-if="scope.row.state == '待处理'">驳回</el-button>

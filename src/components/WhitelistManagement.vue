@@ -10,11 +10,11 @@
     <!--工具条-->
     <el-col :span="24" class="toolbar">
       <el-form :inline="true" :model="filters">
-        <el-form-item>
-          <el-input v-model.trim="filters.playerId" placeholder="玩家ID" @keyup.enter.native="handleSearch(1)"></el-input>
+        <el-form-item label="玩家ID">
+          <el-input v-model.trim="filters.playerId" placeholder="请输入玩家ID" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input v-model.trim="filters.loginIp" placeholder="登录IP" @keyup.enter.native="handleSearch(1)"></el-input>
+        <el-form-item label="登录IP">
+          <el-input v-model.trim="filters.loginIp" placeholder="请输入登录IP" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
@@ -28,14 +28,14 @@
     <!-- 列表-->
     <el-table :data="list" highlight-current-row @selection-change="selsChange"
               style="width:100%;" id="out-table">
-      <el-table-column type="selection" width="60"></el-table-column>
-      <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="nickName" label="玩家昵称" width="120"></el-table-column>
-      <el-table-column prop="playerId" label="玩家ID" width="120"></el-table-column>
-      <el-table-column prop="loginIp" label="登录IP" width="150"></el-table-column>
-      <el-table-column prop="addTime" label="添加时间" width="160"></el-table-column>
-      <el-table-column prop="remark" label="备注" width="120"></el-table-column>
-      <el-table-column prop="operator" label="操作人" width="120"></el-table-column>
+      <el-table-column type="selection" width="auto"></el-table-column>
+      <el-table-column type="index" width="auto"></el-table-column>
+      <el-table-column prop="nickName" label="玩家昵称" width="auto"></el-table-column>
+      <el-table-column prop="playerId" label="玩家ID" width="auto"></el-table-column>
+      <el-table-column prop="loginIp" label="登录IP" width="auto"></el-table-column>
+      <el-table-column prop="addTime" label="添加时间" width="auto"></el-table-column>
+      <el-table-column prop="remark" label="备注" width="auto"></el-table-column>
+      <el-table-column prop="operator" label="操作人" width="auto"></el-table-column>
       <el-table-column prop="" label="操作" width="auto">
         <template slot-scope="scope">
           <el-button size="small" @click="deleteDialog(scope.$index,scope.row)">删除</el-button>
@@ -111,7 +111,7 @@
             method:'post',
             params:{
               page:page,
-              size:10,
+              size:15,
               token:sessionStorage.getItem('token'),
               playerId:this.filters.playerId,
               loginIp:this.filters.loginIp

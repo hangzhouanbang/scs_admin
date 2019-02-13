@@ -10,10 +10,10 @@
     <el-col :span="24" class="toolbar" style="margin-top:30px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="玩家ID" label-width="68px">
-          <el-input v-model.trim="filters.playerId" @keyup.enter.native="handleSearch(1)" style="width:220px;"></el-input>
+          <el-input v-model.trim="filters.playerId" @keyup.enter.native="handleSearch(1)" style="width:220px;" placeholder="请输入玩家ID"></el-input>
         </el-form-item>
         <el-form-item label="房间号" label-width="68px">
-          <el-input v-model.trim="filters.roomNo" @keyup.enter.native="handleSearch(1)" style="width:220px;"></el-input>
+          <el-input v-model.trim="filters.roomNo" @keyup.enter.native="handleSearch(1)" style="width:220px;" placeholder="请输入房间号"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
@@ -48,7 +48,7 @@
     <!--详情-->
     <el-dialog title="对局详情" :visible.sync="GameDetailsDialogVisible" :close-on-click-modal="false" class="game">
       <ul>
-        <li>
+        <li class="first">
           <span>总分</span>
           <span v-for="data in totalScore">{{data.nickname}}：{{data.totalScore}} |</span>
         </li>
@@ -62,8 +62,10 @@
               <i>{{data2.nickname}}</i><br>
               <i>{{data2.score}}</i>
             </span>
-            <span v-if="data1.codeStatus = 1">回放码：{{data1.code}}</span>
-            <span v-if="data1.codeStatus = 0" @click.native="playbackyards">回放码：<i>生成</i></span>
+            <span v-if="data1.codeStatus == 1">回放码：{{data1.code}}</span>
+            <span v-if="data1.codeStatus == 0">回放码：
+              <el-button type="text" @click.native="generate(data1.no,data1.game,data1.gameId)" class="shengcheng">生成</el-button>
+            </span>
           </div>
         </li>
       </ul>
@@ -131,11 +133,11 @@
                     case 504:
                       this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                       this.loading = false;//隐藏加载条
-                      break
+                      break;
                     case 500:
                       this.$message({showClose: true, message: '服务器异常', type: 'warning'});
                       this.loading = false;//隐藏加载条
-                      break
+                      break;
                     case 405:
                       this.$message({showClose: true, message: '请先登录', type: 'warning'});
                       break
@@ -144,8 +146,11 @@
               })
             },
             particulars(index,row){
-              this.GameDetailsDialogVisible = true
-              this.info = row
+              this.GameDetailsDialogVisible = true;
+              this.info = row;
+              this.detail(row.gameId)
+            },
+            detail(gameId){
               axios({
                 method: 'post',
                 url: this.global.mPath + '/game/queryroomdetail',
@@ -153,14 +158,14 @@
                   'Content-type': 'application/x-www-form-urlencoded'
                 },
                 params: {
-                  'gameId':row.gameId,
+                  'gameId':gameId,
                   'token':sessionStorage.getItem('token')
                 }
               })
                 .then((res) => {
                   // console.log(res.data.data)
-                  this.totalScore = res.data.data.totalScore
-                  this.List = res.data.data.list
+                  this.totalScore = res.data.data.totalScore;
+                  this.List = res.data.data.list;
                   // console.log(this.List)
                   for(let i = 0;i < this.List.length;i++){
                     this.List[i].finishTime = this.dateTimeFormat(this.List[i].finishTime)
@@ -168,7 +173,7 @@
                   }
                 })
             },
-            playbackyards(){
+            generate(no,game,gameId){
               axios({
                 method: 'post',
                 url: this.global.mPath + '/game/get_backcode',
@@ -176,16 +181,16 @@
                   'Content-type': 'application/x-www-form-urlencoded'
                 },
                 params: {
-                  'game':this.info.roomType,
-                  'panNo':this.info.countPan,
-                  'gameId':this.info.gameId,
+                  'game':game,
+                  'panNo':no,
+                  'gameId':gameId,
                   'token':sessionStorage.getItem('token')
                 }
               })
                 .then((res) => {
                   // console.log(res.data)
                   if(res.data.success){
-                    this.particulars()
+                    this.detail(this.info.gameId)
                   }
                 })
             },
@@ -209,6 +214,12 @@
       li{
         border-bottom:1px solid #606266;
         position: relative;
+        div{
+          margin-bottom:5px;
+        }
+        div:nth-child(1){
+          margin-top:10px;
+        }
         span:nth-child(1){
           width:96px;
           height:45px;
@@ -228,6 +239,12 @@
           i{
             font-style:normal;
             color:#409EFF;
+          }
+        }
+        .shengcheng{
+          span{
+            width:0;
+            height:0;
           }
         }
       }

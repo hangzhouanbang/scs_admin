@@ -10,10 +10,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="推广员ID">
-          <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch(1)" placeholder="请输入推广员ID"></el-input>
         </el-form-item>
         <el-form-item label="推广员昵称">
-          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)" placeholder="请输入推广员昵称"></el-input>
         </el-form-item>
         <el-form-item label="购买时间" label-width="68px">
           <el-date-picker

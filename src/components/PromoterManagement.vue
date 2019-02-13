@@ -19,19 +19,19 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="推广员ID">
-          <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch(1)" placeholder="请输入推广员ID"></el-input>
         </el-form-item>
         <el-form-item label="推广员昵称">
-          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)" placeholder="请输入推广员昵称"></el-input>
         </el-form-item>
         <el-form-item label="上级推广员ID">
-          <el-input v-model.trim="filters.bossId" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.bossId" @keyup.enter.native="handleSearch(1)" placeholder="请输入上级推广员ID"></el-input>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-input v-model.trim="filters.phone" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.phone" @keyup.enter.native="handleSearch(1)" placeholder="请输入手机号码"></el-input>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model.trim="filters.userName" placeholder="姓名" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.userName" placeholder="请输入姓名" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item label="注册时间" label-width="68px">
           <el-date-picker
@@ -48,7 +48,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="推广员等级" label-width="83px">
-          <el-select v-model="filters.mailType" placeholder="请选择" style="width:202px;" clearable>
+          <el-select v-model="filters.mailType" placeholder="请选择等级" style="width:202px;" @change="search()" clearable>
             <el-option
               v-for="item in options"
               :key="item.id"
@@ -58,7 +58,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
+          <el-button type="primary" v-on:click="chaxun()">查询</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -66,21 +66,21 @@
     <!-- 推广员管理列表-->
     <el-table :data="record" highlight-current-row style="width: 100%;" @sort-change="sort">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="headimgurl" label="推广员头像" width="120">
+      <el-table-column prop="headimgurl" label="推广员头像" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.headimgurl" alt="" style="width: 50px;height: 50px">
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="推广员ID" width="120"></el-table-column>
-      <el-table-column prop="nickname" label="推广员昵称" width="150"></el-table-column>
-      <el-table-column prop="createTime" label="注册时间" width="160"  sortable="custom"></el-table-column>
-      <el-table-column prop="inviteMemberNum" label="邀请玩家数" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="juniorNum" label="下级数量" width="120"  sortable="custom"></el-table-column>
-      <el-table-column prop="agentType.type" label="当前级别" width="120"></el-table-column>
-      <el-table-column prop="bossId" label="上级推广员ID" width="120"></el-table-column>
-      <el-table-column prop="agentType.memberReward" label="充值返利" width="120"></el-table-column>
-      <el-table-column prop="agentType.juniorReward" label="下级返利" width="120"></el-table-column>
-      <el-table-column label="状态" prop="state"  sortable="custom" width="120"></el-table-column>
+      <el-table-column prop="id" label="推广员ID" width="auto"></el-table-column>
+      <el-table-column prop="nickname" label="推广员昵称" width="auto"></el-table-column>
+      <el-table-column prop="createTime" label="注册时间" width="auto"  sortable="custom"></el-table-column>
+      <el-table-column prop="inviteMemberNum" label="邀请玩家数" width="auto"  sortable="custom"></el-table-column>
+      <el-table-column prop="juniorNum" label="下级数量" width="auto"  sortable="custom"></el-table-column>
+      <el-table-column prop="agentType.type" label="当前级别" width="auto"></el-table-column>
+      <el-table-column prop="bossId" label="上级推广员ID" width="auto"></el-table-column>
+      <el-table-column prop="agentType.memberReward" label="充值返利" width="auto"></el-table-column>
+      <el-table-column prop="agentType.juniorReward" label="下级返利" width="auto"></el-table-column>
+      <el-table-column label="状态" prop="state"  sortable="custom" width="auto"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="text" @click.native="particulars(scope.$index,scope.row)">查看</el-button>
@@ -410,7 +410,7 @@
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :current-page.sync = "page" :page-size="1" :total="total"
                      style="float:right;">
       </el-pagination>
     </el-col>
@@ -497,6 +497,13 @@
           let minutes = time.getMinutes();
           let seconds = time.getSeconds();
           return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
+        },
+        search(){
+          this.page = 1;
+          this.handleSearch(1)
+        },
+        chaxun(){
+          this.search()
         },
         handleSearch(page,inviteMemberNumSort,juniorNumSort,createTimeSort,stateSort){
           if(this.filters.startTime){

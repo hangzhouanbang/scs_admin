@@ -10,8 +10,8 @@
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
-        <el-form-item>
-          <el-input v-model.trim="filters.nickname" placeholder="任务名" @keyup.enter.native="handleSearch(1)"></el-input>
+        <el-form-item label="任务名">
+          <el-input v-model.trim="filters.nickname" placeholder="请输入任务名" @keyup.enter.native="handleSearch(1)"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>
@@ -278,7 +278,7 @@
             },
             params: {
               page:page,
-              size:10,
+              size:15,
               name:this.filters.nickname,
               type:'',
               token:sessionStorage.getItem('token')

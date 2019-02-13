@@ -61,6 +61,7 @@ import ForRecord from '@/components/ForRecord.vue'
 import WhitelistManagement from '@/components/WhitelistManagement.vue'
 import ProxyConsumptionRecord from '@/components/ProxyConsumptionRecord.vue'
 import AgentIncomeQuery from '@/components/AgentIncomeQuery.vue'
+import RobotManagement from '@/components/RobotManagement.vue'
 
 Vue.config.devtools = true;
 Vue.use(Router)
@@ -97,6 +98,7 @@ export default new Router({
         {path: '/limitLogin', component: LimitLogin, name: '限制登录', menuShow: true},
         {path: '/operatingRecord', component: OperatingRecord, name: '操作纪录', menuShow: true},
         {path: '/housekeeping', component: Housekeeping, name: '房间管理', menuShow: true},
+        {path: '/robotManagement', component: RobotManagement, name: '机器人管理', menuShow: true},
       ]
     },
     {

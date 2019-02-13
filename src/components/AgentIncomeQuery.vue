@@ -35,13 +35,13 @@
     <el-col :span="24" class="toolbar" style="padding-bottom:0;margin-top:30px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="推广员ID" label-width="80px">
-          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入推广员ID"></el-input>
         </el-form-item>
         <el-form-item label="玩家ID" label-width="68px">
-          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;"></el-input>
+          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch()" style="width:220px;" placeholder="请输入玩家ID"></el-input>
         </el-form-item>
         <el-form-item label="返利类型" label-width="68px">
-          <el-select v-model="filters.rewardType" placeholder="请选择"  clearable>
+          <el-select v-model="filters.rewardType" placeholder="请选择返利类型" @change="search()" clearable>
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -65,7 +65,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" v-on:click="handleSearch()">查询</el-button>
+          <el-button type="primary" v-on:click="chaxun()">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="exportExcel">导出</el-button>
@@ -76,17 +76,17 @@
     <!-- 充值记录列表-->
     <el-table :data="users" highlight-current-row
               style="width: 100%;" id="out-table" ref="table" :height="tableHeight">
-      <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="agentId" label="收益代理" width="120"></el-table-column>
-      <el-table-column prop="agentName" label="代理昵称" width="120"></el-table-column>
-      <el-table-column prop="bossId" label="上级代理" width="120"></el-table-column>
-      <el-table-column prop="accountingAmount" label="返利金额" width="120"></el-table-column>
-      <el-table-column prop="rewardType" label="返利类型" width="120"></el-table-column>
-      <el-table-column prop="pruduct" label="返利商品" width="120"></el-table-column>
-      <el-table-column prop="totalamount" label="支付金额" width="120"></el-table-column>
-      <el-table-column prop="memberId" label="消费玩家" width="120"></el-table-column>
-      <el-table-column prop="memberName" label="玩家昵称" width="150"></el-table-column>
-      <el-table-column prop="memberHeadimgurl" label="玩家头像" width="120">
+      <el-table-column type="index" width="auto"></el-table-column>
+      <el-table-column prop="agentId" label="收益代理" width="auto"></el-table-column>
+      <el-table-column prop="agentName" label="代理昵称" width="auto"></el-table-column>
+      <el-table-column prop="bossId" label="上级代理" width="auto"></el-table-column>
+      <el-table-column prop="accountingAmount" label="返利金额" width="auto"></el-table-column>
+      <el-table-column prop="rewardType" label="返利类型" width="auto"></el-table-column>
+      <el-table-column prop="pruduct" label="返利商品" width="auto"></el-table-column>
+      <el-table-column prop="totalamount" label="支付金额" width="auto"></el-table-column>
+      <el-table-column prop="memberId" label="消费玩家" width="auto"></el-table-column>
+      <el-table-column prop="memberName" label="玩家昵称" width="auto"></el-table-column>
+      <el-table-column prop="memberHeadimgurl" label="玩家头像" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.memberHeadimgurl" alt="" class="pic">
         </template>
@@ -105,8 +105,8 @@
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
-                     style="float:right;">
+      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange"
+                     :page-size="1" :total="total" :current-page.sync = "page" style="float:right;">
       </el-pagination>
     </el-col>
 
@@ -126,7 +126,6 @@
         },
         users:[],
         options:[
-          {value:'全部'},
           {value:'一级'},
           {value:'二级'},
         ],
@@ -162,9 +161,6 @@
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
       },
       exportExcel(){
-        if(this.filters.rewardType === '全部'){
-          this.filters.rewardType = ''
-        }
         if(this.filters.startTime){
           let date = new Date(this.filters.startTime);
           this.state.startTime = date.getTime();
@@ -193,6 +189,13 @@
       },
       addSubmit(){
         this.addFormVisible = false;
+      },
+      search(){
+        this.page = 1;
+        this.handleSearch()
+      },
+      chaxun(){
+        this.search()
       },
       handleSearch(){
         if(this.filters.rewardType === '全部'){
@@ -288,7 +291,7 @@
       img{
         width: 70px;
         height: 70px;
-        margin: 15px 0 0 5px;
+        margin: -4px 0 0 5px;
       }
     }
     .right{

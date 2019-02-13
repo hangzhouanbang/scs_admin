@@ -4,27 +4,15 @@
     <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>会员中心</b></el-breadcrumb-item>
-        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+        <el-breadcrumb-item>机器人管理</el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
 
     <el-row :gutter="20" style="margin-top:30px;">
       <el-col :span="6">
         <div class="grid-content bg-purple">
-          <div class="type">所有用户</div>
-          <div class="num">{{amount}}人</div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="grid-content bg-purple">
-          <div class="type">会员用户</div>
-          <div class="num">{{vipAmount}}人</div>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="grid-content bg-purple">
-          <div class="type">非会员用户</div>
-          <div class="num">{{noVipAmount}}人</div>
+          <div class="type">所有机器人</div>
+          <div class="num">{{amount}}</div>
         </div>
       </el-col>
     </el-row>
@@ -34,10 +22,10 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="用户ID">
-            <el-input v-model.trim="filters.id" placeholder="请输入用户ID" @keyup.enter.native="search()"></el-input>
+            <el-input v-model.trim="filters.id" placeholder="请输入用户ID" @keyup.enter.native="handleSearch()"></el-input>
           </el-form-item>
           <el-form-item label="用户昵称">
-            <el-input v-model.trim="filters.nickname" placeholder="请输入用户昵称" @keyup.enter.native="search()"></el-input>
+            <el-input v-model.trim="filters.nickname" placeholder="请输入用户昵称" @keyup.enter.native="handleSearch()"></el-input>
           </el-form-item>
           <el-form-item label="用户身份">
             <el-select v-model="identity" placeholder="请选择用户身份" @change="search()" clearable>
@@ -84,14 +72,6 @@
         <el-table-column prop="vipLevel" label="会员等级" width="auto" sortable="custom"></el-table-column>
         <el-table-column prop="vipScore" label="会员积分" width="auto" sortable="custom"></el-table-column>
         <el-table-column prop="onlineState" label="在线状态" width="auto" sortable="custom"></el-table-column>
-        <el-table-column prop="verifyUser" label="是否通过实名认证" width="auto" sortable="custom"></el-table-column>
-        <el-table-column prop="agentId" label="绑定推广员" width="auto"></el-table-column>
-        <el-table-column label="流水" width="auto">
-          <template slot-scope="scope">
-            <el-button type="primary" @click="goldwathercourse(scope.row.id)" style="margin:0;">玉石</el-button>
-            <el-button type="primary" @click="integral(scope.row.id)" style="margin:10px 0 0 0;">礼券</el-button>
-          </template>
-        </el-table-column>
         <el-table-column prop="other" label="其他信息" width="auto">
           <template slot-scope="scope">
             <el-button type="text" @click="showother(scope.$index,scope.row)">详细信息</el-button>
@@ -155,20 +135,20 @@
 
       <!--玉石流水-->
       <el-dialog title="流水" :visible.sync="watercourse" :close-on-click-modal="false" style="padding-bottom:20px;">
-          <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                    style="width: 100%;">
-            <el-table-column prop="accountingNo" label="流水号" width="90"></el-table-column>
-            <el-table-column prop="accountingAmount" label="变化数量" width="100"></el-table-column>
-            <el-table-column prop="balanceAfter" label="剩余量" width="90"></el-table-column>
-            <el-table-column prop="summary.text" label="操作原因" width="150"></el-table-column>
-            <el-table-column prop="accountingTime" label="操作时间" width="auto"></el-table-column>
-          </el-table>
-          <!--工具条-->
-          <el-col :span="24" class="toolbars">
-            <el-pagination layout="prev, pager, next" @current-change="ChangePage" :page-size="1" :total="total1"
-                           style="float:right;" :current-page.sync = "page">
-            </el-pagination>
-          </el-col>
+        <el-table :data="items" highlight-current-row @selection-change="selsChange"
+                  style="width: 100%;">
+          <el-table-column prop="accountingNo" label="流水号" width="90"></el-table-column>
+          <el-table-column prop="accountingAmount" label="变化数量" width="100"></el-table-column>
+          <el-table-column prop="balanceAfter" label="剩余量" width="90"></el-table-column>
+          <el-table-column prop="summary.text" label="操作原因" width="150"></el-table-column>
+          <el-table-column prop="accountingTime" label="操作时间" width="auto"></el-table-column>
+        </el-table>
+        <!--工具条-->
+        <el-col :span="24" class="toolbars">
+          <el-pagination layout="prev, pager, next" @current-change="ChangePage" :page-size="1" :total="total1"
+                         style="float:right;" :current-page.sync = "page">
+          </el-pagination>
+        </el-col>
       </el-dialog>
 
       <!--礼券流水-->
@@ -298,7 +278,7 @@
   import axios from 'axios'
   import Clipboard from 'clipboard'
   export default {
-    name: "NewVip",
+    name: "RobotManagement",
     data() {
       return {
         sels: [], //列表选中列
@@ -328,8 +308,8 @@
         vip: [],
         filters: {},
         total: 0,
-        total1: 0,
         page: 1,
+        total1:0,
         page1: 0,
         limit: 10,
         loading: false,
@@ -400,7 +380,7 @@
             'token':sessionStorage.getItem('token'),
           }
         }).then((res) => {
-        // console.log(res.data.data)
+          // console.log(res.data.data)
           this.loading = false;//隐藏加载条
           this.details = res.data.data;
           this.tableData = res.data.data.roomList;
@@ -649,8 +629,8 @@
       goldwathercourse(id) {
         sessionStorage.setItem('id',id);
         this.watercourse = true;
-        this.jade(id,1);
         this.page = 1;
+        this.jade(id,1);
       },
       jade(memberId,page){
         axios({
@@ -754,7 +734,7 @@
             'token':sessionStorage.getItem('token')
           }
         }).then((res) => {
-         // console.log(res.data)
+          // console.log(res.data)
           if(res.data.success){
             this.$message.success({showClose: true, message: '修改成功', duration: 1500});
             this.Bindingtoadjust = false;
@@ -824,6 +804,7 @@
             'nickname':this.filters.nickname,
             'isVip':this.identity1,
             'onlineState':this.state1,
+            'robot':true,
             'goldSort':goldSort,
             'scoreSort':scoreSort,
             'createTimeSort':createTimeSort,
@@ -976,7 +957,7 @@
       }).then((res) => {
         // console.log(res.data.success)
         if(res.data.success){
-           this.handleSearch()
+          this.handleSearch()
         }else{
           this.$router.replace('/');
         }
@@ -1005,7 +986,7 @@
     width: 100%;
   }
   .el-dialog__body{
-   padding-bottom:60px;
+    padding-bottom:60px;
   }
   .el-dialog__wrapper:nth-child(8){
     left:10%;

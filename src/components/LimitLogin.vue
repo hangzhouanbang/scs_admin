@@ -10,8 +10,8 @@
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0;">
       <el-form :inline="true" :model="filters">
-        <el-form-item>
-          <el-input v-model.trim="filters.id" placeholder="用户ID" @keyup.enter.native="handleSearch()"></el-input>
+        <el-form-item label="用户ID">
+          <el-input v-model.trim="filters.id" placeholder="请输入用户ID" @keyup.enter.native="handleSearch()"></el-input>
         </el-form-item>
         <el-button type="primary" @click="handleSearch()">查询</el-button>
         <el-button type="primary" @click="addLimit()">新建限制</el-button>

@@ -10,13 +10,13 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="游戏ID">
-          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch(1)" placeholder="请输入游戏ID"></el-input>
         </el-form-item>
         <el-form-item label="游戏昵称">
-          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)" placeholder="请输入游戏昵称"></el-input>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)" placeholder="请输入手机号码"></el-input>
         </el-form-item>
         <el-form-item label="时间">
           <el-date-picker
@@ -33,7 +33,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="filters.type" placeholder="请选择" clearable style="width:202px;">
+          <el-select v-model="filters.type" placeholder="请选择类型" clearable style="width:202px;">
             <el-option
             v-for="item in options"
             :key="item.value"

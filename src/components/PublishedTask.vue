@@ -12,13 +12,13 @@
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
-          <el-form-item>
-            <el-input v-model.trim="filters.taskDocId" placeholder="任务ID"></el-input>
+          <el-form-item label="任务ID">
+            <el-input v-model.trim="filters.taskDocId" placeholder="请输入任务ID"></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-input v-model.trim="filters.promulgator" placeholder="管理员名称"></el-input>
+          <el-form-item label="管理员名称">
+            <el-input v-model.trim="filters.promulgator" placeholder="请输入管理员名称"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="发布对象">
             <el-select v-model="filters.vip" placeholder="请选择发布对象" clearable>
               <el-option
                 v-for="item in options"
@@ -28,7 +28,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="任务类型">
             <el-select v-model="filters.type" placeholder="请选择任务类型" clearable>
               <el-option
                 v-for="(item,index) in data"
@@ -46,18 +46,18 @@
     <!-- 任务列表-->
     <el-table :data="items" highlight-current-row @selection-change="selsChange"
               style="width: 100%;">
-      <el-table-column type="selection" width="50"></el-table-column>
-      <el-table-column type="index" width="50"></el-table-column>
-      <el-table-column prop="taskDocId" label="任务ID" width="120"></el-table-column>
-      <el-table-column prop="promulgator" label="管理员名称" width="120"></el-table-column>
-      <el-table-column prop="name" label="任务名称" width="100"></el-table-column>
-      <el-table-column prop="desc" label="详细描述" width="100"></el-table-column>
-      <el-table-column prop="type" label="任务类型" width="100"></el-table-column>
-      <el-table-column prop="rewardType" label="奖励类型" width="120"></el-table-column>
-      <el-table-column prop="rewardNum" label="奖励数量" width="100"></el-table-column>
-      <el-table-column prop="targetNum" label="完成次数" width="100"></el-table-column>
-      <el-table-column prop="weight" label="权重" width="100"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column type="selection" width="auto"></el-table-column>
+      <el-table-column type="index" width="auto"></el-table-column>
+      <el-table-column prop="taskDocId" label="任务ID" width="auto"></el-table-column>
+      <el-table-column prop="promulgator" label="管理员名称" width="auto"></el-table-column>
+      <el-table-column prop="name" label="任务名称" width="auto"></el-table-column>
+      <el-table-column prop="desc" label="详细描述" width="auto"></el-table-column>
+      <el-table-column prop="type" label="任务类型" width="auto"></el-table-column>
+      <el-table-column prop="rewardType" label="奖励类型" width="auto"></el-table-column>
+      <el-table-column prop="rewardNum" label="奖励数量" width="auto"></el-table-column>
+      <el-table-column prop="targetNum" label="完成次数" width="auto"></el-table-column>
+      <el-table-column prop="weight" label="权重" width="auto"></el-table-column>
+      <el-table-column label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="danger" @click="deletetask(scope.$index,scope.row)" size="small">删除</el-button>
         </template>

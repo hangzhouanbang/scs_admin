@@ -37,14 +37,14 @@
 
       <!-- 会员卡流水列表-->
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
-        <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="playerId" label="玩家ID" width="140"></el-table-column>
-        <el-table-column prop="nickName" label="玩家昵称" width="140"></el-table-column>
-        <el-table-column prop="rewardType" label="奖励类型" width="120"></el-table-column>
-        <el-table-column prop="rewardCount" label="奖励数量" width="100"></el-table-column>
-        <el-table-column prop="taskName" label="任务名称" width="120"></el-table-column>
-        <el-table-column prop="loginIP" label="登陆IP" width="160"></el-table-column>
+                style="width: 100%;" ref="table" :height="tableHeight">
+        <el-table-column type="index" width="auto"></el-table-column>
+        <el-table-column prop="playerId" label="玩家ID" width="auto"></el-table-column>
+        <el-table-column prop="nickName" label="玩家昵称" width="auto"></el-table-column>
+        <el-table-column prop="rewardType" label="奖励类型" width="auto"></el-table-column>
+        <el-table-column prop="rewardCount" label="奖励数量" width="auto"></el-table-column>
+        <el-table-column prop="taskName" label="任务名称" width="auto"></el-table-column>
+        <el-table-column prop="loginIP" label="登陆IP" width="auto"></el-table-column>
         <el-table-column prop="receiveTime" label="领取时间" width="auto"></el-table-column>
       </el-table>
       <!--工具条-->
@@ -68,7 +68,8 @@
             items:[],
             total:0,
             state:{},
-            loading:false
+            loading:false,
+            tableHeight:0
           }
       },
       methods:{
@@ -113,7 +114,7 @@
               'Content-type': 'application/x-www-form-urlencoded'
             },
             params: {
-              'size': '10',//每页数量
+              'size': '50',//每页数量
               'page': page,//当前页
               'playerId':this.filters.playerId,
               'loginIP': this.filters.loginIP,
@@ -129,6 +130,10 @@
             for (let i = 0; i < this.items.length; i++) {
               this.items[i].receiveTime = this.dateTimeFormat(this.items[i].receiveTime);
             }
+
+            setTimeout(() => {
+              this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 100;
+            },100)
           }).catch((e) => {
             if (e && e.response) {
               switch (e.response.status) {

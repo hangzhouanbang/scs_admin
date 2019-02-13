@@ -25,7 +25,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="类型" label-width="68px">
-          <el-select v-model="filters.mailType" placeholder="请选择" clearable>
+          <el-select v-model="filters.mailType" placeholder="请选择类型" clearable>
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -35,7 +35,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="操作人" label-width="68px">
-          <el-select v-model="nickname" placeholder="请选择" clearable>
+          <el-select v-model="nickname" placeholder="请选择操作人" clearable>
             <el-option
               v-for="item in this.adminList"
               :key="item.nickname"
@@ -52,7 +52,7 @@
 
     <!-- 邮件列表-->
     <el-table :data="items" highlight-current-row style="width: 100%;">
-      <el-table-column type="index" width="60"></el-table-column>
+      <el-table-column type="index" width="auto"></el-table-column>
       <el-table-column prop="memberId" label="用户ID" width="auto"></el-table-column>
       <el-table-column prop="systemMail.file" label="邮件内容" width="auto">
         <template slot-scope="scope">
@@ -65,7 +65,7 @@
       <el-table-column prop="vipCardName" label="会员卡" width="auto"></el-table-column>
       <el-table-column prop="systemMail.validTime" label="有效时间" width="auto"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="发送时间" width="auto"></el-table-column>
-      <el-table-column prop="receive" label="是否领取" width="160">
+      <el-table-column prop="receive" label="是否领取" width="auto">
         <template slot-scope="scope">
           <el-button type="text" v-if="scope.row.receive === '0'" style="cursor:default;">已领取</el-button>
           <el-button type="text" v-if="scope.row.receive === '1'" style="cursor:default;">未领取</el-button>

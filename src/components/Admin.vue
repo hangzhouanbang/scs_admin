@@ -10,8 +10,8 @@
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
-          <el-form-item>
-            <el-input v-model.trim="filters.nickname" placeholder="用户名" @keyup.enter.native="handleSearch"></el-input>
+          <el-form-item label="用户名">
+            <el-input v-model.trim="filters.nickname" placeholder="请输入用户名" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>

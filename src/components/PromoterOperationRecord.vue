@@ -13,13 +13,13 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="推广员ID" label-width="70px">
-            <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch" placeholder="请输入推广员ID"></el-input>
           </el-form-item>
           <el-form-item label="推广员昵称" label-width="90px">
-            <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch" placeholder="请输入推广员昵称"></el-input>
           </el-form-item>
           <el-form-item label="类型" label-width="50px">
-            <el-select v-model="filters.mailType" placeholder="请选择" clearable style="width:202px;">
+            <el-select v-model="filters.mailType" placeholder="请选择类型" clearable style="width:202px;" @change="search()">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -42,7 +42,7 @@
               placeholder="选择日期" style="width:202px;">
             </el-date-picker>
           </el-form-item>
-          <el-button type="primary" @click="handleSearch()">查询</el-button>
+          <el-button type="primary" @click="chaxun()">查询</el-button>
         </el-form>
       </el-col>
 
@@ -50,22 +50,22 @@
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;" @sort-change="sort">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
-        <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
-        <el-table-column prop="product" label="商品名称" width="120"></el-table-column>
-        <el-table-column prop="accountingAmount" label="数量" width="100"></el-table-column>
-        <el-table-column prop="summary.text" label="类型" width="170"></el-table-column>
-        <el-table-column prop="accountingTime" label="使用时间" width="160" sortable></el-table-column>
-        <el-table-column prop="receiverId" label="使用对象" width="140"></el-table-column>
-        <el-table-column prop="balanceAfterRi" label="剩余日卡" width="100" sortable></el-table-column>
-        <el-table-column prop="balanceAfterZhou" label="剩余周卡" width="100" sortable></el-table-column>
-        <el-table-column prop="balanceAfterYue" label="剩余月卡" width="100" sortable></el-table-column>
-        <el-table-column prop="balanceAfterJi" label="剩余季卡" sortable></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="auto"></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="auto"></el-table-column>
+        <el-table-column prop="product" label="商品名称" width="auto"></el-table-column>
+        <el-table-column prop="accountingAmount" label="数量" width="auto"></el-table-column>
+        <el-table-column prop="summary.text" label="类型" width="auto"></el-table-column>
+        <el-table-column prop="accountingTime" label="使用时间" width="auto" sortable></el-table-column>
+        <el-table-column prop="receiverId" label="使用对象" width="auto"></el-table-column>
+        <el-table-column prop="balanceAfterRi" label="剩余日卡" width="auto" sortable></el-table-column>
+        <el-table-column prop="balanceAfterZhou" label="剩余周卡" width="auto" sortable></el-table-column>
+        <el-table-column prop="balanceAfterYue" label="剩余月卡" width="auto" sortable></el-table-column>
+        <el-table-column prop="balanceAfterJi" label="剩余季卡" width="auto" sortable></el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">
         <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="1" :total="total"
-                       style="float:right;">
+                       style="float:right;" :current-page.sync = "page">
         </el-pagination>
       </el-col>
     </el-col>
@@ -119,6 +119,13 @@
         let minutes = time.getMinutes();
         let seconds = time.getSeconds();
         return year + '-' + rightTwo(month) + '-' + rightTwo(date) + ' ' + rightTwo(hours) + ':' + rightTwo(minutes) + ':' + rightTwo(seconds);
+      },
+      search(){
+        this.page = 1;
+        this.handleSearch()
+      },
+      chaxun(){
+        this.search()
       },
       //查询会员卡购买记录
       handleSearch(accountingTimeSort,balanceAfterZhouSort,balanceAfterYueSort,balanceAfterJiSort) {

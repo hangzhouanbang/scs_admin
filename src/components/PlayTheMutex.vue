@@ -10,10 +10,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="游戏名称" label-width="68px">
-          <el-input v-model.trim="filters.gamename" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.gamename" @keyup.enter.native="handleSearch(1)" placeholder="请输入游戏名称"></el-input>
         </el-form-item>
         <el-form-item label="玩法" label-width="68px">
-          <el-input v-model.trim="filters.play" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.play" @keyup.enter.native="handleSearch(1)" placeholder="请输入玩法"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" v-on:click="handleSearch(1)">查询</el-button>

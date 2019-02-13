@@ -9,7 +9,7 @@
 
     <!-- 列表-->
     <el-table :data="list" highlight-current-row @selection-change="selsChange"
-              style="width:100%;" id="out-table">
+              style="width:100%;margin-top:30px;" id="out-table">
       <el-table-column type="selection" width="60"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="rewardType" label="兑换类型" width="120"></el-table-column>

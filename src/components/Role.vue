@@ -11,8 +11,8 @@
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
-          <el-form-item>
-            <el-input v-model.trim="filters.role" placeholder="角色名称" @keyup.enter.native="handleSearch"></el-input>
+          <el-form-item label="角色名称">
+            <el-input v-model.trim="filters.role" placeholder="请输入角色名称" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询角色</el-button>

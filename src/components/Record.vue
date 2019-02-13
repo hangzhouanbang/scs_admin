@@ -11,13 +11,13 @@
       <div class="stay_out">待发放（{{amount}}）</div>
       <el-form :inline="true" :model="filters">
         <el-form-item label="游戏ID">
-          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch(1)" placeholder="请输入游戏ID"></el-input>
         </el-form-item>
         <el-form-item label="游戏昵称">
-          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch(1)" placeholder="请输入游戏昵称"></el-input>
         </el-form-item>
         <el-form-item label="手机号码">
-          <el-input v-model.trim="filters.telephone" @keyup.enter.native="handleSearch(1)"></el-input>
+          <el-input v-model.trim="filters.telephone" @keyup.enter.native="handleSearch(1)" placeholder="请输入手机号码"></el-input>
         </el-form-item>
         <br>
         <el-form-item label="时间">
@@ -42,17 +42,17 @@
 
     <!-- 中奖记录列表-->
     <el-table :data="list" highlight-current-row style="width:100%;" id="out-table">
-      <el-table-column type="index" width="60" label="序号"></el-table-column>
-      <el-table-column prop="memberId" label="游戏ID" width="160"></el-table-column>
-      <el-table-column prop="nickName" label="昵称" width="120"></el-table-column>
-      <el-table-column prop="lotteryName" label="兑换物品" width="120"></el-table-column>
-      <el-table-column prop="singleNum" label="兑换数量" width="120" sortable></el-table-column>
-      <el-table-column prop="singleNum" label="联系人" width="120" sortable></el-table-column>
-      <el-table-column prop="telephone" label="联系电话" width="120" sortable></el-table-column>
-      <el-table-column prop="address" label="收件地址" width="160" sortable></el-table-column>
-      <el-table-column prop="exchangeTime" label="兑奖时间" width="120" sortable></el-table-column>
-      <el-table-column prop="distributeTime" label="发放时间" width="120" sortable></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column type="index" width="auto" label="序号"></el-table-column>
+      <el-table-column prop="memberId" label="游戏ID" width="auto"></el-table-column>
+      <el-table-column prop="nickName" label="昵称" width="auto"></el-table-column>
+      <el-table-column prop="lotteryName" label="兑换物品" width="auto"></el-table-column>
+      <el-table-column prop="singleNum" label="兑换数量" width="auto" sortable></el-table-column>
+      <el-table-column prop="singleNum" label="联系人" width="auto"></el-table-column>
+      <el-table-column prop="telephone" label="联系电话" width="auto"></el-table-column>
+      <el-table-column prop="address" label="收件地址" width="auto"></el-table-column>
+      <el-table-column prop="exchangeTime" label="兑奖时间" width="auto" sortable></el-table-column>
+      <el-table-column prop="distributeTime" label="发放时间" width="auto" sortable></el-table-column>
+      <el-table-column label="操作" width="auto">
         <template slot-scope="scope">
           <el-button size="small" @click="grant(scope.$index,scope.row)" v-if="scope.row.hasExchange == false">发放</el-button>
           <el-button size="small" type='text' v-if="scope.row.hasExchange == true">已发放</el-button>

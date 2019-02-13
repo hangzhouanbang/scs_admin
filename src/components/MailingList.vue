@@ -10,10 +10,10 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="用户ID" label-width="68px">
-          <el-input v-model.trim="filters.nickname" placeholder="用户ID" @keyup.enter.native="handleSearch"></el-input>
+          <el-input v-model.trim="filters.nickname" placeholder="请输入用户ID" @keyup.enter.native="handleSearch"></el-input>
         </el-form-item>
         <el-form-item label="类型" label-width="68px">
-          <el-select v-model="filters.type" placeholder="请选择"  clearable>
+          <el-select v-model="filters.type" placeholder="请选择类型"  clearable>
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -30,8 +30,8 @@
 
     <!-- 邮件列表-->
     <el-table :data="email" highlight-current-row @selection-change="selsChange" style="width: 100%;">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column type="index" width="60"></el-table-column>
+      <el-table-column type="selection" width="auto"></el-table-column>
+      <el-table-column type="index" width="auto"></el-table-column>
       <el-table-column prop="memberId" label="用户ID" width="auto"></el-table-column>
       <el-table-column prop="systemMail.file" label="邮件内容" width="auto">
         <template slot-scope="scope">
@@ -45,7 +45,7 @@
       <el-table-column prop="systemMail.validTime" label="有效时间" width="auto"></el-table-column>
       <el-table-column prop="systemMail.createtime" label="发送时间" width="auto"></el-table-column>
       <el-table-column prop="receive" label="是否领取" width="auto"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
         </template>

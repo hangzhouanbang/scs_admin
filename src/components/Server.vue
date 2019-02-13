@@ -10,8 +10,8 @@
       <!--工具条-->
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
-          <el-form-item>
-            <el-input v-model.trim="filters.game" placeholder="游戏名称" @keyup.enter.native="handleSearch"></el-input>
+          <el-form-item label="游戏名称">
+            <el-input v-model.trim="filters.game" placeholder="请输入游戏名称" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
@@ -24,13 +24,13 @@
     <!-- 服务器列表-->
     <el-table :data="server" highlight-current-row @selection-change="selsChange"
               style="width: 100%;">
-      <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="game" label="游戏名称" width="160"></el-table-column>
-      <el-table-column prop="name" label="服务器名称" width="130"></el-table-column>
-      <el-table-column prop="httpUrl" label="httpUrl" width="200"></el-table-column>
-      <el-table-column prop="wsUrl" label="websocket URL" width="210"></el-table-column>
-      <el-table-column prop="onlineTime" label="上线时间" width="160"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column type="index" width="auto"></el-table-column>
+      <el-table-column prop="game" label="游戏名称" width="auto"></el-table-column>
+      <el-table-column prop="name" label="服务器名称" width="auto"></el-table-column>
+      <el-table-column prop="httpUrl" label="httpUrl" width="auto"></el-table-column>
+      <el-table-column prop="wsUrl" label="websocket URL" width="auto"></el-table-column>
+      <el-table-column prop="onlineTime" label="上线时间" width="auto"></el-table-column>
+      <el-table-column label="操作" width="auto">
         <template slot-scope="scope">
           <el-button type="danger" @click="offline(scope.$index,scope.row)" size="small">下线</el-button>
           <el-button type="danger" @click.native="pause(scope.$index,scope.row)" size="small" v-if="scope.row.state === 0">暂停</el-button>

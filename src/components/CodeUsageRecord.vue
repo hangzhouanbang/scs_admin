@@ -13,10 +13,10 @@
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item label="推广员ID" label-width="70px">
-            <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.id" @keyup.enter.native="handleSearch" placeholder="请输入推广员ID"></el-input>
           </el-form-item>
           <el-form-item label="推广员昵称" label-width="90px">
-            <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch"></el-input>
+            <el-input v-model.trim="filters.nickname" @keyup.enter.native="handleSearch" placeholder="请输入推广员昵称"></el-input>
           </el-form-item>
           <el-form-item label="注册时间" label-width="68px">
             <el-date-picker
@@ -40,15 +40,15 @@
       <el-table :data="items" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;" @sort-change="sort">
         <el-table-column type="index" width="60"></el-table-column>
-        <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
-        <el-table-column prop="agent" label="推广员昵称" width="120"></el-table-column>
-        <el-table-column prop="invitationCode" label="推广码" width="120"></el-table-column>
-        <el-table-column prop="memberId" label="邀请玩家ID" width="100"></el-table-column>
-        <el-table-column prop="nickname" label="邀请玩家昵称" width="150"></el-table-column>
-        <el-table-column prop="createTime" label="绑定时间" width="160" sortable></el-table-column>
-        <el-table-column prop="rewardScore" label="获得积分" width="100"></el-table-column>
-        <el-table-column prop="inviteNum" label="邀请总人数" width="150" sortable></el-table-column>
-        <el-table-column prop="score" label="当前积分" sortable></el-table-column>
+        <el-table-column prop="agentId" label="推广员ID" width="auto"></el-table-column>
+        <el-table-column prop="agent" label="推广员昵称" width="auto"></el-table-column>
+        <el-table-column prop="invitationCode" label="推广码" width="auto"></el-table-column>
+        <el-table-column prop="memberId" label="邀请玩家ID" width="auto"></el-table-column>
+        <el-table-column prop="nickname" label="邀请玩家昵称" width="auto"></el-table-column>
+        <el-table-column prop="createTime" label="绑定时间" width="auto" sortable></el-table-column>
+        <el-table-column prop="rewardScore" label="获得积分" width="auto"></el-table-column>
+        <el-table-column prop="inviteNum" label="邀请总人数" width="auto" sortable></el-table-column>
+        <el-table-column prop="score" label="当前积分" width="auto" sortable></el-table-column>
       </el-table>
       <!--工具条-->
       <el-col :span="24" class="toolbar">

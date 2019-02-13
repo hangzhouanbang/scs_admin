@@ -10,13 +10,13 @@
     <el-col :span="24" class="toolbar" style="margin-top:30px;">
       <el-form :inline="true" :model="filters">
         <el-form-item label="玩家ID">
-          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model.trim="filters.memberId" @keyup.enter.native="handleSearch()" placeholder="请输入玩家ID"></el-input>
         </el-form-item>
         <el-form-item label="推广员ID">
-          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model.trim="filters.agentId" @keyup.enter.native="handleSearch()" placeholder="请输入推广员ID"></el-input>
         </el-form-item>
         <el-form-item label="上级推广员ID">
-          <el-input v-model.trim="filters.bossId" @keyup.enter.native="handleSearch()"></el-input>
+          <el-input v-model.trim="filters.bossId" @keyup.enter.native="handleSearch()" placeholder="请输入上级推广员ID"></el-input>
         </el-form-item>
         <el-form-item label="时间" label-width="68px">
           <el-date-picker
@@ -41,19 +41,19 @@
     <el-table :data="list" highlight-current-row @selection-change="selsChange"
               style="width: 100%;">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="memberId" label="玩家ID" width="100"></el-table-column>
-      <el-table-column prop="memberName" label="玩家昵称" width="100" sortable></el-table-column>
-      <el-table-column prop="memberHeadimgurl" label="头像" width="100">
+      <el-table-column prop="memberId" label="玩家ID" width="auto"></el-table-column>
+      <el-table-column prop="memberName" label="玩家昵称" width="auto" sortable></el-table-column>
+      <el-table-column prop="memberHeadimgurl" label="头像" width="auto">
         <template slot-scope="scope">
           <img :src="scope.row.memberHeadimgurl" alt="" style="width: 50px;height: 50px;">
         </template>
       </el-table-column>
-      <el-table-column prop="pruduct" label="购买物品" width="100"></el-table-column>
-      <el-table-column prop="totalamount" label="支付金额" width="100"></el-table-column>
-      <el-table-column prop="agentId" label="推广员ID" width="120"></el-table-column>
-      <el-table-column prop="accountingAmount" label="推广员收益" width="120"></el-table-column>
-      <el-table-column prop="bossId" label="上级ID" width="100"></el-table-column>
-      <el-table-column prop="seniorReward" label="上级收益" width="100"></el-table-column>
+      <el-table-column prop="pruduct" label="购买物品" width="auto"></el-table-column>
+      <el-table-column prop="totalamount" label="支付金额" width="auto"></el-table-column>
+      <el-table-column prop="agentId" label="推广员ID" width="auto"></el-table-column>
+      <el-table-column prop="accountingAmount" label="推广员收益" width="auto"></el-table-column>
+      <el-table-column prop="bossId" label="上级ID" width="auto"></el-table-column>
+      <el-table-column prop="seniorReward" label="上级收益" width="auto"></el-table-column>
       <el-table-column prop="accountingTime" label="收益时间" width="auto"></el-table-column>
     </el-table>
 
