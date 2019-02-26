@@ -112,6 +112,7 @@
               }
             }).then(res => {
               const formdata = new FormData();
+              console.log(req.file)
               formdata.append('file', req.file);
               formdata.append('token', res.data.data);
               formdata.append('key', keyname);
@@ -167,15 +168,15 @@
               // console.log(res.data)
               this.imageList = res.data.data.imageList;
               for(let i = 0;i <  this.imageList.length;i++){
-                if(this.imageList[i].ordinal === '1'){
+                if(this.imageList[i].ordinal === 1){
                   this.imageUrl = res.data.data.imageList[i].downloadUrl;
                   this.id = res.data.data.imageList[i].id
                 }
-                if(this.imageList[i].ordinal === '2'){
+                if(this.imageList[i].ordinal === 2){
                   this.imageUrl1 = res.data.data.imageList[i].downloadUrl;
                   this.id1 = res.data.data.imageList[i].id
                 }
-                if(this.imageList[i].ordinal === '3'){
+                if(this.imageList[i].ordinal === 3){
                   this.imageUrl2 = res.data.data.imageList[i].downloadUrl;
                   this.id2 = res.data.data.imageList[i].id
                 }

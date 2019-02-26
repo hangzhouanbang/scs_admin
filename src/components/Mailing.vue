@@ -182,7 +182,7 @@
         this.id = ''
       },
       changeInput(){
-        if(this.radio === 0){
+        if(this.radio === '0'){
           this.visible = true;
         }else{
           this.visible = false;
